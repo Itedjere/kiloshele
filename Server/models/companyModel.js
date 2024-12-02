@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 
-const companySchema = mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
+const companySchema = mongoose.Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+  },
+  { timestamps: true }
+);
 
-export const Company = mongoose.model("User", companySchema);
+companySchema.index({ name: 1 }); // Company + date filter
+
+export const Company = mongoose.model("Company", companySchema);

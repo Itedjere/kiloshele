@@ -1,4 +1,5 @@
 import { GraphQLDateTime } from "graphql-scalars";
+import { signupCompany } from "./services/company/signupCompany.js";
 
 export const resolvers = {
   Date: GraphQLDateTime,
@@ -8,8 +9,14 @@ export const resolvers = {
     },
   },
   Mutation: {
-    signup: async (parent, args, context) => {
-      return "Hello World";
+    signupCompany: async (parent, args, context) => {
+      try {
+        const { signupInfo } = args;
+        return await signupCompany(signupInfo);
+      } catch (error) {
+        console.error("Error signing up company:", error);
+        throw error;
+      }
     },
   },
 };
