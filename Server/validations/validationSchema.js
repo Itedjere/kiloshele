@@ -17,6 +17,25 @@ export const companySignupValidationSchema = Joi.object({
     }),
 });
 
+export const loginCompanyValidationSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
+export const addExpenseValidationSchema = Joi.object({
+  title: Joi.string().min(3).required(),
+  amount: Joi.number().positive().required(),
+  category: Joi.string().required(),
+  payment_method: Joi.string()
+    .valid("CARD", "CASH", "BANK_TRANSFER")
+    .required(),
+  payment_status: Joi.string()
+    .valid("PAID", "PENDING", "PARTIALLY_PAID")
+    .required(),
+  mediaUrl: Joi.array().items(Joi.string()).min(0),
+  additional_notes: Joi.string().optional(),
+});
+
 export const profileEditBasicValidationSchema = Joi.object({
   firstname: Joi.string().min(3).required(),
   lastname: Joi.string().min(3).required(),
@@ -33,11 +52,6 @@ export const profileEditBasicValidationSchema = Joi.object({
   city: Joi.string().optional(),
   state: Joi.string().optional(),
   about_me: Joi.string().optional(),
-});
-
-export const loginCompanyValidationSchema = Joi.object({
-  username: Joi.string().required(),
-  password: Joi.string().required(),
 });
 
 export const changePasswordValidationSchema = Joi.object({

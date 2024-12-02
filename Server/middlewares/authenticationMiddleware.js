@@ -29,6 +29,6 @@ export const authenticationMiddleware = (req, res, next) => {
   }
 
   req.isAuth = true;
-  req.userId = decodedToken.userId;
+  req.companyId = decodedToken.companyId;
   next();
 };
