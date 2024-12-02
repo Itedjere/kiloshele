@@ -3,6 +3,7 @@ import Joi from "joi";
 export const companySignupValidationSchema = Joi.object({
   name: Joi.string().min(3).required(),
   email: Joi.string().email().required(),
+  username: Joi.string().min(3).required(),
   password: Joi.string()
     .pattern(
       new RegExp(
@@ -34,7 +35,7 @@ export const profileEditBasicValidationSchema = Joi.object({
   about_me: Joi.string().optional(),
 });
 
-export const loginValidationSchema = Joi.object({
+export const loginCompanyValidationSchema = Joi.object({
   username: Joi.string().required(),
   password: Joi.string().required(),
 });

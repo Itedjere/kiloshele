@@ -11,10 +11,12 @@ export const signupCompany = async (signupInfo) => {
     throw new Error(`Validation error: ${error.details[0].message}`);
   }
 
-  // Check if Comapny already exists
-  const existingCompany = await Company.findOne({ name: signupInfo.name });
-  if (existingCompany) {
-    throw new Error("A Company with this name already exists.");
+  // Check if username already exists
+  const existingUsername = await Company.findOne({
+    username: signupInfo.username,
+  });
+  if (existingUsername) {
+    throw new Error("A Company with this username already exists.");
   }
 
   // Hash password

@@ -5,6 +5,7 @@ export const typeDefs = `#graphql
 
     type Company {
         name: String!
+        username: String!
         email: String!
     }
 
@@ -19,11 +20,18 @@ export const typeDefs = `#graphql
 
     type Mutation {
         signupCompany(signupInfo: ADDCOMPANYINPUT!): AuthenticatedCompany!
+        loginCompany(loginInfo: LOGINCOMPANYINPUT!): AuthenticatedCompany!
     }
 
     input ADDCOMPANYINPUT {
         name: String!
+        username: String!
         email: String!
+        password: String!
+    }
+
+    input LOGINCOMPANYINPUT {
+        username: String!
         password: String!
     }
 
