@@ -5,6 +5,11 @@ export const editProduct = async (args, req) => {
   const { productId, productInfo } = args;
   const { companyId } = req;
 
+  // validate productId
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    throw new Error("Invalid product ID.");
+  }
+
   // validate productInfo
   const { error, value } = addProductValidationSchema.validate(productInfo);
   if (error) {

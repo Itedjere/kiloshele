@@ -9,6 +9,10 @@ import { createProduct } from "./services/product/createProduct.js";
 import { editProduct } from "./services/product/editProduct.js";
 import { fetchProducts } from "./services/product/fetchProducts.js";
 import { deleteProduct } from "./services/product/deleteProduct.js";
+import { addTransaction } from "./services/transaction/addTransaction.js";
+import { updateTransaction } from "./services/transaction/updateTransaction.js";
+import { fetchSales } from "./services/transaction/fetchSales.js";
+import { deleteTransaction } from "./services/transaction/deleteTransaction.js";
 
 export const resolvers = {
   Date: GraphQLDateTime,
@@ -34,6 +38,18 @@ export const resolvers = {
         return await fetchProducts(req);
       } catch (error) {
         console.error("Error fetching all products:", error);
+        throw error;
+      }
+    },
+    sales: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await fetchSales(req);
+      } catch (error) {
+        console.error("Error fetching all sales:", error);
         throw error;
       }
     },
@@ -126,6 +142,42 @@ export const resolvers = {
         return await deleteProduct(args, req);
       } catch (error) {
         console.error("Failed to delete product:", error);
+        throw error;
+      }
+    },
+    addSale: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await addTransaction(args, req);
+      } catch (error) {
+        console.error("Failed to add Sale:", error);
+        throw error;
+      }
+    },
+    updateSale: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await updateTransaction(args, req);
+      } catch (error) {
+        console.error("Failed to update Sale:", error);
+        throw error;
+      }
+    },
+    removeSale: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await deleteTransaction(args, req);
+      } catch (error) {
+        console.error("Failed to delete Sale:", error);
         throw error;
       }
     },

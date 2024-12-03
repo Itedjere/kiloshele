@@ -5,6 +5,11 @@ export const editExpense = async (args, req) => {
   const { expenseId, expenseInfo } = args;
   const { companyId } = req;
 
+  // validate productId
+  if (!mongoose.Types.ObjectId.isValid(expenseId)) {
+    throw new Error("Invalid expense ID.");
+  }
+
   // validate expenseInfo
   const { error, value } = addExpenseValidationSchema.validate(expenseInfo);
   if (error) {

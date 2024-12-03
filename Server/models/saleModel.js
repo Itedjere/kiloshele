@@ -17,6 +17,7 @@ const saleSchema = new mongoose.Schema(
     customer_name: { type: String },
     customer_phone: { type: String },
     customer_note: { type: String },
+    staff_assigned: { type: String },
     payment_method: {
       type: String,
       enum: ["CARD", "CASH", "BANK_TRANSFER"],

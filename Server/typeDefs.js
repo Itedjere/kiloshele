@@ -72,9 +72,25 @@ export const typeDefs = `#graphql
         createdAt: Date!
     }
 
+    type Sale {
+        _id: String!
+        company: Company!
+        product: Product!
+        quantity: String
+        price: Float!
+        customer_name: String
+        customer_phone: String
+        customer_note: String
+        staff_assigned: String
+        payment_method: PaymentMethod!
+        payment_status: PaymentStatus!
+        additional_note: String
+    }
+
     type Query {
         expenses: [Expense!]!
         products: [Product!]!
+        sales: [Sale!]!
     }
 
     type Mutation {
@@ -86,6 +102,22 @@ export const typeDefs = `#graphql
         addProduct(productInfo: ADDPRODUCTINPUT!): Product!
         updateProduct(productId: String!, productInfo: ADDPRODUCTINPUT!): Product!
         removeProduct(productId: String!): Product!
+        addSale(saleInfo: ADDSALEINFO!): Sale!
+        updateSale(saleId: String!, saleInfo: ADDSALEINFO!): Sale!
+        removeSale(saleId: String!): Sale!
+    }
+
+    input ADDSALEINFO {
+        product: String!
+        quantity: Int
+        price: Float!
+        customer_name: String
+        customer_phone: String
+        customer_note: String
+        staff_assigned: String
+        payment_method: PaymentMethod!
+        payment_status: PaymentStatus!
+        additional_note: String
     }
 
     input OtherServiceFeesInput {

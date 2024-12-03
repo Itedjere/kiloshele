@@ -59,6 +59,23 @@ export const addProductValidationSchema = Joi.object({
   photos: Joi.array().items(Joi.string()).min(0),
 });
 
+export const addSaleValidationSchema = Joi.object({
+  product: Joi.string().required(),
+  quantity: Joi.number().positive().optional(),
+  price: Joi.number().positive().required(),
+  customer_name: Joi.string().optional(),
+  customer_phone: Joi.string().optional(),
+  customer_note: Joi.string().optional(),
+  staff_assigned: Joi.string().optional(),
+  payment_method: Joi.string()
+    .valid("CARD", "CASH", "BANK_TRANSFER")
+    .required(),
+  payment_status: Joi.string()
+    .valid("PAID", "PENDING", "PARTIALLY_PAID")
+    .required(),
+  additional_notes: Joi.string().optional(),
+});
+
 export const profileEditBasicValidationSchema = Joi.object({
   firstname: Joi.string().min(3).required(),
   lastname: Joi.string().min(3).required(),
