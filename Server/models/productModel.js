@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+const feeSchema = new mongoose.Schema(
+  {
+    duration: { type: String, required: true }, // e.g., "1 month", "2 weeks", etc.
+    fee: { type: Number, required: true, min: 0 }, // Fee associated with the duration
+  },
+  { _id: false } // Prevents the creation of an additional `_id` for subdocuments
+);
+
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -7,8 +15,14 @@ const productSchema = new mongoose.Schema(
     type: { type: String, enum: ["PRODUCT", "SERVICE"], required: true },
     category: { type: String, required: true },
     quantity: { type: Number, required: true, min: 0 },
-    restock_level: { type: Number, required: true },
+    restock_level: { type: Number },
     price: { type: Number, required: true },
+    other_fees: [feeSchema], // Array of objects with `duration` and `fee`
+    service_provider: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
+    },
     description: { type: String },
     company: {
       type: mongoose.Schema.Types.ObjectId,
