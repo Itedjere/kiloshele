@@ -54,6 +54,7 @@ export const typeDefs = `#graphql
 
     type Product {
         _id: String!
+        company: Company!
         name: String!
         sku: String
         type: ServiceOrProduct!
@@ -73,6 +74,7 @@ export const typeDefs = `#graphql
 
     type Query {
         expenses: [Expense!]!
+        products: [Product!]!
     }
 
     type Mutation {
@@ -83,6 +85,7 @@ export const typeDefs = `#graphql
         removeExpense(expenseId: String!): Expense!
         addProduct(productInfo: ADDPRODUCTINPUT!): Product!
         updateProduct(productId: String!, productInfo: ADDPRODUCTINPUT!): Product!
+        removeProduct(productId: String!): Product!
     }
 
     input OtherServiceFeesInput {
