@@ -82,6 +82,7 @@ export const typeDefs = `#graphql
         updateExpense(expenseId: String!, expenseInfo: ADDEXPENSEINPUT!): Expense!
         removeExpense(expenseId: String!): Expense!
         addProduct(productInfo: ADDPRODUCTINPUT!): Product!
+        updateProduct(productId: String!, productInfo: ADDPRODUCTINPUT!): Product!
     }
 
     input OtherServiceFeesInput {

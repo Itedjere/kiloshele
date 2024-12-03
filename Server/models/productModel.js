@@ -35,7 +35,13 @@ const productSchema = new mongoose.Schema(
 );
 
 // Compound Index for sku
-productSchema.index({ company: 1, sku: 1 }, { unique: true });
+productSchema.index(
+  { company: 1, sku: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { sku: { $exists: true, $ne: null } },
+  }
+);
 
 productSchema.index({ company: 1, createdAt: 1 }); // Company + date filter
 
