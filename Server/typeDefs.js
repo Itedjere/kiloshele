@@ -9,6 +9,11 @@ export const typeDefs = `#graphql
         BANK_TRANSFER
     }
 
+    enum ServiceOrProduct {
+        PRODUCT
+        SERVICE
+    }
+
     enum PaymentStatus {
         PAID
         PENDING
@@ -41,6 +46,31 @@ export const typeDefs = `#graphql
         updatedAt: Date!
     }
 
+    type OtherServiceFees {
+        duration: String!
+        cost_price: Float!
+        selling_price: Float!
+    }
+
+    type Product {
+        _id: String!
+        name: String!
+        sku: String
+        type: ServiceOrProduct!
+        category: String!
+        quantity: Int!
+        restock_level: Int
+        cost_price: Float!
+        selling_price: Float!
+        other_fees: [OtherServiceFees!]!
+        description: String
+        supplier_name: String
+        supplier_phone: String
+        tags: [String!]!
+        photos: [String!]!
+        createdAt: Date!
+    }
+
     type Query {
         expenses: [Expense!]!
     }
@@ -51,6 +81,30 @@ export const typeDefs = `#graphql
         addExpense(expenseInfo: ADDEXPENSEINPUT!): Expense!
         updateExpense(expenseId: String!, expenseInfo: ADDEXPENSEINPUT!): Expense!
         removeExpense(expenseId: String!): Expense!
+        addProduct(productInfo: ADDPRODUCTINPUT!): Product!
+    }
+
+    input OtherServiceFeesInput {
+        duration: String!
+        cost_price: Float!
+        selling_price: Float!
+    }
+
+    input ADDPRODUCTINPUT {
+        name: String!
+        sku: String
+        type: ServiceOrProduct!
+        category: String!
+        quantity: Int!
+        restock_level: Int
+        cost_price: Float!
+        selling_price: Float!
+        other_fees: [OtherServiceFeesInput!]!
+        description: String
+        supplier_name: String
+        supplier_phone: String
+        tags: [String!]!
+        photos: [String!]!
     }
 
     input ADDEXPENSEINPUT {
