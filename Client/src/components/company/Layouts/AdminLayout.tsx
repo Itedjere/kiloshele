@@ -1,3 +1,4 @@
+import { Outlet } from "react-router";
 import BackToTop from "../BackToTop";
 import { useAdminLayoutContext } from "../Contexts/AdminLayoutContext";
 import Footer from "../Footer/Footer";
@@ -13,9 +14,7 @@ export default function AdminLayout() {
       <div className={`content ${sidebarVisible ? "open" : ""}`}>
         <TopNavigation />
 
-        <div className="container-fluid pt-4 px-4"></div>
-
-        <div className="container-fluid pt-4 px-4"></div>
+        <Outlet />
 
         <Footer />
 

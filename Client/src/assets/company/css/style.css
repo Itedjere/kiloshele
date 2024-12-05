@@ -401,3 +401,11 @@
 .react-icons {
   vertical-align: middle;
 }
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.slick-slide {
+  padding: 0 10px;
+}
