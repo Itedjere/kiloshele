@@ -406,6 +406,49 @@
   font-size: 3em;
 }
 
+.fw-semibold {
+  font-weight: 600 !important;
+}
+
+.text-black {
+  color: black !important;
+}
+
 .slick-slide {
   padding: 0 10px;
+}
+
+.select-dropdown .dropdown-menu {
+  width: 100%;
+}
+
+.select-dropdown .menu-content {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.select-dropdown .menu-content .dropdown-item {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #dfdede;
+  cursor: pointer;
+}
+
+.select-dropdown .menu-content .dropdown-item:last-child {
+  border: 0;
+}
+
+.quantity-updater span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+}
+
+.quantity-updater span.text-quantity {
+  width: 70px;
 }

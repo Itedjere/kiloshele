@@ -8,7 +8,6 @@ import {
   FaChartLine,
   FaChartPie,
 } from "react-icons/fa6";
-import StatisticsSkeleton from "../LoadingSkeletons/StatisticsSkeleton";
 
 export default function CardStatistics() {
   const settings = {

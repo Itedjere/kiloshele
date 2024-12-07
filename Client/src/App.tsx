@@ -9,6 +9,9 @@ import "./assets/company/css/style.css";
 import AdminLayout from "./components/company/Layouts/AdminLayout";
 import AdminLayoutContextProvider from "./components/company/Contexts/AdminLayoutContext";
 import Dashboard from "./pages/Dashboard";
+import AddProduct from "./pages/AddProduct";
+import AddSales from "./pages/AddSales";
+import AddExpenses from "./pages/AddExpenses";
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
           <Routes>
             <Route element={<AdminLayout />}>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/add-products" element={<AddProduct />} />
+              <Route path="/add-sales" element={<AddSales />} />
+              <Route path="/add-expenses" element={<AddExpenses />} />
             </Route>
           </Routes>
         </AdminLayoutContextProvider>
