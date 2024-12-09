@@ -452,3 +452,36 @@
 .quantity-updater span.text-quantity {
   width: 70px;
 }
+
+.button-container {
+  display: flex; /* Align buttons horizontally */
+  gap: 0.75rem; /* Spacing between buttons */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent buttons from wrapping */
+  padding: 0.5rem 0; /* Optional padding for aesthetics */
+}
+
+.button-container::-webkit-scrollbar {
+  height: 6px; /* Customize scrollbar height */
+}
+
+.button-container::-webkit-scrollbar-thumb {
+  background: #cccccc; /* Customize scrollbar thumb */
+  border-radius: 3px;
+}
+
+.offcanvas-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+.offcanvas-backdrop.fade {
+  opacity: 0;
+}
+.offcanvas-backdrop.show {
+  opacity: 0.5;
+}

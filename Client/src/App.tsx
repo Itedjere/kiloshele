@@ -12,6 +12,10 @@ import Dashboard from "./pages/Dashboard";
 import AddProduct from "./pages/AddProduct";
 import AddSales from "./pages/AddSales";
 import AddExpenses from "./pages/AddExpenses";
+import Products from "./pages/Products";
+import Sales from "./pages/Sales";
+import Expenses from "./pages/Expenses";
+import Chart from "./pages/Chart";
 
 function App() {
   return (
@@ -24,6 +28,10 @@ function App() {
               <Route path="/add-products" element={<AddProduct />} />
               <Route path="/add-sales" element={<AddSales />} />
               <Route path="/add-expenses" element={<AddExpenses />} />
+              <Route path="/all-products" element={<Products />} />
+              <Route path="/all-sales" element={<Sales />} />
+              <Route path="/all-expenses" element={<Expenses />} />
+              <Route path="/charts" element={<Chart />} />
             </Route>
           </Routes>
         </AdminLayoutContextProvider>
