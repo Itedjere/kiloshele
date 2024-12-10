@@ -24,6 +24,7 @@ import AddStaffs from "./pages/AddStaffs";
 import Staffs from "./pages/Staffs";
 import CompanyDetails from "./pages/CompanyDetails";
 import ChangePassword from "./pages/ChangePassword";
+import PageLoading from "./components/company/LoadingSkeletons/PageLoading";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/loading" element={<PageLoading />} />
             <Route element={<AdminLayout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/add-products" element={<AddProduct />} />

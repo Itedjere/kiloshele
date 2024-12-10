@@ -12,8 +12,10 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@apollo/client": "^3.12.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.7",
+    "graphql": "^16.9.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.6",
     "react-chartjs-2": "^5.2.0",
