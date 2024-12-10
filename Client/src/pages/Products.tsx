@@ -10,6 +10,7 @@ import {
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import ProductItem from "../components/company/Products/ProductItem";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
+import ProductsEmpty from "../components/company/Products/ProductsEmpty";
 
 export default function Products() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -71,6 +72,7 @@ export default function Products() {
             <MdOutlineEmojiFoodBeverage className="me-3 fs-4" />
             Products & Services
           </h6>
+          <ProductsEmpty />
           <div className="row">
             <SearchFilter />
           </div>

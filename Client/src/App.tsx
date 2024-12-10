@@ -16,6 +16,14 @@ import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 import Expenses from "./pages/Expenses";
 import Chart from "./pages/Chart";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import NotFound from "./pages/NotFound";
+import ComingSoon from "./pages/ComingSoon";
+import AddStaffs from "./pages/AddStaffs";
+import Staffs from "./pages/Staffs";
+import CompanyDetails from "./pages/CompanyDetails";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -23,6 +31,8 @@ function App() {
       <IconContext.Provider value={{ className: "react-icons" }}>
         <AdminLayoutContextProvider>
           <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route element={<AdminLayout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/add-products" element={<AddProduct />} />
@@ -32,7 +42,13 @@ function App() {
               <Route path="/all-sales" element={<Sales />} />
               <Route path="/all-expenses" element={<Expenses />} />
               <Route path="/charts" element={<Chart />} />
+              <Route path="/coming-soon" element={<ComingSoon />} />
+              <Route path="/add-staffs" element={<AddStaffs />} />
+              <Route path="/all-staffs" element={<Staffs />} />
+              <Route path="/change-password" element={<ChangePassword />} />
+              <Route path="/company-details" element={<CompanyDetails />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AdminLayoutContextProvider>
       </IconContext.Provider>

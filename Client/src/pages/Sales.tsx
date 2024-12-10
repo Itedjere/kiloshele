@@ -11,6 +11,7 @@ import DateFilter from "../components/company/SearchFilters/DateFilter";
 import SalesItem from "../components/company/Sales/SalesItem";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import { useState } from "react";
+import SalesEmpty from "../components/company/Sales/SalesEmpty";
 
 export default function Sales() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -72,6 +73,7 @@ export default function Sales() {
             <LuNotepadText className="me-3 fs-4" />
             Sales Record
           </h6>
+          <SalesEmpty />
           <div className="row">
             <SearchFilter />
           </div>

@@ -11,6 +11,7 @@ import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import DateFilter from "../components/company/SearchFilters/DateFilter";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import ExpensesItem from "../components/company/Expenses/ExpensesItem";
+import ExpensesEmpty from "../components/company/Expenses/ExpensesEmpty";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -83,6 +84,7 @@ export default function Expenses() {
             <GiPayMoney className="me-3 fs-4" />
             Expenses Record
           </h6>
+          <ExpensesEmpty />
           <div className="row">
             <SearchFilter />
           </div>

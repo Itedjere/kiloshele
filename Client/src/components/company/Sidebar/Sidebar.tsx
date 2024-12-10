@@ -143,19 +143,19 @@ export default function Sidebar() {
               <SlArrowDown className="dropdown-arrow" />
             </Link>
             <div className="dropdown-menu bg-transparent border-0">
-              <NavLink to="/add-staff" className="dropdown-item">
+              <NavLink to="/add-staffs" className="dropdown-item">
                 Add Staffs
               </NavLink>
-              <NavLink to="all-staffs" className="dropdown-item">
+              <NavLink to="/all-staffs" className="dropdown-item">
                 All Staffs
               </NavLink>
-              <NavLink to="company-details" className="dropdown-item">
+              <NavLink to="/company-details" className="dropdown-item">
                 Company Details
               </NavLink>
-              <NavLink to="change-password" className="dropdown-item">
+              <NavLink to="/change-password" className="dropdown-item">
                 Change Password
               </NavLink>
-              <NavLink to="all-staffs" className="dropdown-item">
+              <NavLink to="/logout" className="dropdown-item">
                 Logout
               </NavLink>
             </div>
