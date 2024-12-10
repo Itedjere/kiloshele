@@ -1,7 +1,31 @@
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router";
+import { registerSchema } from "../utitlities/utils";
+
+type FormData = {
+  name: string;
+  username: string;
+  email?: string | undefined;
+  password: string;
+};
 
 export default function Signup() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(registerSchema),
+  });
+
+  const onSubmit = (data: FormData) => {
+    // call the registerUser Method
+    console.log(data);
+  };
+
   return (
     <div className="container-fluid position-relative bg-white d-flex p-0">
       <div className="container-fluid">
@@ -20,49 +44,88 @@ export default function Signup() {
                 </a>
                 <h3>Sign Up</h3>
               </div>
-              <div className="form-floating mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="floatingText"
-                  placeholder="jhondoe"
-                />
-                <label htmlFor="floatingText">Username</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  type="email"
-                  className="form-control"
-                  id="floatingInput"
-                  placeholder="name@example.com"
-                />
-                <label htmlFor="floatingInput">Email address</label>
-              </div>
-              <div className="form-floating mb-4">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="floatingPassword"
-                  placeholder="Password"
-                />
-                <label htmlFor="floatingPassword">Password</label>
-              </div>
-              <div className="d-flex align-items-center justify-content-between mb-4">
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="exampleCheck1"
-                  />
-                  <label className="form-check-label" htmlFor="exampleCheck1">
-                    Check me out
-                  </label>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="mb-3">
+                  <div className="form-floating">
+                    <input
+                      type="text"
+                      className={`form-control ${errors.name && "is-invalid"}`}
+                      id="floatingText"
+                      placeholder="Company Name"
+                      {...register("name")}
+                    />
+                    <label htmlFor="floatingText">Company Name</label>
+                  </div>
+                  {errors.name && (
+                    <div className="invalid-feedback d-block">
+                      {errors.name.message}
+                    </div>
+                  )}
                 </div>
-                <a href="">Forgot Password</a>
-              </div>
-              <button type="submit" className="btn btn-primary py-3 w-100 mb-4">
-                Sign Up
-              </button>
+                <div className="mb-3">
+                  <div className="form-floating">
+                    <input
+                      type="text"
+                      className={`form-control ${
+                        errors.username && "is-invalid"
+                      }`}
+                      id="floatingText"
+                      placeholder="Username"
+                      {...register("username")}
+                    />
+                    <label htmlFor="floatingText">Username</label>
+                  </div>
+                  {errors.username && (
+                    <div className="invalid-feedback d-block">
+                      {errors.username.message}
+                    </div>
+                  )}
+                </div>
+                <div className="mb-3">
+                  <div className="form-floating">
+                    <input
+                      type="email"
+                      className={`form-control ${errors.email && "is-invalid"}`}
+                      id="floatingInput"
+                      placeholder="Email Address (optional)"
+                      {...register("email")}
+                    />
+                    <label htmlFor="floatingInput">
+                      Email address (optional)
+                    </label>
+                  </div>
+                  {errors.email && (
+                    <div className="invalid-feedback d-block">
+                      {errors.email.message}
+                    </div>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <div className="form-floating">
+                    <input
+                      type="password"
+                      className={`form-control ${
+                        errors.password && "is-invalid"
+                      }`}
+                      id="floatingPassword"
+                      placeholder="Password"
+                      {...register("password")}
+                    />
+                    <label htmlFor="floatingPassword">Password</label>
+                  </div>
+                  {errors.password && (
+                    <div className="invalid-feedback d-block">
+                      {errors.password.message}
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary py-3 w-100 mb-4"
+                >
+                  Sign Up
+                </button>
+              </form>
               <p className="text-center mb-0">
                 Already have an Account? <Link to="/login">Sign In</Link>
               </p>
