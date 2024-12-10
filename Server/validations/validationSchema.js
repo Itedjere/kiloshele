@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const companySignupValidationSchema = Joi.object({
   name: Joi.string().min(3).required(),
-  email: Joi.string().email().required(),
+  email: Joi.string().email().optional(),
   username: Joi.string().min(3).required(),
   password: Joi.string()
     .pattern(
