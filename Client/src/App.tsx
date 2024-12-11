@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { IconContext } from "react-icons";
 
 // CSS Files
@@ -25,30 +25,78 @@ import Staffs from "./pages/Staffs";
 import CompanyDetails from "./pages/CompanyDetails";
 import ChangePassword from "./pages/ChangePassword";
 import PageLoading from "./components/company/LoadingSkeletons/PageLoading";
+import { useAuthenticatedContext } from "./components/company/Contexts/AuthenticationContext";
 
 function App() {
+  const { auth, authLoading } = useAuthenticatedContext();
+
+  if (authLoading) return <PageLoading />;
   return (
     <BrowserRouter>
       <IconContext.Provider value={{ className: "react-icons" }}>
         <AdminLayoutContextProvider>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/loading" element={<PageLoading />} />
+            <Route
+              path="/login"
+              element={auth ? <Navigate to="/" /> : <Login />}
+            />
+            <Route
+              path="/signup"
+              element={auth ? <Navigate to="/" /> : <Signup />}
+            />
             <Route element={<AdminLayout />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/add-products" element={<AddProduct />} />
-              <Route path="/add-sales" element={<AddSales />} />
-              <Route path="/add-expenses" element={<AddExpenses />} />
-              <Route path="/all-products" element={<Products />} />
-              <Route path="/all-sales" element={<Sales />} />
-              <Route path="/all-expenses" element={<Expenses />} />
-              <Route path="/charts" element={<Chart />} />
-              <Route path="/coming-soon" element={<ComingSoon />} />
-              <Route path="/add-staffs" element={<AddStaffs />} />
-              <Route path="/all-staffs" element={<Staffs />} />
-              <Route path="/change-password" element={<ChangePassword />} />
-              <Route path="/company-details" element={<CompanyDetails />} />
+              <Route
+                path="/"
+                element={auth ? <Dashboard /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/add-products"
+                element={auth ? <AddProduct /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/add-sales"
+                element={auth ? <AddSales /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/add-expenses"
+                element={auth ? <AddExpenses /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/all-products"
+                element={auth ? <Products /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/all-sales"
+                element={auth ? <Sales /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/all-expenses"
+                element={auth ? <Expenses /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/charts"
+                element={auth ? <Chart /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/coming-soon"
+                element={auth ? <ComingSoon /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/add-staffs"
+                element={auth ? <AddStaffs /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/all-staffs"
+                element={auth ? <Staffs /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/change-password"
+                element={auth ? <ChangePassword /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/company-details"
+                element={auth ? <CompanyDetails /> : <Navigate to="/login" />}
+              />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

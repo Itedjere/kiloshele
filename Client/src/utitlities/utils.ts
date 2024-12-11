@@ -1,3 +1,5 @@
+import { ApolloError } from "@apollo/client";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 export const passwordSchema = Yup.string()
@@ -22,3 +24,13 @@ export const loginSchema = Yup.object({
   username: Yup.string().required(),
   password: Yup.string().required(),
 }).required();
+
+export const handleApolloErrors = (error: ApolloError) => {
+  if (error.graphQLErrors?.length > 0) {
+    error.graphQLErrors.forEach(({ message }) => toast.error(message));
+  } else if (error.networkError) {
+    toast.error("Network error occurred. Please try again.");
+  } else {
+    toast.error("An unexpected error occurred.");
+  }
+};

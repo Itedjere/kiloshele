@@ -6,9 +6,10 @@ import {
   useState,
 } from "react";
 import { useApolloClient } from "@apollo/client";
+import { CompanyType } from "../../../utitlities/typesUtils";
 
 type AuthenticatedCompany = {
-  company: string;
+  company: CompanyType;
   token: string;
 };
 

@@ -1,9 +1,14 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "../utitlities/utils";
+import { handleApolloErrors, loginSchema } from "../utitlities/utils";
 
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router";
+import { ApolloError, useMutation } from "@apollo/client";
+import { LOGIN_COMPANY } from "../utitlities/graphql_mutation";
+import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
+import { toast } from "react-toastify";
+import ButtonLoading from "../components/company/LoadingSkeletons/ButtonLoading";
 
 type FormData = {
   username: string;
@@ -19,9 +24,32 @@ export default function Login() {
     resolver: yupResolver(loginSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    // call the registerUser Method
-    console.log(data);
+  const [loginCompany, { loading }] = useMutation(LOGIN_COMPANY);
+
+  const { handleAuthentication } = useAuthenticatedContext();
+
+  const onSubmit = async (formData: FormData) => {
+    try {
+      // call the signupCompany method
+      const { data } = await loginCompany({
+        variables: {
+          loginInfo: { ...formData },
+        },
+      });
+      if (data) {
+        // update the Authentication Context with the signed In user
+        handleAuthentication(data.loginCompany);
+        // Show a toast message of success
+        toast.success("You logged in successfully!");
+      }
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        // handle Apollo graphql error
+        handleApolloErrors(error);
+      } else {
+        console.error("An error occurred", error);
+      }
+    }
   };
 
   return (
@@ -87,8 +115,9 @@ export default function Login() {
                 <button
                   type="submit"
                   className="btn btn-primary py-3 w-100 mb-4"
+                  disabled={loading}
                 >
-                  Sign In
+                  {loading ? <ButtonLoading /> : "Sign In"}
                 </button>
               </form>
               <p className="text-center mb-0">

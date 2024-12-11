@@ -3,7 +3,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router";
-import { registerSchema } from "../utitlities/utils";
+import { handleApolloErrors, registerSchema } from "../utitlities/utils";
+import { ApolloError, useMutation } from "@apollo/client";
+import { SIGNUP_COMPANY } from "../utitlities/graphql_mutation";
+import ButtonLoading from "../components/company/LoadingSkeletons/ButtonLoading";
+import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
+import { toast } from "react-toastify";
 
 type FormData = {
   name: string;
@@ -21,9 +26,32 @@ export default function Signup() {
     resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    // call the registerUser Method
-    console.log(data);
+  const [signupCompany, { loading }] = useMutation(SIGNUP_COMPANY);
+
+  const { handleAuthentication } = useAuthenticatedContext();
+
+  const onSubmit = async (formData: FormData) => {
+    try {
+      // call the signupCompany method
+      const { data } = await signupCompany({
+        variables: {
+          signupInfo: { ...formData },
+        },
+      });
+      if (data) {
+        // update the Authentication Context with the signed In user
+        handleAuthentication(data.signupCompany);
+        // Show a toast message of success
+        toast.success("You registered successfully!");
+      }
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        // handle Apollo graphql error
+        handleApolloErrors(error);
+      } else {
+        console.error("An error occurred", error);
+      }
+    }
   };
 
   return (
@@ -122,8 +150,9 @@ export default function Signup() {
                 <button
                   type="submit"
                   className="btn btn-primary py-3 w-100 mb-4"
+                  disabled={loading}
                 >
-                  Sign Up
+                  {loading ? <ButtonLoading /> : "Sign Up"}
                 </button>
               </form>
               <p className="text-center mb-0">

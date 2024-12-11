@@ -156,7 +156,7 @@ export const typeDefs = `#graphql
     input ADDCOMPANYINPUT {
         name: String!
         username: String!
-        email: String!
+        email: String
         password: String!
     }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import {
   FaBuilding,
   FaChartBar,
@@ -8,14 +8,25 @@ import {
   FaTh,
 } from "react-icons/fa";
 import adminAvatar from "../../../assets/company/img/user.jpg";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { IoSettings } from "react-icons/io5";
 import { SlArrowDown } from "react-icons/sl";
 import { useAdminLayoutContext } from "../Contexts/AdminLayoutContext";
+import { useAuthenticatedContext } from "../Contexts/AuthenticationContext";
+import { toast } from "react-toastify";
 
 export default function Sidebar() {
   const [activeMenu, setActiveMenu] = useState<string>("");
   const { sidebarVisible } = useAdminLayoutContext();
+  const { logoutUser } = useAuthenticatedContext();
+  const navigate = useNavigate();
+
+  const logOut = (e: SyntheticEvent) => {
+    e.preventDefault();
+    logoutUser();
+    toast.success("You logged out successfully");
+    navigate("/login");
+  };
 
   const handleSetActiveMenu = (menu: string) => {
     setActiveMenu(menu === activeMenu ? "" : menu);
@@ -155,9 +166,9 @@ export default function Sidebar() {
               <NavLink to="/change-password" className="dropdown-item">
                 Change Password
               </NavLink>
-              <NavLink to="/logout" className="dropdown-item">
+              <a href="#" className="dropdown-item" onClick={logOut}>
                 Logout
-              </NavLink>
+              </a>
             </div>
           </div>
         </div>

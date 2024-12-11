@@ -7,6 +7,8 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import App from "./App.tsx";
 import AuthenticationContextProvider from "./components/company/Contexts/AuthenticationContext.tsx";
@@ -42,6 +44,7 @@ createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={client}>
       <AuthenticationContextProvider>
         <App />
+        <ToastContainer />
       </AuthenticationContextProvider>
     </ApolloProvider>
   </StrictMode>
