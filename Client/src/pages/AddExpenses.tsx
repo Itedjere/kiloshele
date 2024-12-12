@@ -124,7 +124,7 @@ export default function AddExpenses() {
       try {
         // Upload the image to the server
         const response = await axios.post(
-          `${import.meta.env.VITE_SERVER_URL}/upload`,
+          `${import.meta.env.VITE_SERVER_URL}/upload/expensesfiles`,
           fileFormData,
           {
             headers: {

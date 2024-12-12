@@ -12,7 +12,7 @@ import { typeDefs } from "./typeDefs.js";
 import { resolvers } from "./resolvers.js";
 import dbconnect from "./dbconnect/dbconnect.js";
 import { authenticationMiddleware } from "./middlewares/authenticationMiddleware.js";
-import { upload } from "./multer/fileUploadConfiguration.js";
+import fileUploadRouter from "./routes/fileUploadRoute.js";
 
 // Required logic for integrating with Express
 const app = express();
@@ -36,36 +36,16 @@ await server.start();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/upload", express.json());
-// Set Cors
+
 app.use(
   "/upload",
+  express.json(),
   cors({
     origin: process.env.FRONTEND_URI,
     credentials: true,
-  })
-);
-
-// Apply multer middleware for file upload on specific GraphQL endpoint
-app.post(
-  "/upload",
+  }),
   authenticationMiddleware,
-  upload.array("files", 3),
-  (req, res, next) => {
-    try {
-      if (!req.isAuth) {
-        throw new Error("User is not authenticated");
-      }
-      if (!req.files) {
-        throw new Error("File upload failed.");
-      }
-
-      const fileUrls = req.files.map((file) => `/uploads/${file.filename}`);
-      res.json({ success: true, fileUrls });
-    } catch (error) {
-      res.json({ success: false, message: error.message });
-    }
-  }
+  fileUploadRouter
 );
 
 // Set up our Express middleware to handle CORS, body parsing,
