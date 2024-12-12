@@ -39,7 +39,7 @@ export const addExpenseValidationSchema = Joi.object({
 
 export const addProductValidationSchema = Joi.object({
   name: Joi.string().min(3).required(),
-  sku: Joi.string().optional(),
+  sku: Joi.string().allow("").optional(),
   type: Joi.string().valid("PRODUCT", "SERVICE").required(),
   category: Joi.string().required(),
   quantity: Joi.number().positive().required(),
@@ -53,9 +53,9 @@ export const addProductValidationSchema = Joi.object({
       selling_price: Joi.number().positive().required(),
     })
     .min(0),
-  description: Joi.string().optional(),
-  supplier_name: Joi.string().min(3).optional(),
-  supplier_phone: Joi.string().optional(),
+  description: Joi.string().allow("").optional(),
+  supplier_name: Joi.string().allow("").optional(),
+  supplier_phone: Joi.string().allow("").optional(),
   tags: Joi.array().items(Joi.string()).min(0),
   photos: Joi.array().items(Joi.string()).min(0),
 });
@@ -64,10 +64,10 @@ export const addSaleValidationSchema = Joi.object({
   product: Joi.string().required(),
   quantity: Joi.number().positive().optional(),
   price: Joi.number().positive().required(),
-  customer_name: Joi.string().optional(),
-  customer_phone: Joi.string().optional(),
-  customer_note: Joi.string().optional(),
-  staff_assigned: Joi.string().optional(),
+  customer_name: Joi.string().allow("").optional(),
+  customer_phone: Joi.string().allow("").optional(),
+  customer_note: Joi.string().allow("").optional(),
+  staff_assigned: Joi.string().allow("").optional(),
   payment_method: Joi.string()
     .valid("CARD", "CASH", "BANK_TRANSFER")
     .required(),
@@ -90,9 +90,9 @@ export const profileEditBasicValidationSchema = Joi.object({
   gender: Joi.string().valid("MALE", "FEMALE").required(),
   country: Joi.string().required(),
   dob: Joi.date().optional(),
-  city: Joi.string().optional(),
-  state: Joi.string().optional(),
-  about_me: Joi.string().optional(),
+  city: Joi.string().allow("").optional(),
+  state: Joi.string().allow("").optional(),
+  about_me: Joi.string().allow("").optional(),
 });
 
 export const changePasswordValidationSchema = Joi.object({
