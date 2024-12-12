@@ -224,6 +224,7 @@ export type Query = {
   expenses: Array<Expense>;
   expensesCategories: Array<Scalars['String']['output']>;
   products: Array<Product>;
+  productsCategories: Array<Scalars['String']['output']>;
   sales: Array<Sale>;
 };
 
@@ -269,13 +270,27 @@ export type AddExpensesMutationVariables = Exact<{
 
 export type AddExpensesMutation = { __typename?: 'Mutation', addExpense: { __typename?: 'Expense', category: string } };
 
+export type AddProductMutationVariables = Exact<{
+  productInfo: Addproductinput;
+}>;
+
+
+export type AddProductMutation = { __typename?: 'Mutation', addProduct: { __typename?: 'Product', category: string } };
+
 export type ExpensesCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ExpensesCategoriesQuery = { __typename?: 'Query', expensesCategories: Array<string> };
 
+export type ProductCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProductCategoriesQuery = { __typename?: 'Query', productsCategories: Array<string> };
+
 
 export const SignupCompanyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignupCompany"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"signupInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ADDCOMPANYINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signupCompany"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"signupInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"signupInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"company"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}}]} as unknown as DocumentNode<SignupCompanyMutation, SignupCompanyMutationVariables>;
 export const LoginCompanyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LoginCompany"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LOGINCOMPANYINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginCompany"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"company"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}}]} as unknown as DocumentNode<LoginCompanyMutation, LoginCompanyMutationVariables>;
 export const AddExpensesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddExpenses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"expenseInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ADDEXPENSEINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"expenseInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"expenseInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]} as unknown as DocumentNode<AddExpensesMutation, AddExpensesMutationVariables>;
+export const AddProductDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddProduct"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"productInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ADDPRODUCTINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addProduct"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"productInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"productInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]} as unknown as DocumentNode<AddProductMutation, AddProductMutationVariables>;
 export const ExpensesCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExpensesCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expensesCategories"}}]}}]} as unknown as DocumentNode<ExpensesCategoriesQuery, ExpensesCategoriesQueryVariables>;
+export const ProductCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productsCategories"}}]}}]} as unknown as DocumentNode<ProductCategoriesQuery, ProductCategoriesQueryVariables>;

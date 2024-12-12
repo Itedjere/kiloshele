@@ -76,7 +76,15 @@ export default function AddExpenses() {
   };
 
   const handleAddNewCategory = (newCategory: string) => {
-    setCategories((categories) => [newCategory, ...categories]);
+    const doesCategoryExist = categories.some(
+      (category) => category.toLowerCase() === newCategory.toLowerCase()
+    );
+    console.log("Does Category exist", doesCategoryExist);
+    console.log("Categories", categories);
+
+    if (!doesCategoryExist) {
+      setCategories((categories) => [newCategory, ...categories]);
+    }
     setSelectedCategory(newCategory);
     handleShowCategoryModalVisibility(false);
     setAnyCategoryError(false);
@@ -435,7 +443,16 @@ export default function AddExpenses() {
                               Excel files.
                             </small>
                           </p>
-                          <FileDropzone files={files} setFiles={setFiles} />
+                          <FileDropzone
+                            files={files}
+                            setFiles={setFiles}
+                            accept={{
+                              "image/*": [],
+                              "application/pdf": [],
+                              "application/vnd.ms-excel": [],
+                            }}
+                            maxFiles={3}
+                          />
                         </div>
                       </div>
                       <div className="d-flex justify-content-between">

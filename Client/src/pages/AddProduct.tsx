@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import ProductOrService from "../components/company/Products/ProductOrService";
 import { GiConverseShoe } from "react-icons/gi";
-import { FaBus, FaTrash } from "react-icons/fa6";
+import { FaBus, FaPlus, FaTrash } from "react-icons/fa6";
 import { FaHashtag, FaRegMoneyBillAlt } from "react-icons/fa";
 import { LuNotebookPen } from "react-icons/lu";
 import { AiFillPicture } from "react-icons/ai";
@@ -10,37 +10,58 @@ import AddCategoryModal from "../components/company/Modals/AddCategoryModal";
 import ServiceDurationFeesModal from "../components/company/Modals/ServiceDurationFeesModal";
 import SelectDropdown from "../components/company/SelectDropdown";
 import CustomToggleButton from "../components/company/CustomToggleButton";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCTS_CATEGORIES } from "../utitlities/graphql_queries";
+import { GrPowerReset } from "react-icons/gr";
+import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
+import { UFileInterface } from "../utitlities/typesUtils";
+import FileDropzone from "../components/company/FileUpload/FileDropzone";
 
 export default function AddProduct() {
+  const {
+    loading: dataProductsCategoriesLoading,
+    data: dataProductsCategories,
+  } = useQuery(GET_PRODUCTS_CATEGORIES);
+
+  const [files, setFiles] = useState<UFileInterface[]>([]);
+
+  const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
+
   const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [categorySearchTerm, setCategorySearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(""); // For displaying selected item
+  const [anyCategoryError, setAnyCategoryError] = useState(false);
+
   const [showServiceDurationFeesModal, setShowDurationServiceFeesModal] =
     useState<boolean>(false);
   const [offerType, setOfferType] = useState<string>("Product");
-  const [filteredItems, setFilteredItems] = useState<string[]>([]);
-  const [selectedItem, setSelectedItem] = useState("Click To Choose Category"); // For displaying selected item
 
-  const handleFilteredItems = (searchTerm: string) => {
-    const items = [
-      "Item 1",
-      "Item 2",
-      "Item 3",
-      "Item 4",
-      "Item 2",
-      "Item 3",
-      "Item 4",
-      "Item 2",
-      "Item 3",
-      "Item 4",
-    ];
-    if (searchTerm.length === 0) {
-      return setFilteredItems([]);
+  useEffect(() => {
+    if (dataProductsCategories) {
+      const newCategories = dataProductsCategories.productsCategories;
+      setCategories(newCategories);
     }
+  }, [dataProductsCategories]);
 
-    setFilteredItems(
-      items.filter((item) =>
-        item.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+  const handleSetSelectedCategory = (item: string) => {
+    setSelectedCategory(item);
+    setAnyCategoryError(false);
+  };
+
+  const handleAddNewCategory = (newCategory: string) => {
+    const doesCategoryExist = categories.some(
+      (category) => category.toLowerCase() === newCategory.toLowerCase()
     );
+    console.log("Does Category exist", doesCategoryExist);
+    console.log("Categories", categories);
+
+    if (!doesCategoryExist) {
+      setCategories((categories) => [newCategory, ...categories]);
+    }
+    setSelectedCategory(newCategory);
+    handleShowCategoryModalVisibility(false);
+    setAnyCategoryError(false);
   };
 
   const handleShowCategoryModalVisibility = (show: boolean): void => {
@@ -50,6 +71,24 @@ export default function AddProduct() {
   const handleShowServiceDurationFeesModal = (show: boolean): void => {
     setShowDurationServiceFeesModal(show);
   };
+
+  const handleAccordionSelect = (eventKey: AccordionEventKey) => {
+    if (eventKey !== undefined) {
+      setActiveAccordion(eventKey as string);
+    }
+  };
+
+  const handleResetForm = () => {
+    // reset some defaults
+    // reset();
+    setFiles([]);
+    setSelectedCategory("");
+    setActiveAccordion("0");
+  };
+
+  const filteredCategories = categories.filter((category) =>
+    category.toLowerCase().includes(categorySearchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -62,7 +101,11 @@ export default function AddProduct() {
                 setOfferType={setOfferType}
               />
               <div className="mt-4">
-                <Accordion defaultActiveKey="0">
+                <Accordion
+                  defaultActiveKey="0"
+                  activeKey={activeAccordion}
+                  onSelect={handleAccordionSelect}
+                >
                   <Accordion.Item eventKey="0">
                     <Accordion.Header>
                       <p className="mb-0 text-black">
@@ -87,24 +130,42 @@ export default function AddProduct() {
                           <small>Example: 1 plate of rice with turkey</small>
                         </div>
                         <div className="col-sm-12 col-lg-4 mb-3">
-                          <SelectDropdown
-                            filteredItems={filteredItems}
-                            handleSelectedItem={(item) => setSelectedItem(item)}
-                            handleFilteredItems={handleFilteredItems}
-                          >
-                            <small>{offerType} Category</small>
-                            <p className="mb-0">{selectedItem}</p>
-                          </SelectDropdown>
-                          <small>
-                            <button
-                              className="btn btn-sm"
-                              onClick={() =>
-                                handleShowCategoryModalVisibility(true)
-                              }
-                            >
-                              Add New Category
-                            </button>
-                          </small>
+                          {dataProductsCategoriesLoading ? (
+                            <p>Loading Categories...</p>
+                          ) : (
+                            <>
+                              <SelectDropdown
+                                anyCategoryError={anyCategoryError}
+                                searchTerm={categorySearchTerm}
+                                setSearchTerm={setCategorySearchTerm}
+                                setSelectedItem={handleSetSelectedCategory}
+                                filteredItems={filteredCategories}
+                              >
+                                <small>Category</small>
+                                <p className="mb-0">
+                                  {selectedCategory === ""
+                                    ? "Click To Choose Category"
+                                    : selectedCategory}
+                                </p>
+                              </SelectDropdown>
+                              <small>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm"
+                                  onClick={() =>
+                                    handleShowCategoryModalVisibility(true)
+                                  }
+                                >
+                                  Add New Category
+                                </button>
+                              </small>
+                              {anyCategoryError && (
+                                <div className="invalid-feedback d-block">
+                                  Please Select or Add A New Category
+                                </div>
+                              )}
+                            </>
+                          )}
                         </div>
                         {offerType === "Product" && (
                           <div className="col-sm-12 col-lg-4">
@@ -418,7 +479,20 @@ export default function AddProduct() {
                     </Accordion.Header>
                     <Accordion.Body>
                       <div className="row">
-                        <div className="col-sm-12"></div>
+                        <div className="col-12">
+                          <p>
+                            <small>
+                              You can upload up to 3 pictures, each less than
+                              3MB. Only Images / Pictures are allowed.
+                            </small>
+                          </p>
+                          <FileDropzone
+                            files={files}
+                            setFiles={setFiles}
+                            accept={{ "image/*": [] }}
+                            maxFiles={3}
+                          />
+                        </div>
                       </div>
                       <div className="d-flex justify-content-start">
                         <CustomToggleButton eventKey="4" direction="previous">
@@ -429,12 +503,29 @@ export default function AddProduct() {
                   </Accordion.Item>
                 </Accordion>
               </div>
+              <div className="row">
+                <div className="col-12 mt-3">
+                  <button type="submit" className="btn btn-primary m-2">
+                    <FaPlus className="me-2" />
+                    Save Expenses
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary m-2"
+                    onClick={handleResetForm}
+                  >
+                    <GrPowerReset className="me-2" />
+                    Reset Form
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <AddCategoryModal
         showCategoryModal={showCategoryModal}
+        handleAddNewCategory={handleAddNewCategory}
         handleShowCategoryModalVisibility={handleShowCategoryModalVisibility}
       />
       <ServiceDurationFeesModal

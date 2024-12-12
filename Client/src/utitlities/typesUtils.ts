@@ -23,3 +23,10 @@ export interface UFileInterface extends File {
   preview?: string | null;
   pintura?: Pintura;
 }
+
+export type FileDropzoneProps = {
+  files: UFileInterface[];
+  accept: Record<string, string[]>; // Accepted file types
+  maxFiles: number; // Max number of files allowed
+  setFiles: React.Dispatch<React.SetStateAction<UFileInterface[]>>;
+};

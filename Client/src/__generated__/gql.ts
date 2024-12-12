@@ -17,7 +17,9 @@ const documents = {
     "\n  mutation SignupCompany($signupInfo: ADDCOMPANYINPUT!) {\n    signupCompany(signupInfo: $signupInfo) {\n      token\n      company {\n        _id\n        name\n        username\n        email\n      }\n    }\n  }\n": types.SignupCompanyDocument,
     "\n  mutation LoginCompany($loginInfo: LOGINCOMPANYINPUT!) {\n    loginCompany(loginInfo: $loginInfo) {\n      token\n      company {\n        _id\n        name\n        username\n        email\n      }\n    }\n  }\n": types.LoginCompanyDocument,
     "\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      category\n    }\n  }\n": types.AddExpensesDocument,
+    "\n  mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {\n    addProduct(productInfo: $productInfo) {\n      category\n    }\n  }\n": types.AddProductDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
+    "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
 };
 
 /**
@@ -49,7 +51,15 @@ export function gql(source: "\n  mutation AddExpenses($expenseInfo: ADDEXPENSEIN
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {\n    addProduct(productInfo: $productInfo) {\n      category\n    }\n  }\n"): (typeof documents)["\n  mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {\n    addProduct(productInfo: $productInfo) {\n      category\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  query ExpensesCategories {\n    expensesCategories\n  }\n"): (typeof documents)["\n  query ExpensesCategories {\n    expensesCategories\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query ProductCategories {\n    productsCategories\n  }\n"): (typeof documents)["\n  query ProductCategories {\n    productsCategories\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

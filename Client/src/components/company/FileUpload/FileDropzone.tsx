@@ -7,7 +7,10 @@ import { openDefaultEditor } from "@pqina/pintura";
 import { toast } from "react-toastify";
 import { FaTrash } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
-import { UFileInterface } from "../../../utitlities/typesUtils";
+import {
+  FileDropzoneProps,
+  UFileInterface,
+} from "../../../utitlities/typesUtils";
 import {
   acceptStyle,
   baseStyle,
@@ -47,12 +50,12 @@ const editImage = (
   });
 };
 
-interface FileDropzoneProps {
-  files: UFileInterface[];
-  setFiles: React.Dispatch<React.SetStateAction<UFileInterface[]>>;
-}
-
-export default function FileDropzone({ files, setFiles }: FileDropzoneProps) {
+export default function FileDropzone({
+  files,
+  setFiles,
+  accept,
+  maxFiles,
+}: FileDropzoneProps) {
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
     return () =>
@@ -64,7 +67,7 @@ export default function FileDropzone({ files, setFiles }: FileDropzoneProps) {
   }, [files]);
 
   const onDrop = (acceptedFiles: UFileInterface[]) => {
-    if (acceptedFiles.length + files.length > 3) {
+    if (acceptedFiles.length + files.length > maxFiles) {
       return toast.error("You can only upload 3 files");
     }
 
@@ -83,7 +86,7 @@ export default function FileDropzone({ files, setFiles }: FileDropzoneProps) {
     );
 
     if (tooManyFiles) {
-      toast.error("You can only upload up to 3 files.");
+      toast.error(`You can only upload up to ${maxFiles} files.`);
     }
   };
 
@@ -139,14 +142,10 @@ export default function FileDropzone({ files, setFiles }: FileDropzoneProps) {
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
-      accept: {
-        "image/*": [],
-        "application/pdf": [],
-        "application/vnd.ms-excel": [],
-      },
+      accept,
+      maxFiles,
       onDrop,
       onDropRejected, // Handle rejected files
-      maxFiles: 3,
     });
 
   const style: React.CSSProperties = useMemo(

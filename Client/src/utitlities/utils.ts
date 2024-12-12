@@ -56,6 +56,30 @@ export const addExpenseSchema = Yup.object({
   additional_notes: Yup.string().optional(),
 }).required();
 
+export const addProductSchema = Yup.object({
+  name: Yup.string().required().min(3),
+  sku: Yup.string().optional(),
+  type: Yup.string()
+    .oneOf(["PRODUCT", "SERVICE"], "Please select one. Product or Service")
+    .required("This section is required"),
+  category: Yup.string().required().min(3),
+  quantity: Yup.number()
+    .typeError("Quantity must be a number")
+    .positive("Quantity must be greater than zero")
+    .required("Quantity is required"),
+  restock_level: Yup.number()
+    .typeError("Restock level must be a number")
+    .positive("Restock level must be greater than zero")
+    .min(1)
+    .optional(),
+  cost_price: priceSchema,
+  selling_price: priceSchema,
+  description: Yup.string().optional(),
+  supplier_name: Yup.string().min(3).optional(),
+  supplier_phone: Yup.string().optional(),
+  tags: Yup.string().optional(),
+}).required();
+
 export const handleApolloErrors = (error: ApolloError) => {
   if (error.graphQLErrors?.length > 0) {
     error.graphQLErrors.forEach(({ message }) => toast.error(message));

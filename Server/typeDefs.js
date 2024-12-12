@@ -91,6 +91,7 @@ export const typeDefs = `#graphql
         expenses: [Expense!]!
         expensesCategories: [String!]!
         products: [Product!]!
+        productsCategories: [String!]!
         sales: [Sale!]!
     }
 
