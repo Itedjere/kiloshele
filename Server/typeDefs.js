@@ -89,6 +89,7 @@ export const typeDefs = `#graphql
 
     type Query {
         expenses: [Expense!]!
+        expensesCategories: [String!]!
         products: [Product!]!
         sales: [Sale!]!
     }
@@ -147,6 +148,7 @@ export const typeDefs = `#graphql
         title: String!
         amount: Float!
         category: String!
+        date: Date!
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
         mediaUrl: [String!]!

@@ -6,6 +6,8 @@ export const addExpense = async (args, req) => {
   const { companyId } = req;
 
   // Validate loginInfo
+  console.log(expenseInfo);
+
   const { error, value } = addExpenseValidationSchema.validate(expenseInfo);
   if (error) {
     throw new Error(`Validation error: ${error.details[0].message}`);

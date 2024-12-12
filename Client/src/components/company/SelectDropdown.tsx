@@ -1,52 +1,46 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 
 interface SelectDropdownProps {
+  anyCategoryError: boolean;
   filteredItems: string[];
   children: ReactNode;
-  handleFilteredItems: (searchTerm: string) => void;
-  handleSelectedItem: (item: string) => void;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedItem: (item: string) => void;
 }
 
 export default function SelectDropdown({
   children,
+  anyCategoryError,
   filteredItems,
-  handleFilteredItems,
-  handleSelectedItem,
+  searchTerm,
+  setSearchTerm,
+  setSelectedItem,
 }: SelectDropdownProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearchTerm = (term: string) => {
-    setSearchTerm(term);
-
-    // Call Parent Methods here
-    handleFilteredItems(term);
-  };
   return (
     <div className="position-relative select-dropdown">
       <Dropdown drop="down-centered">
         <Dropdown.Toggle
           id="dropdown-button"
-          variant="outline-secondary"
+          variant={anyCategoryError ? "outline-danger" : "outline-secondary"}
           className="w-100 text-start"
         >
           {children}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <div className="p-2">
-            <form action="#">
-              <div className="form-floating">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  className="form-control form-control-sm"
-                  id="floatingInput"
-                  placeholder="Enter Category Name"
-                  onChange={(e) => handleSearchTerm(e.target.value)}
-                />
-                <label htmlFor="floatingInput">Enter Category Name</label>
-              </div>
-            </form>
+            <div className="form-floating">
+              <input
+                type="text"
+                value={searchTerm}
+                className="form-control form-control-sm"
+                id="floatingInput"
+                placeholder="Enter Category Name"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <label htmlFor="floatingInput">Enter Category Name</label>
+            </div>
           </div>
           <div className="menu-content">
             <ul className="list-unstyled mb-0">
@@ -54,7 +48,7 @@ export default function SelectDropdown({
                 <Dropdown.Item
                   as="li"
                   key={index}
-                  onClick={() => handleSelectedItem(item)}
+                  onClick={() => setSelectedItem(item)}
                 >
                   {item}
                 </Dropdown.Item>

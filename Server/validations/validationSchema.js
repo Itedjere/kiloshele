@@ -26,6 +26,7 @@ export const addExpenseValidationSchema = Joi.object({
   title: Joi.string().min(3).required(),
   amount: Joi.number().positive().required(),
   category: Joi.string().required(),
+  date: Joi.date().iso().required(),
   payment_method: Joi.string()
     .valid("CARD", "CASH", "BANK_TRANSFER")
     .required(),
@@ -33,7 +34,7 @@ export const addExpenseValidationSchema = Joi.object({
     .valid("PAID", "PENDING", "PARTIALLY_PAID")
     .required(),
   mediaUrl: Joi.array().items(Joi.string()).min(0),
-  additional_notes: Joi.string().optional(),
+  additional_notes: Joi.string().allow("").optional(), // Allow empty strings
 });
 
 export const addProductValidationSchema = Joi.object({
@@ -73,7 +74,7 @@ export const addSaleValidationSchema = Joi.object({
   payment_status: Joi.string()
     .valid("PAID", "PENDING", "PARTIALLY_PAID")
     .required(),
-  additional_notes: Joi.string().optional(),
+  additional_notes: Joi.string().allow("").optional(), // Allow empty strings
 });
 
 export const profileEditBasicValidationSchema = Joi.object({

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { handleApolloErrors, loginSchema } from "../utitlities/utils";
 
@@ -28,7 +28,7 @@ export default function Login() {
 
   const { handleAuthentication } = useAuthenticatedContext();
 
-  const onSubmit = async (formData: FormData) => {
+  const onSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
       // call the signupCompany method
       const { data } = await loginCompany({
