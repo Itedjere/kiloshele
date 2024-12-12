@@ -1,13 +1,22 @@
 import express from "express";
 const fileUploadRouter = express.Router();
 
-import { expensesFileUploadController } from "../controllers/FileUploads/expensesFileUploadController.js";
-import { expensesUpload } from "../multer/fileUploadConfiguration.js";
+import { fileUploadController } from "../controllers/FileUploads/fileUploadController.js";
+import {
+  expensesUpload,
+  productsUpload,
+} from "../multer/fileUploadConfiguration.js";
 
 fileUploadRouter.post(
   "/expensesfiles",
   expensesUpload.array("files", 3),
-  expensesFileUploadController
+  fileUploadController
+);
+
+fileUploadRouter.post(
+  "/productfiles",
+  productsUpload.array("files", 3),
+  fileUploadController
 );
 
 export default fileUploadRouter;

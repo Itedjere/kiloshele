@@ -59,10 +59,6 @@ export const addExpenseSchema = Yup.object({
 export const addProductSchema = Yup.object({
   name: Yup.string().required().min(3),
   sku: Yup.string().optional(),
-  type: Yup.string()
-    .oneOf(["PRODUCT", "SERVICE"], "Please select one. Product or Service")
-    .required("This section is required"),
-  category: Yup.string().required().min(3),
   quantity: Yup.number()
     .typeError("Quantity must be a number")
     .positive("Quantity must be greater than zero")
@@ -75,9 +71,15 @@ export const addProductSchema = Yup.object({
   cost_price: priceSchema,
   selling_price: priceSchema,
   description: Yup.string().optional(),
-  supplier_name: Yup.string().min(3).optional(),
+  supplier_name: Yup.string().optional(),
   supplier_phone: Yup.string().optional(),
   tags: Yup.string().optional(),
+}).required();
+
+export const otherServiceFeeSchema = Yup.object({
+  duration: Yup.string().required("Duration is required"),
+  cost_price: priceSchema,
+  selling_price: priceSchema,
 }).required();
 
 export const handleApolloErrors = (error: ApolloError) => {

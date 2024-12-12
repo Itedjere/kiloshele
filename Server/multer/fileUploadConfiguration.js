@@ -77,7 +77,7 @@ const productsFileFilter = (req, file, cb) => {
   if (mimetype && extname) {
     cb(null, true); // File is valid
   } else {
-    cb(new Error("Only images and videos are allowed")); // Invalid file
+    cb(new Error("Only Pictures allowed")); // Invalid file
   }
 };
 

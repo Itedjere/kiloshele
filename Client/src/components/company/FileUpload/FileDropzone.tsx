@@ -68,15 +68,28 @@ export default function FileDropzone({
 
   const onDrop = (acceptedFiles: UFileInterface[]) => {
     if (acceptedFiles.length + files.length > maxFiles) {
-      return toast.error("You can only upload 3 files");
+      return toast.error(`You can only upload ${maxFiles} files`);
     }
 
-    const newlyUploadedFiles = acceptedFiles.map((file) => {
-      const isImage = file.type.startsWith("image/");
-      return Object.assign(file, {
-        preview: isImage ? URL.createObjectURL(file) : null, // Preview for images
+    // Filter out duplicate files based on name and size
+    const existingFileNames = new Set(
+      files.map((file) => `${file.name}-${file.size}`)
+    );
+
+    const newlyUploadedFiles = acceptedFiles
+      .filter((file) => !existingFileNames.has(`${file.name}-${file.size}`)) // Exclude duplicates
+      .map((file) => {
+        const isImage = file.type.startsWith("image/");
+        return Object.assign(file, {
+          preview: isImage ? URL.createObjectURL(file) : null, // Preview for images
+        });
       });
-    });
+
+    // Check if any duplicates were found
+    if (newlyUploadedFiles.length < acceptedFiles.length) {
+      toast.warn("Some files were already uploaded and skipped.");
+    }
+
     setFiles((files) => [...files, ...newlyUploadedFiles]);
   };
 
@@ -103,6 +116,7 @@ export default function FileDropzone({
           </div>
           <button
             style={thumbButtonEdit}
+            type="button"
             className="btn btn-secondary btn-sm"
             onClick={() =>
               editImage(file, (output) => {
@@ -129,6 +143,7 @@ export default function FileDropzone({
           </button>
           <button
             style={thumbButtonDelete}
+            type="button"
             className="btn btn-danger btn-sm"
             onClick={() => handleRemovePreview(file)}
           >

@@ -123,7 +123,7 @@ export default function AddExpenses() {
 
     let mediaUrl = [];
 
-    if (files) {
+    if (files.length > 0) {
       const fileFormData = new FormData();
       files.forEach((file) => {
         fileFormData.append("files", file);
@@ -152,6 +152,7 @@ export default function AddExpenses() {
           toast.error(error.message);
         }
         console.error("Error uploading files:", error);
+        return; // This return is necessary to prevent the next try catch block below from running
       }
     }
 

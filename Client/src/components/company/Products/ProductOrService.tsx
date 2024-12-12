@@ -21,11 +21,10 @@ export default function ProductOrService({
             <input
               type="radio"
               className="btn-check"
-              name="offerType"
               id="btnradio1"
-              value="product"
-              onChange={() => setOfferType("Product")}
+              value="PRODUCT"
               checked={offerType === "Product"}
+              onChange={() => setOfferType("Product")}
             />
             <label className="btn btn-outline-primary" htmlFor="btnradio1">
               <GiConverseShoe /> Add a Product
@@ -34,11 +33,10 @@ export default function ProductOrService({
             <input
               type="radio"
               className="btn-check"
-              name="offerType"
               id="btnradio2"
-              value="service"
-              onChange={() => setOfferType("Service")}
+              value="SERVICE"
               checked={offerType === "Service"}
+              onChange={() => setOfferType("Service")}
             />
             <label className="btn btn-outline-primary" htmlFor="btnradio2">
               <SiOnlyoffice /> Add a Service

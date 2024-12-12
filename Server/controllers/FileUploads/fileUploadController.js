@@ -1,4 +1,4 @@
-export const expensesFileUploadController = (req, res, next) => {
+export const fileUploadController = (req, res, next) => {
   try {
     if (!req.isAuth) {
       throw new Error("User is not authenticated");

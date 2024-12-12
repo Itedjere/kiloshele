@@ -14,6 +14,26 @@ export type AddExpenseFormDataType = {
   additional_notes?: string;
 };
 
+export type AddProductsFormDataType = {
+  name: string;
+  sku?: string;
+  quantity: number;
+  restock_level?: number;
+  cost_price: number;
+  selling_price: number;
+  description?: string;
+  supplier_name?: string;
+  supplier_phone?: string;
+  tags?: string;
+};
+
+export type OtherServiceFeeFormDataType = {
+  id?: number;
+  duration: string;
+  cost_price: number;
+  selling_price: number;
+};
+
 type Pintura = {
   file: File;
   data: {};
