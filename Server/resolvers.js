@@ -49,7 +49,7 @@ export const resolvers = {
         if (!req.isAuth) {
           throw new Error("User is not authenticated");
         }
-        return await fetchProducts(req);
+        return await fetchProducts(args, req);
       } catch (error) {
         console.error("Error fetching all products:", error);
         throw error;

@@ -1,10 +1,13 @@
 import { FaCalendarAlt, FaRegMoneyBillAlt, FaStickyNote } from "react-icons/fa";
 import Accordion from "react-bootstrap/Accordion";
 import { GiConverseShoe } from "react-icons/gi";
-import { FaPlus, FaTrash, FaUsers, FaUserTag } from "react-icons/fa6";
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { FaPlus, FaUsers, FaUserTag } from "react-icons/fa6";
 import CustomToggleButton from "../components/company/CustomToggleButton";
 import { GrPowerReset } from "react-icons/gr";
+import SalesProductCard from "../components/company/Sales/SalesProductCard";
+import SalesServiceCard from "../components/company/Sales/SalesServiceCard";
+import SalesSummary from "../components/company/Sales/SalesSummary";
+import ProductDropdownSelectMenu from "../components/company/DropdownSelectMenus/ProductDropdownSelectMenu";
 
 export default function AddSales() {
   return (
@@ -26,39 +29,8 @@ export default function AddSales() {
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="row">
-                    <div className="col-sm-12 mb-3">
-                      <ul className="list-group bg-white ">
-                        <li className="list-group-item">
-                          <p className="mb-0 text-black">
-                            <small>Total Sales: 25</small>
-                          </p>
-                        </li>
-                        <li className="list-group-item">
-                          <p className="mb-0 text-black">
-                            <small>Total Revenue: NGN25,000</small>
-                          </p>
-                        </li>
-                        <li className="list-group-item">
-                          <p className="mb-0 text-black">
-                            <small>Potential Profit: NGN8,000</small>
-                          </p>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="row">
                     <div className="col-sm-12 col-lg-6 mb-3">
-                      <div className="form-floating">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="floatingInput"
-                          placeholder="Product ID/Code"
-                        />
-                        <label htmlFor="floatingInput">
-                          Product ID/Code (Optional)
-                        </label>
-                      </div>
+                      <ProductDropdownSelectMenu />
                       <button type="button" className="btn btn-sm">
                         <small>Search Product by SKU Number</small>
                       </button>
@@ -66,130 +38,27 @@ export default function AddSales() {
                   </div>
                   <div className="row">
                     <div className="col-sm-12 col-md-4 mb-3">
-                      <div className="card">
-                        <div className="card-header text-black">
-                          1 Plate of egusi soup
-                        </div>
-                        <div className="card-body">
-                          <small>
-                            <p className="mb-2">Category: Food</p>
-                            <p className="mb-2">Quantity Stock: 46</p>
-                            <p className="mb-2">Cost Price: NGN800</p>
-                            <p className="mb-2">Selling Price:</p>
-                            <div className="mb-2">
-                              <input
-                                className="form-control form-control-sm"
-                                type="number"
-                                placeholder="Selling Price"
-                                value="1000"
-                              ></input>
-                            </div>
-                            <div className="d-flex quantity-updater">
-                              <span className="btn btn-warning">
-                                <AiOutlineMinus />
-                              </span>
-                              <span className="text-quantity">12</span>
-                              <span className="btn btn-warning">
-                                <AiOutlinePlus />
-                              </span>
-                            </div>
-                          </small>
-                        </div>
-                        <div className="card-footer text-end text-body-secondary">
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-sm"
-                          >
-                            <FaTrash /> Remove
-                          </button>
-                        </div>
-                      </div>
+                      <SalesProductCard />
                     </div>
                     <div className="col-sm-12 col-md-4 mb-3">
-                      <div className="card">
-                        <div className="card-header text-black">
-                          1 Plate of egusi soup
-                        </div>
-                        <div className="card-body">
-                          <small>
-                            <p className="mb-2">Category: Food</p>
-                            <p className="mb-2">Quantity Stock: 46</p>
-                            <p className="mb-2">Cost Price: NGN800</p>
-                            <p className="mb-2">Selling Price:</p>
-                            <div className="mb-2">
-                              <input
-                                className="form-control form-control-sm"
-                                type="number"
-                                placeholder="Selling Price"
-                                value="1000"
-                              ></input>
-                            </div>
-                            <div className="d-flex quantity-updater">
-                              <span className="btn btn-warning">
-                                <AiOutlineMinus />
-                              </span>
-                              <span className="text-quantity">12</span>
-                              <span className="btn btn-warning">
-                                <AiOutlinePlus />
-                              </span>
-                            </div>
-                          </small>
-                        </div>
-                        <div className="card-footer text-end text-body-secondary">
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-sm"
-                          >
-                            <FaTrash /> Remove
-                          </button>
-                        </div>
-                      </div>
+                      <SalesProductCard />
                     </div>
                     <div className="col-sm-12 col-md-4 mb-3">
-                      <div className="card">
-                        <div className="card-header text-black">
-                          1 Plate of egusi soup
-                        </div>
-                        <div className="card-body">
-                          <small>
-                            <p className="mb-2">Category: Food</p>
-                            <p className="mb-2">Quantity Stock: 46</p>
-                            <p className="mb-2">Cost Price: NGN800</p>
-                            <p className="mb-2">Selling Price:</p>
-                            <div className="mb-2">
-                              <input
-                                className="form-control form-control-sm"
-                                type="number"
-                                placeholder="Selling Price"
-                                value="1000"
-                              ></input>
-                            </div>
-                            <div className="d-flex quantity-updater">
-                              <span className="btn btn-warning">
-                                <AiOutlineMinus />
-                              </span>
-                              <span className="text-quantity">12</span>
-                              <span className="btn btn-warning">
-                                <AiOutlinePlus />
-                              </span>
-                            </div>
-                          </small>
-                        </div>
-                        <div className="card-footer text-end text-body-secondary">
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-sm"
-                          >
-                            <FaTrash /> Remove
-                          </button>
-                        </div>
-                      </div>
+                      <SalesProductCard />
                     </div>
-                    <div className="d-flex justify-content-end">
-                      <CustomToggleButton eventKey="1" direction="next">
-                        Next
-                      </CustomToggleButton>
+                    <div className="col-sm-12 col-md-4 mb-3">
+                      <SalesServiceCard />
                     </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-sm-12 mb-3">
+                      <SalesSummary />
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-end">
+                    <CustomToggleButton eventKey="1" direction="next">
+                      Next
+                    </CustomToggleButton>
                   </div>
                 </Accordion.Body>
               </Accordion.Item>

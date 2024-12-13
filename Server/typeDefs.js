@@ -90,7 +90,7 @@ export const typeDefs = `#graphql
     type Query {
         expenses: [Expense!]!
         expensesCategories: [String!]!
-        products: [Product!]!
+        products(productFilter: PRODUCTFILTERINPUT!): [Product!]!
         productsCategories: [String!]!
         sales: [Sale!]!
     }
@@ -107,6 +107,14 @@ export const typeDefs = `#graphql
         addSale(saleInfo: ADDSALEINFO!): Sale!
         updateSale(saleId: String!, saleInfo: ADDSALEINFO!): Sale!
         removeSale(saleId: String!): Sale!
+    }
+
+    input PRODUCTFILTERINPUT {
+        searchTerm: String
+        category: String
+        type: ServiceOrProduct
+        limit: Int!
+        offset: Int!
     }
 
     input ADDSALEINFO {

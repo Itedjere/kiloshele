@@ -46,6 +46,11 @@ productSchema.index(
 productSchema.index({ company: 1, createdAt: 1 }); // Company + date filter
 
 // Full-text Index Example
-productSchema.index({ name: "text", description: "text", tags: "text" });
+productSchema.index({
+  name: "text",
+  category: "text",
+  description: "text",
+  tags: "text",
+});
 
 export const Product = mongoose.model("Product", productSchema);
