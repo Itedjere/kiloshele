@@ -3,10 +3,12 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { MdCloseFullscreen, MdGppGood } from "react-icons/md";
 import { TbCancel } from "react-icons/tb";
+import ButtonLoading from "../LoadingSkeletons/ButtonLoading";
 
 interface DeleteModalProps {
   itemName: string;
   showDeleteModal: boolean;
+  isDeleting: boolean;
   handleDelete: () => void;
   handleCloseDeleteModal: () => void;
 }
@@ -14,6 +16,7 @@ interface DeleteModalProps {
 export default function DeleteModal({
   itemName,
   showDeleteModal,
+  isDeleting,
   handleDelete,
   handleCloseDeleteModal,
 }: DeleteModalProps) {
@@ -31,23 +34,36 @@ export default function DeleteModal({
           variant="outline-danger"
           size="sm"
           className="me-3 mb-3"
+          disabled={isDeleting}
           onClick={handleDelete}
         >
-          <MdGppGood className="me-2" />
-          Yes, Delete It
+          {isDeleting ? (
+            <ButtonLoading message="Deleting" />
+          ) : (
+            <>
+              <MdGppGood className="me-2" />
+              Yes, Delete It
+            </>
+          )}
         </Button>
         <Button
           variant="primary"
           size="sm"
           className="me-3 mb-3"
           onClick={handleCloseDeleteModal}
+          disabled={isDeleting}
         >
           <TbCancel className="me-2" />
           No, Cancel
         </Button>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" size="sm" onClick={handleCloseDeleteModal}>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={handleCloseDeleteModal}
+          disabled={isDeleting}
+        >
           <MdCloseFullscreen className="me-2" />
           Close
         </Button>

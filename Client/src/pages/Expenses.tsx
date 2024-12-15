@@ -13,13 +13,15 @@ import DateFilter from "../components/company/SearchFilters/DateFilter";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import ExpensesItem from "../components/company/Expenses/ExpensesItem";
 import ExpensesEmpty from "../components/company/Expenses/ExpensesEmpty";
-import { useQuery } from "@apollo/client";
+import { ApolloError, useMutation, useQuery } from "@apollo/client";
 import { GET_EXPENSES } from "../utitlities/graphql_queries";
 import StatisticsSkeleton from "../components/company/LoadingSkeletons/StatisticsSkeleton";
 import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
 import { ExpensesType } from "../utitlities/typesUtils";
-import { formatPrice } from "../utitlities/utils";
+import { formatPrice, handleApolloErrors } from "../utitlities/utils";
 import DeleteModal from "../components/company/Modals/DeleteModal";
+import { DELETE_EXPENSES } from "../utitlities/graphql_mutation";
+import { toast } from "react-toastify";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -30,7 +32,11 @@ export default function Expenses() {
   const [expenseToDelete, setExpenseToDelete] = useState<ExpensesType | null>(
     null
   );
-  const { loading, data } = useQuery(GET_EXPENSES);
+
+  // Remember to add error UI
+  const { loading, error, data } = useQuery(GET_EXPENSES);
+  // Mutate the state after deletion
+  const [deleteExpense, { loading: isDeleting }] = useMutation(DELETE_EXPENSES);
 
   const handleOffCanvasClose = () => setShowOffCanvas(false);
   const handleOffCanvasShow = (expense: ExpensesType) => {
@@ -47,8 +53,30 @@ export default function Expenses() {
     setShowDeleteModal(true);
   };
 
-  const handleRemoveExpense = () => {
-    console.log(expenseToDelete);
+  const handleRemoveExpense = async () => {
+    if (expenseToDelete === null) {
+      handleCloseDeleteModal();
+      return toast.error("Please Try again. Thank you");
+    }
+
+    try {
+      const { data } = await deleteExpense({
+        variables: {
+          expenseId: expenseToDelete?._id,
+        },
+      });
+
+      if (data?.removeExpense) {
+        handleCloseDeleteModal();
+        toast.success("Expense Deleted Successfully");
+      }
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        handleApolloErrors(error);
+      } else {
+        console.error(error);
+      }
+    }
   };
   return (
     <>
@@ -227,6 +255,7 @@ export default function Expenses() {
       </CustomOffCanvas>
       <DeleteModal
         itemName="Expense"
+        isDeleting={isDeleting}
         showDeleteModal={showDeleteModal}
         handleDelete={handleRemoveExpense}
         handleCloseDeleteModal={handleCloseDeleteModal}
