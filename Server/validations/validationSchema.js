@@ -61,12 +61,19 @@ export const addProductValidationSchema = Joi.object({
 });
 
 export const addSaleValidationSchema = Joi.object({
-  product: Joi.string().required(),
-  quantity: Joi.number().positive().optional(),
-  price: Joi.number().positive().required(),
+  itemSold: Joi.array()
+    .items({
+      product: Joi.string().required(),
+      quantity: Joi.number().positive().required(),
+      cost_price: Joi.number().positive().required(),
+      selling_price: Joi.number().positive().required(),
+    })
+    .min(1)
+    .required(),
+  date: Joi.date().iso().required(),
   customer_name: Joi.string().allow("").optional(),
   customer_phone: Joi.string().allow("").optional(),
-  customer_note: Joi.string().allow("").optional(),
+  customer_reference: Joi.string().allow("").optional(),
   staff_assigned: Joi.string().allow("").optional(),
   payment_method: Joi.string()
     .valid("CARD", "CASH", "BANK_TRANSFER")
@@ -74,7 +81,7 @@ export const addSaleValidationSchema = Joi.object({
   payment_status: Joi.string()
     .valid("PAID", "PENDING", "PARTIALLY_PAID")
     .required(),
-  additional_notes: Joi.string().allow("").optional(), // Allow empty strings
+  additional_note: Joi.string().allow("").optional(), // Allow empty strings
 });
 
 export const profileEditBasicValidationSchema = Joi.object({

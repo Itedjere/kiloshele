@@ -108,7 +108,7 @@ export default function AddExpenses() {
       amount: 0,
       date: new Date().toISOString().split("T")[0], // Set the default value for the date
       payment_method: "CASH",
-      payment_status: "PENDING",
+      payment_status: "PAID",
       additional_notes: "",
     },
   });

@@ -16,5 +16,5 @@ export const addTransaction = async (args, req) => {
   await sale.save();
 
   // return validation
-  return Sale.findById(sale._id).populate("company").populate("product");
+  return Sale.findById(sale._id);
 };

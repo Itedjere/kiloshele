@@ -82,6 +82,31 @@ export const otherServiceFeeSchema = Yup.object({
   selling_price: priceSchema,
 }).required();
 
+export const addSaleSchema = Yup.object({
+  date: Yup.string()
+    .required("Date is required")
+    .test("is-valid-date", "Invalid date", (value) => {
+      return !isNaN(new Date(value || "").getTime());
+    }),
+  payment_method: Yup.string()
+    .oneOf(
+      ["CARD", "CASH", "BANK_TRANSFER"],
+      "Please select a valid payment method"
+    )
+    .required("Payment Method is required"),
+  payment_status: Yup.string()
+    .oneOf(
+      ["PAID", "PENDING", "PARTIALLY_PAID"],
+      "Please select a valid payment status"
+    )
+    .required("Payment Status is required"),
+  staff_assigned: Yup.string().optional(),
+  customer_name: Yup.string().optional(),
+  customer_phone: Yup.string().optional(),
+  customer_reference: Yup.string().optional(),
+  additional_note: Yup.string().optional(),
+}).required();
+
 export const handleApolloErrors = (error: ApolloError) => {
   if (error.graphQLErrors?.length > 0) {
     error.graphQLErrors.forEach(({ message }) => toast.error(message));

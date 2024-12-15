@@ -10,21 +10,37 @@ import SalesServiceCard from "../components/company/Sales/SalesServiceCard";
 import SalesSummary from "../components/company/Sales/SalesSummary";
 import ProductDropdownSelectMenu from "../components/company/DropdownSelectMenus/ProductDropdownSelectMenu";
 import {
+  AddSalesFormDataType,
   ItemSoldType,
+  ItemsToSellType,
   ProductType,
   SalesSummaryType,
 } from "../utitlities/typesUtils";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import {
+  ApolloError,
+  useLazyQuery,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import { GET_PRODUCTS } from "../utitlities/graphql_queries";
 import ProductsEmpty from "../components/company/Products/ProductsEmpty";
 import debounce from "lodash.debounce";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { addSaleSchema, handleApolloErrors } from "../utitlities/utils";
+import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
+import { ADD_SALES } from "../utitlities/graphql_mutation";
+import { toast } from "react-toastify";
+import { PaymentMethod, PaymentStatus } from "../__generated__/graphql";
 
 export default function AddSales() {
+  const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
   const [products, setProducts] = useState<ProductType[]>([]);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [hasZeroProducts, setHasZeroProducts] = useState(false);
   const [offset, setOffset] = useState<number>(0);
   const [selectedProducts, setSelectedProducts] = useState<ItemSoldType[]>([]);
+  const [noProductSelectedError, setNoProductSelectedError] = useState(false);
   const [salesSummary, setSalesSummary] = useState<SalesSummaryType>({
     potential_profit: 0,
     total_quantity: 0,
@@ -52,6 +68,9 @@ export default function AddSales() {
       potential_profit: total_sales - total_cost,
     }));
   }, [selectedProducts]);
+
+  // Add Products
+  const [addSales] = useMutation(ADD_SALES);
 
   // Initial Query
   const {
@@ -209,6 +228,104 @@ export default function AddSales() {
     });
   };
 
+  const handleAccordionSelect = (eventKey: AccordionEventKey) => {
+    if (eventKey !== undefined) {
+      setActiveAccordion(eventKey as string);
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AddSalesFormDataType>({
+    resolver: yupResolver(addSaleSchema),
+    defaultValues: {
+      date: new Date().toISOString().split("T")[0], // Set the default value for the date
+      payment_method: "CASH",
+      payment_status: "PAID",
+      customer_name: "",
+      customer_phone: "",
+      customer_reference: "",
+      additional_note: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<AddSalesFormDataType> = async (formData) => {
+    // Check if category is empty
+    if (selectedProducts.length === 0) {
+      setNoProductSelectedError(true);
+      setActiveAccordion("0");
+      return;
+    }
+
+    // Prepare the items to sell
+    let itemsToSell: ItemsToSellType[] = selectedProducts.map((product) => {
+      return {
+        cost_price: product.cost_price,
+        selling_price: product.selling_price,
+        quantity: product.quantity_sold,
+        product: product._id,
+      };
+    });
+
+    try {
+      const { data } = await addSales({
+        variables: {
+          saleInfo: {
+            ...formData,
+            date: new Date(formData.date).toISOString(),
+            payment_method: formData.payment_method as PaymentMethod,
+            payment_status: formData.payment_status as PaymentStatus,
+            itemSold: itemsToSell,
+          },
+        },
+      });
+
+      if (data?.addSale) {
+        // reset the form
+        handleResetForm();
+        // show toast message
+        toast.success("Sales added successfully");
+      }
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        // handle Apollo graphql error
+        handleApolloErrors(error);
+      } else {
+        console.error("An error occurred", error);
+      }
+    }
+  };
+
+  const onError = () => {
+    if (errors.date || errors.payment_method || errors.payment_status) {
+      setActiveAccordion("1");
+    } else if (
+      errors.customer_name ||
+      errors.customer_phone ||
+      errors.customer_reference
+    ) {
+      setActiveAccordion("3");
+    } else if (errors.additional_note) {
+      setActiveAccordion("4");
+    }
+
+    // Also check category for error
+    if (selectedProducts.length === 0) {
+      setNoProductSelectedError(true);
+      setActiveAccordion("0");
+    }
+  };
+
+  const handleResetForm = () => {
+    // reset some defaults
+    reset();
+    setSelectedProducts([]);
+    setActiveAccordion("0");
+  };
+
   return (
     <div className="container-fluid pt-4 px-lg-4">
       <div className="row g-4">
@@ -225,8 +342,12 @@ export default function AddSales() {
                 {hasZeroProducts ? (
                   <ProductsEmpty />
                 ) : (
-                  <>
-                    <Accordion defaultActiveKey="0">
+                  <form onSubmit={handleSubmit(onSubmit, onError)}>
+                    <Accordion
+                      defaultActiveKey="0"
+                      activeKey={activeAccordion}
+                      onSelect={handleAccordionSelect}
+                    >
                       <Accordion.Item eventKey="0">
                         <Accordion.Header>
                           <p className="mb-0 text-black">
@@ -239,6 +360,7 @@ export default function AddSales() {
                             <div className="col-sm-12 col-lg-6 mb-3">
                               <ProductDropdownSelectMenu
                                 filterLoading={filterLoading}
+                                noProductSelectedError={noProductSelectedError}
                                 products={products}
                                 handleSelectedProduct={handleSelectedProduct}
                                 handleProductsFilteration={
@@ -254,6 +376,11 @@ export default function AddSales() {
                               <button type="button" className="btn btn-sm">
                                 <small>Search Product by SKU Number</small>
                               </button>
+                              {noProductSelectedError && (
+                                <div className="invalid-feedback d-block">
+                                  Please add a product or service
+                                </div>
+                              )}
                             </div>
                           </div>
                           {selectedProducts.length > 0 && (
@@ -328,52 +455,80 @@ export default function AddSales() {
                             </small>
                           </p>
                           <div className="row">
-                            <div className="col-sm-12 col-lg-4">
-                              <div className="form-floating mb-3">
+                            <div className="col-sm-12 col-lg-4 mb-3">
+                              <div className="form-floating">
                                 <input
                                   type="date"
-                                  className="form-control"
+                                  className={`form-control ${
+                                    errors.date && "is-invalid"
+                                  }`}
                                   id="floatingInput"
                                   placeholder="Sales Date"
+                                  {...register("date")}
                                 />
                                 <label htmlFor="floatingInput">
                                   Sales Date
                                 </label>
                               </div>
+                              {errors.date && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.date.message}
+                                </div>
+                              )}
                             </div>
-                            <div className="col-sm-12 col-lg-4">
-                              <div className="form-floating mb-3">
+                            <div className="col-sm-12 col-lg-4 mb-3">
+                              <div className="form-floating">
                                 <select
-                                  className="form-select"
+                                  className={`form-select ${
+                                    errors.payment_method && "is-invalid"
+                                  }`}
                                   id="floatingSelect"
-                                  aria-label="Floating label select example"
+                                  aria-label="label for payment method"
+                                  {...register("payment_method")}
                                 >
                                   <option value="">Click Here</option>
-                                  <option value="1">Card</option>
-                                  <option value="2">Cash</option>
-                                  <option value="3">Bank Transfer</option>
+                                  <option value="CARD">Card</option>
+                                  <option value="CASH">Cash</option>
+                                  <option value="BANK_TRANSFER">
+                                    Bank Transfer
+                                  </option>
                                 </select>
                                 <label htmlFor="floatingSelect">
                                   Select Payment method
                                 </label>
                               </div>
+                              {errors.payment_method && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.payment_method.message}
+                                </div>
+                              )}
                             </div>
-                            <div className="col-sm-12 col-lg-4">
-                              <div className="form-floating mb-3">
+                            <div className="col-sm-12 col-lg-4 mb-3">
+                              <div className="form-floating">
                                 <select
-                                  className="form-select"
+                                  className={`form-select ${
+                                    errors.payment_status && "is-invalid"
+                                  }`}
                                   id="floatingSelect"
-                                  aria-label="Floating label select example"
+                                  aria-label="label for payment status"
+                                  {...register("payment_status")}
                                 >
                                   <option value="">Click Here</option>
-                                  <option value="1">Paid</option>
-                                  <option value="2">Pending</option>
-                                  <option value="3">Partially Paid</option>
+                                  <option value="PAID">Paid</option>
+                                  <option value="PENDING">Pending</option>
+                                  <option value="PARTIALLY_PAID">
+                                    Partially Paid
+                                  </option>
                                 </select>
                                 <label htmlFor="floatingSelect">
                                   Select Payment Status
                                 </label>
                               </div>
+                              {errors.payment_status && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.payment_status.message}
+                                </div>
+                              )}
                             </div>
                             <div className="d-flex justify-content-between">
                               <CustomToggleButton
@@ -406,9 +561,12 @@ export default function AddSales() {
                             <div className="col-12">
                               <div className="form-floating mb-3">
                                 <select
-                                  className="form-select"
+                                  className={`form-select ${
+                                    errors.staff_assigned && "is-invalid"
+                                  }`}
                                   id="floatingSelect"
                                   aria-label="Floating label select example"
+                                  {...register("staff_assigned")}
                                 >
                                   <option value="">Click Here</option>
                                   <option value="1">Paid</option>
@@ -449,44 +607,68 @@ export default function AddSales() {
                             </small>
                           </p>
                           <div className="row">
-                            <div className="col-sm-12 col-lg-6">
-                              <div className="form-floating mb-3">
+                            <div className="col-sm-12 col-lg-6 mb-3">
+                              <div className="form-floating">
                                 <input
                                   type="text"
-                                  className="form-control"
+                                  className={`form-control ${
+                                    errors.customer_name && "is-invalid"
+                                  }`}
                                   id="floatingInput"
                                   placeholder="Customer Name"
+                                  {...register("customer_name")}
                                 />
                                 <label htmlFor="floatingInput">
                                   Customer Name
                                 </label>
                               </div>
+                              {errors.customer_name && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.customer_name.message}
+                                </div>
+                              )}
                             </div>
-                            <div className="col-sm-12 col-lg-6">
-                              <div className="form-floating mb-3">
+                            <div className="col-sm-12 col-lg-6 mb-3">
+                              <div className="form-floating">
                                 <input
                                   type="text"
-                                  className="form-control"
+                                  className={`form-control ${
+                                    errors.customer_phone && "is-invalid"
+                                  }`}
                                   id="floatingInput"
                                   placeholder="Customer Phone number"
+                                  {...register("customer_phone")}
                                 />
                                 <label htmlFor="floatingInput">
                                   Customer Phone number
                                 </label>
                               </div>
+                              {errors.customer_phone && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.customer_phone.message}
+                                </div>
+                              )}
                             </div>
-                            <div className="col-12">
-                              <div className="form-floating mb-3">
+                            <div className="col-12 mb-3">
+                              <div className="form-floating">
                                 <textarea
-                                  className="form-control"
+                                  className={`form-control ${
+                                    errors.customer_reference && "is-invalid"
+                                  }`}
                                   placeholder="Leave a comment here"
                                   id="floatingTextarea"
                                   style={{ height: "150px" }}
+                                  {...register("customer_reference")}
                                 ></textarea>
                                 <label htmlFor="floatingTextarea">
                                   Notes for future reference
                                 </label>
                               </div>
+                              {errors.customer_reference && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.customer_reference.message}
+                                </div>
+                              )}
                             </div>
                             <div className="d-flex justify-content-between">
                               <CustomToggleButton
@@ -519,15 +701,23 @@ export default function AddSales() {
                             <div className="col-12">
                               <div className="form-floating mb-3">
                                 <textarea
-                                  className="form-control"
-                                  placeholder="Leave a comment here"
+                                  className={`form-control ${
+                                    errors.additional_note && "is-invalid"
+                                  }`}
+                                  placeholder="Leave Additional Notes"
                                   id="floatingTextarea"
                                   style={{ height: "150px" }}
+                                  {...register("additional_note")}
                                 ></textarea>
                                 <label htmlFor="floatingTextarea">
                                   Additional Notes
                                 </label>
                               </div>
+                              {errors.additional_note && (
+                                <div className="invalid-feedback d-block">
+                                  {errors.additional_note.message}
+                                </div>
+                              )}
                             </div>
                             <div className="d-flex justify-content-between">
                               <CustomToggleButton
@@ -544,9 +734,13 @@ export default function AddSales() {
                     <div className="row">
                       <div className="col-12 mt-3">
                         <button
-                          type="button"
+                          type="submit"
                           className="btn btn-primary m-2"
-                          disabled={filterLoading || products.length === 0}
+                          disabled={
+                            filterLoading ||
+                            products.length === 0 ||
+                            selectedProducts.length === 0
+                          }
                         >
                           <FaPlus className="me-2" />
                           Save Sale
@@ -554,14 +748,19 @@ export default function AddSales() {
                         <button
                           type="button"
                           className="btn btn-outline-secondary m-2"
-                          disabled={filterLoading || products.length === 0}
+                          disabled={
+                            filterLoading ||
+                            products.length === 0 ||
+                            selectedProducts.length === 0
+                          }
+                          onClick={handleResetForm}
                         >
                           <GrPowerReset className="me-2" />
                           Reset Form
                         </button>
                       </div>
                     </div>
-                  </>
+                  </form>
                 )}
               </>
             )}

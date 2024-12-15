@@ -7,6 +7,7 @@ import { ProductType } from "../../../utitlities/typesUtils";
 interface ProductDropdownSelectMenuProps {
   children: ReactNode;
   filterLoading: boolean;
+  noProductSelectedError: boolean;
   products: ProductType[];
   handleSelectedProduct: (product: ProductType) => void;
   handleProductsFilteration: (searchTerm: string) => void;
@@ -19,6 +20,7 @@ interface ProductDropdownSelectMenuProps {
 export default function ProductDropdownSelectMenu({
   children,
   filterLoading,
+  noProductSelectedError,
   products,
   handleSelectedProduct,
   handleProductsFilteration,
@@ -37,7 +39,9 @@ export default function ProductDropdownSelectMenu({
       <Dropdown drop="down-centered">
         <Dropdown.Toggle
           id="dropdown-button"
-          variant={"outline-secondary"}
+          variant={
+            noProductSelectedError ? "outline-danger" : "outline-secondary"
+          }
           className="w-100 text-start"
         >
           {children}

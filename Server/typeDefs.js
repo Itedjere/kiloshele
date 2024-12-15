@@ -52,6 +52,14 @@ export const typeDefs = `#graphql
         selling_price: Float!
     }
 
+    type ItemSoldType {
+        _id: String!
+        product: String!
+        quantity: Int!
+        cost_price: Float!
+        selling_price: Float
+    }
+
     type Product {
         _id: String!
         company: Company!
@@ -75,13 +83,12 @@ export const typeDefs = `#graphql
     type Sale {
         _id: String!
         company: Company!
-        product: Product!
-        quantity: String
-        price: Float!
+        itemSold: [ItemSoldType!]!
         customer_name: String
         customer_phone: String
-        customer_note: String
+        customer_reference: String
         staff_assigned: String
+        date: Date!
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
         additional_note: String
@@ -117,14 +124,20 @@ export const typeDefs = `#graphql
         offset: Int!
     }
 
-    input ADDSALEINFO {
+    input ItemSoldInput {
         product: String!
-        quantity: Int
-        price: Float!
+        quantity: Int!
+        cost_price: Float!
+        selling_price: Float
+    }
+
+    input ADDSALEINFO {
+        itemSold: [ItemSoldInput!]!
         customer_name: String
         customer_phone: String
-        customer_note: String
+        customer_reference: String
         staff_assigned: String
+        date: Date!
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
         additional_note: String

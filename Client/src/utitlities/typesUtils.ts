@@ -78,3 +78,21 @@ export type SalesSummaryType = {
   total_sales: number;
   potential_profit: number;
 };
+
+export type ItemsToSellType = {
+  product: string;
+  quantity: number;
+  cost_price: number;
+  selling_price: number;
+};
+
+export type AddSalesFormDataType = {
+  date: string;
+  payment_method: "CARD" | "CASH" | "BANK_TRANSFER";
+  payment_status: "PAID" | "PENDING" | "PARTIALLY_PAID";
+  staff_assigned?: string;
+  customer_name?: string;
+  customer_phone?: string;
+  customer_reference?: string;
+  additional_note?: string;
+};

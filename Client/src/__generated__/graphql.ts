@@ -56,13 +56,12 @@ export type Addproductinput = {
 export type Addsaleinfo = {
   additional_note?: InputMaybe<Scalars['String']['input']>;
   customer_name?: InputMaybe<Scalars['String']['input']>;
-  customer_note?: InputMaybe<Scalars['String']['input']>;
   customer_phone?: InputMaybe<Scalars['String']['input']>;
+  customer_reference?: InputMaybe<Scalars['String']['input']>;
+  date: Scalars['DateTime']['input'];
+  itemSold: Array<ItemSoldInput>;
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
-  price: Scalars['Float']['input'];
-  product: Scalars['String']['input'];
-  quantity?: InputMaybe<Scalars['Int']['input']>;
   staff_assigned?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -93,6 +92,22 @@ export type Expense = {
   payment_status: PaymentStatus;
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ItemSoldInput = {
+  cost_price: Scalars['Float']['input'];
+  product: Scalars['String']['input'];
+  quantity: Scalars['Int']['input'];
+  selling_price?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type ItemSoldType = {
+  __typename?: 'ItemSoldType';
+  _id: Scalars['String']['output'];
+  cost_price: Scalars['Float']['output'];
+  product: Scalars['String']['output'];
+  quantity: Scalars['Int']['output'];
+  selling_price?: Maybe<Scalars['Float']['output']>;
 };
 
 export type Logincompanyinput = {
@@ -249,13 +264,12 @@ export type Sale = {
   additional_note?: Maybe<Scalars['String']['output']>;
   company: Company;
   customer_name?: Maybe<Scalars['String']['output']>;
-  customer_note?: Maybe<Scalars['String']['output']>;
   customer_phone?: Maybe<Scalars['String']['output']>;
+  customer_reference?: Maybe<Scalars['String']['output']>;
+  date: Scalars['DateTime']['output'];
+  itemSold: Array<ItemSoldType>;
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
-  price: Scalars['Float']['output'];
-  product: Product;
-  quantity?: Maybe<Scalars['String']['output']>;
   staff_assigned?: Maybe<Scalars['String']['output']>;
 };
 
@@ -292,6 +306,13 @@ export type AddProductMutationVariables = Exact<{
 
 export type AddProductMutation = { __typename?: 'Mutation', addProduct: { __typename?: 'Product', category: string } };
 
+export type AddSalesMutationVariables = Exact<{
+  saleInfo: Addsaleinfo;
+}>;
+
+
+export type AddSalesMutation = { __typename?: 'Mutation', addSale: { __typename?: 'Sale', _id: string, staff_assigned?: string | null, additional_note?: string | null, customer_name?: string | null, customer_phone?: string | null, customer_reference?: string | null, date: any, payment_method: PaymentMethod, payment_status: PaymentStatus, itemSold: Array<{ __typename?: 'ItemSoldType', _id: string, cost_price: number, selling_price?: number | null, quantity: number }> } };
+
 export type ExpensesCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -316,6 +337,7 @@ export const SignupCompanyDocument = {"kind":"Document","definitions":[{"kind":"
 export const LoginCompanyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LoginCompany"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LOGINCOMPANYINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginCompany"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"company"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}}]} as unknown as DocumentNode<LoginCompanyMutation, LoginCompanyMutationVariables>;
 export const AddExpensesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddExpenses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"expenseInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ADDEXPENSEINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"expenseInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"expenseInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]} as unknown as DocumentNode<AddExpensesMutation, AddExpensesMutationVariables>;
 export const AddProductDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddProduct"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"productInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ADDPRODUCTINPUT"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addProduct"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"productInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"productInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]} as unknown as DocumentNode<AddProductMutation, AddProductMutationVariables>;
+export const AddSalesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddSales"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"saleInfo"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ADDSALEINFO"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addSale"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"saleInfo"},"value":{"kind":"Variable","name":{"kind":"Name","value":"saleInfo"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"staff_assigned"}},{"kind":"Field","name":{"kind":"Name","value":"additional_note"}},{"kind":"Field","name":{"kind":"Name","value":"customer_name"}},{"kind":"Field","name":{"kind":"Name","value":"customer_phone"}},{"kind":"Field","name":{"kind":"Name","value":"customer_reference"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"payment_method"}},{"kind":"Field","name":{"kind":"Name","value":"payment_status"}},{"kind":"Field","name":{"kind":"Name","value":"itemSold"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}}]}}]} as unknown as DocumentNode<AddSalesMutation, AddSalesMutationVariables>;
 export const ExpensesCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExpensesCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expensesCategories"}}]}}]} as unknown as DocumentNode<ExpensesCategoriesQuery, ExpensesCategoriesQueryVariables>;
 export const ProductCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productsCategories"}}]}}]} as unknown as DocumentNode<ProductCategoriesQuery, ProductCategoriesQueryVariables>;
 export const ProductsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Products"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"products"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"searchTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}},{"kind":"Field","name":{"kind":"Name","value":"other_fees"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"supplier_name"}},{"kind":"Field","name":{"kind":"Name","value":"supplier_phone"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"photos"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"restock_level"}},{"kind":"Field","name":{"kind":"Name","value":"photos"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<ProductsQuery, ProductsQueryVariables>;

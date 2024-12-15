@@ -21,8 +21,13 @@ const saleSchema = new mongoose.Schema(
     itemSold: [itemSoldSchema],
     customer_name: { type: String },
     customer_phone: { type: String },
-    customer_note: { type: String },
+    customer_reference: { type: String },
     staff_assigned: { type: String },
+    date: {
+      type: Date,
+      required: true,
+      default: Date.now,
+    },
     payment_method: {
       type: String,
       enum: ["CARD", "CASH", "BANK_TRANSFER"],
