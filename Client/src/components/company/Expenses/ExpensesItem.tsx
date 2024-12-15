@@ -8,6 +8,7 @@ import { FaRegEye, FaRegKeyboard } from "react-icons/fa6";
 import { ExpensesType } from "../../../utitlities/typesUtils";
 import { formatPrice } from "../../../utitlities/utils";
 import { Link } from "react-router";
+import moment from "moment";
 
 interface ExpensesItem {
   expense: ExpensesType;
@@ -38,7 +39,7 @@ export default function ExpensesItem({
               {formatPrice(expense.amount)}
             </p>
             <small className="text-secondary">
-              <FaCalendarAlt /> {expense.date}
+              <FaCalendarAlt /> {moment(expense.date).format("MMMM Do YYYY")}
             </small>
           </div>
         </div>

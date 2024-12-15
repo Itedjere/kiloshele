@@ -5,6 +5,7 @@ import {
   FaChartLine,
   FaChartPie,
 } from "react-icons/fa6";
+import moment from "moment";
 import CardStatistics from "../components/company/Dashboard/CardStatistics";
 import { GiPayMoney } from "react-icons/gi";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
@@ -170,7 +171,9 @@ export default function Expenses() {
           </li>
           <li className="list-group-item">
             <p className="mb-0 text-black">
-              <small>Date: {expenseSelected?.date}</small>
+              <small>
+                Date: {moment(expenseSelected?.date).format("MMMM Do YYYY")}
+              </small>
             </p>
           </li>
         </ul>
