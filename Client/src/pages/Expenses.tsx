@@ -12,6 +12,7 @@ import DateFilter from "../components/company/SearchFilters/DateFilter";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import ExpensesItem from "../components/company/Expenses/ExpensesItem";
 import ExpensesEmpty from "../components/company/Expenses/ExpensesEmpty";
+import ExpensesItemSkeleton from "../components/company/LoadingSkeletons/ExpensesItemSkeleton";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -96,6 +97,9 @@ export default function Expenses() {
           <div className="row">
             <div className="col-12">
               <ul className="list-group list-group-flush">
+                <ExpensesItemSkeleton />
+                <ExpensesItemSkeleton />
+                <ExpensesItemSkeleton />
                 <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />
                 <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />
                 <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />

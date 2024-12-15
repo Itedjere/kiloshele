@@ -1,5 +1,9 @@
 import { BiSolidCategory } from "react-icons/bi";
-import { FaRegMoneyBillAlt, FaRegTrashAlt } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaRegMoneyBillAlt,
+  FaRegTrashAlt,
+} from "react-icons/fa";
 import { FaRegEye, FaRegKeyboard } from "react-icons/fa6";
 
 interface ExpensesItem {
@@ -22,6 +26,9 @@ export default function ExpensesItem({ handleOffCanvasShow }: ExpensesItem) {
         <div className="col-5 d-flex justify-content-end align-items-center">
           <div className="text-end">
             <p className="fs-6 text-black mb-0">NGN5,000</p>
+            <small className="text-secondary">
+              <FaCalendarAlt /> 25th January, 2024
+            </small>
           </div>
         </div>
       </div>
