@@ -39,3 +39,19 @@ export const GET_PRODUCTS = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const GET_EXPENSES = gql(/* GraphQL */ `
+  query Expenses {
+    expenses {
+      _id
+      title
+      category
+      date
+      amount
+      payment_method
+      payment_status
+      additional_notes
+      mediaUrl
+    }
+  }
+`);

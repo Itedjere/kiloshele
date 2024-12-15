@@ -14,6 +14,14 @@ export type AddExpenseFormDataType = {
   additional_notes?: string;
 };
 
+export type ExpensesType = AddExpenseFormDataType & {
+  _id: string;
+  category: string;
+  mediaUrl: string[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type AddProductsFormDataType = {
   name: string;
   sku?: string;

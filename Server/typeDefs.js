@@ -38,10 +38,11 @@ export const typeDefs = `#graphql
         title: String!
         amount: Float!
         category: String!
+        date: Date!
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
         mediaUrl: [String!]!
-        additional_notes: String
+        additional_notes: String!
         createdAt: Date!
         updatedAt: Date!
     }

@@ -37,6 +37,9 @@ export default function DateFilter() {
         <div className="custom-date pt-3">
           <div className="row">
             <div className="col-12 col-sm-6">
+              <p className="mb-0">
+                <small>From:</small>
+              </p>
               <div className="input-group mb-3">
                 <span className="input-group-text" id="startdate">
                   <FaRegCalendarAlt />
@@ -51,6 +54,9 @@ export default function DateFilter() {
               </div>
             </div>
             <div className="col-12 col-sm-6">
+              <p className="mb-0">
+                <small>To:</small>
+              </p>
               <div className="input-group mb-3">
                 <span className="input-group-text" id="enddate">
                   <FaRegCalendarAlt />

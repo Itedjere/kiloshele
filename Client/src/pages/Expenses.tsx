@@ -12,72 +12,92 @@ import DateFilter from "../components/company/SearchFilters/DateFilter";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import ExpensesItem from "../components/company/Expenses/ExpensesItem";
 import ExpensesEmpty from "../components/company/Expenses/ExpensesEmpty";
-import ExpensesItemSkeleton from "../components/company/LoadingSkeletons/ExpensesItemSkeleton";
+import { useQuery } from "@apollo/client";
+import { GET_EXPENSES } from "../utitlities/graphql_queries";
+import StatisticsSkeleton from "../components/company/LoadingSkeletons/StatisticsSkeleton";
+import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
+import { ExpensesType } from "../utitlities/typesUtils";
+import { formatPrice } from "../utitlities/utils";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
+  const [expenseSelected, setExpenseSelected] = useState<ExpensesType | null>(
+    null
+  );
+  const { loading, data } = useQuery(GET_EXPENSES);
 
   const handleOffCanvasClose = () => setShowOffCanvas(false);
-  const handleOffCanvasShow = () => setShowOffCanvas(true);
+  const handleOffCanvasShow = (expense: ExpensesType) => {
+    setExpenseSelected(expense);
+    setShowOffCanvas(true);
+  };
+
+  const handleRemoveExpense = (expense: ExpensesType) => {
+    console.log(expense);
+  };
   return (
     <>
-      <CardStatistics>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartLine className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Today's Expenses</p>
-                <h6 className="mb-0">234</h6>
+      {loading ? (
+        <StatisticsSkeleton />
+      ) : (
+        <CardStatistics>
+          <div className="card">
+            <div className="card-body">
+              <div className="d-flex align-items-center justify-content-between p-4">
+                <FaChartLine className="fa-3x text-primary" />
+                <div className="ms-3">
+                  <p className="mb-2">Today's Expenses</p>
+                  <h6 className="mb-0">234</h6>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartBar className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">December Expenses</p>
-                <h6 className="mb-0">12</h6>
+          <div className="card">
+            <div className="card-body">
+              <div className="d-flex align-items-center justify-content-between p-4">
+                <FaChartBar className="fa-3x text-primary" />
+                <div className="ms-3">
+                  <p className="mb-2">December Expenses</p>
+                  <h6 className="mb-0">12</h6>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartArea className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">This Year Expenses</p>
-                <h6 className="mb-0">34</h6>
+          <div className="card">
+            <div className="card-body">
+              <div className="d-flex align-items-center justify-content-between p-4">
+                <FaChartArea className="fa-3x text-primary" />
+                <div className="ms-3">
+                  <p className="mb-2">This Year Expenses</p>
+                  <h6 className="mb-0">34</h6>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartArea className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Last Year Expenses</p>
-                <h6 className="mb-0">34</h6>
+          <div className="card">
+            <div className="card-body">
+              <div className="d-flex align-items-center justify-content-between p-4">
+                <FaChartArea className="fa-3x text-primary" />
+                <div className="ms-3">
+                  <p className="mb-2">Last Year Expenses</p>
+                  <h6 className="mb-0">34</h6>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartPie className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Most Paid Expenses</p>
-                <h6 className="mb-0">$1234</h6>
+          <div className="card">
+            <div className="card-body">
+              <div className="d-flex align-items-center justify-content-between p-4">
+                <FaChartPie className="fa-3x text-primary" />
+                <div className="ms-3">
+                  <p className="mb-2">Most Paid Expenses</p>
+                  <h6 className="mb-0">$1234</h6>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </CardStatistics>
+        </CardStatistics>
+      )}
 
       <div className="container-fluid pt-4">
         <div className="bg-white rounded h-100 p-4 mt-4">
@@ -85,28 +105,40 @@ export default function Expenses() {
             <GiPayMoney className="me-3 fs-4" />
             Expenses Record
           </h6>
-          <ExpensesEmpty />
-          <div className="row">
-            <SearchFilter />
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <DateFilter />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <ul className="list-group list-group-flush">
-                <ExpensesItemSkeleton />
-                <ExpensesItemSkeleton />
-                <ExpensesItemSkeleton />
-                <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />
-                <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />
-                <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />
-                <ExpensesItem handleOffCanvasShow={handleOffCanvasShow} />
-              </ul>
-            </div>
-          </div>
+          {loading ? (
+            <ExpensesSkeleton />
+          ) : (
+            <>
+              {data?.expenses.length === 0 ? (
+                <ExpensesEmpty />
+              ) : (
+                <>
+                  <div className="row">
+                    <SearchFilter />
+                  </div>
+                  <div className="row">
+                    <div className="col-12">
+                      <DateFilter />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-12">
+                      <ul className="list-group list-group-flush">
+                        {data?.expenses.map((expense) => (
+                          <ExpensesItem
+                            key={expense._id}
+                            handleOffCanvasShow={handleOffCanvasShow}
+                            expense={expense}
+                            handleRemoveExpense={handleRemoveExpense}
+                          />
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -118,22 +150,27 @@ export default function Expenses() {
         <ul className="list-group mb-3">
           <li className="list-group-item">
             <p className="mb-0 text-black">
-              <small>Title: Payment of salary</small>
+              <small>Title: {expenseSelected?.title}</small>
             </p>
           </li>
           <li className="list-group-item">
             <p className="mb-0 text-black">
-              <small>Category: Salary</small>
+              <small>Category: {expenseSelected?.category}</small>
             </p>
           </li>
           <li className="list-group-item">
             <p className="mb-0 text-black">
-              <small>Amount: NGN8,000</small>
+              <small>
+                Amount:{" "}
+                {formatPrice(
+                  expenseSelected?.amount ? expenseSelected.amount : 0
+                )}
+              </small>
             </p>
           </li>
           <li className="list-group-item">
             <p className="mb-0 text-black">
-              <small>Date: 25/12/2024</small>
+              <small>Date: {expenseSelected?.date}</small>
             </p>
           </li>
         </ul>
@@ -141,12 +178,12 @@ export default function Expenses() {
         <ul className="list-group mb-3">
           <li className="list-group-item bg-transparent">
             <p className="text-black mb-0">
-              <small>Payment Method: Cash</small>
+              <small>Payment Method: {expenseSelected?.payment_method}</small>
             </p>
           </li>
           <li className="list-group-item bg-transparent">
             <p className="text-black mb-0">
-              <small>Payment Status: Pending</small>
+              <small>Payment Status: {expenseSelected?.payment_status}</small>
             </p>
           </li>
         </ul>
@@ -162,7 +199,11 @@ export default function Expenses() {
         <ul className="list-group mb-3">
           <li className="list-group-item">
             <p className="text-black mb-0">
-              <small>This is a lovely product</small>
+              <small>
+                {expenseSelected?.additional_notes
+                  ? expenseSelected.additional_notes
+                  : "Nil"}
+              </small>
             </p>
           </li>
         </ul>
