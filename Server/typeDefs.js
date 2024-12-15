@@ -56,17 +56,17 @@ export const typeDefs = `#graphql
         _id: String!
         company: Company!
         name: String!
-        sku: String
+        sku: String!
         type: ServiceOrProduct!
         category: String!
         quantity: Int!
-        restock_level: Int
+        restock_level: Int!
         cost_price: Float!
         selling_price: Float!
         other_fees: [OtherServiceFees!]!
-        description: String
-        supplier_name: String
-        supplier_phone: String
+        description: String!
+        supplier_name: String!
+        supplier_phone: String!
         tags: [String!]!
         photos: [String!]!
         createdAt: Date!
@@ -90,7 +90,7 @@ export const typeDefs = `#graphql
     type Query {
         expenses: [Expense!]!
         expensesCategories: [String!]!
-        products(productFilter: PRODUCTFILTERINPUT!): [Product!]!
+        products(searchTerm: String, limit: Int!, offset: Int!): [Product!]!
         productsCategories: [String!]!
         sales: [Sale!]!
     }

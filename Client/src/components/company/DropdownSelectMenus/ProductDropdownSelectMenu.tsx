@@ -1,7 +1,37 @@
+import { ReactNode, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import { BiSolidCategory } from "react-icons/bi";
+import ButtonLoading from "../LoadingSkeletons/ButtonLoading";
+import { ProductType } from "../../../utitlities/typesUtils";
 
-export default function ProductDropdownSelectMenu() {
+interface ProductDropdownSelectMenuProps {
+  children: ReactNode;
+  filterLoading: boolean;
+  products: ProductType[];
+  handleSelectedProduct: (product: ProductType) => void;
+  handleProductsFilteration: (searchTerm: string) => void;
+  handleScroll: (
+    event: React.UIEvent<HTMLDivElement>,
+    searchTerm: string
+  ) => void;
+}
+
+export default function ProductDropdownSelectMenu({
+  children,
+  filterLoading,
+  products,
+  handleSelectedProduct,
+  handleProductsFilteration,
+  handleScroll,
+}: ProductDropdownSelectMenuProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setSearchTerm(searchTerm);
+    handleProductsFilteration(searchTerm);
+  };
+
   return (
     <div className="position-relative select-dropdown">
       <Dropdown drop="down-centered">
@@ -10,110 +40,61 @@ export default function ProductDropdownSelectMenu() {
           variant={"outline-secondary"}
           className="w-100 text-start"
         >
-          <small>Product / Service</small>
-          <p className="mb-0">Click here to select product / service</p>
+          {children}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <div className="p-2">
             <div className="form-floating">
               <input
                 type="text"
-                value=""
+                value={searchTerm}
                 className="form-control form-control-sm"
                 id="floatingInput"
-                placeholder="Enter name or category to search"
+                placeholder="Enter name to search"
+                onChange={handleSearchInputChange}
               />
-              <label htmlFor="floatingInput">
-                Enter name or category to search
-              </label>
+              <label htmlFor="floatingInput">Enter name to search</label>
             </div>
           </div>
-          <div className="menu-content">
+          <div
+            className="menu-content"
+            onScroll={(event) => handleScroll(event, searchTerm)}
+          >
             <ul className="list-unstyled mb-0">
-              <Dropdown.Item as="li">
-                <div>1 Plate of rice and beans</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Service</small>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="li">
-                <div>12Kg Kings Groundnut oil</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Product</small>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="li">
-                <div>1 Paint rubber of garri</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small style={{ fontSize: 12 }}>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Service</small>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="li">
-                <div>1 Paint rubber of garri</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small style={{ fontSize: 12 }}>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Product</small>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="li">
-                <div>1 Paint rubber of garri</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small style={{ fontSize: 12 }}>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Service</small>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="li">
-                <div>1 Paint rubber of garri</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small style={{ fontSize: 12 }}>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Product</small>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="li">
-                <div>1 Paint rubber of garri</div>
-                <div
-                  className="d-flex justify-content-between"
-                  style={{ fontSize: 12 }}
-                >
-                  <small style={{ fontSize: 12 }}>
-                    <BiSolidCategory /> Clothes and Laundry
-                  </small>
-                  <small>Service</small>
-                </div>
-              </Dropdown.Item>
+              {filterLoading ? (
+                <Dropdown.Item as="li">
+                  <div>
+                    <ButtonLoading message="Fetching Products, Please Wait" />
+                  </div>
+                </Dropdown.Item>
+              ) : (
+                <>
+                  {products.length === 0 ? (
+                    <Dropdown.Item as="li">
+                      No Products Or Services Found
+                    </Dropdown.Item>
+                  ) : (
+                    products.map((product) => (
+                      <Dropdown.Item
+                        as="li"
+                        key={product._id}
+                        onClick={() => handleSelectedProduct(product)}
+                      >
+                        <div>{product.name}</div>
+                        <div
+                          className="d-flex justify-content-between"
+                          style={{ fontSize: 12 }}
+                        >
+                          <small>
+                            <BiSolidCategory /> {product.category}
+                          </small>
+                          <small>{product.type}</small>
+                        </div>
+                      </Dropdown.Item>
+                    ))
+                  )}
+                </>
+              )}
             </ul>
           </div>
         </Dropdown.Menu>

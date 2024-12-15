@@ -91,3 +91,14 @@ export const handleApolloErrors = (error: ApolloError) => {
     toast.error("An unexpected error occurred.");
   }
 };
+
+export const formatPrice = (
+  amount: number,
+  currency: string = "NGN",
+  locale: string = "en-NG"
+) => {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+  }).format(amount);
+};

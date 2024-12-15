@@ -3,24 +3,22 @@ import { Product } from "../../models/productModel.js";
 export const fetchProducts = async (args, req) => {
   const { companyId } = req;
 
-  const { productFilter } = args;
-
   // Create a filter
   const filter = {};
 
   // search by product name
-  if (productFilter?.searchTerm) {
-    filter.name = { $regex: productFilter.searchTerm, $options: "i" }; // Match `name`
+  if (args?.searchTerm) {
+    filter.name = { $regex: args.searchTerm, $options: "i" }; // Match `name`
   }
 
   // Search by product category
-  if (productFilter?.category) {
-    filter.category = productFilter.category; // Match `category`
+  if (args?.category) {
+    filter.category = args.category; // Match `category`
   }
 
   // Search by product type
-  if (productFilter?.type) {
-    filter.type = productFilter.type;
+  if (args?.type) {
+    filter.type = args.type;
   }
 
   // Attach company Id
@@ -28,8 +26,8 @@ export const fetchProducts = async (args, req) => {
 
   const products = await Product.find(filter)
     .populate("company")
-    .skip(productFilter?.offset)
-    .limit(productFilter?.limit)
+    .skip(args?.offset)
+    .limit(args?.limit)
     .sort({ createdAt: -1 });
 
   return products;

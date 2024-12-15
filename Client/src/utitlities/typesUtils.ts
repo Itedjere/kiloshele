@@ -50,3 +50,31 @@ export type FileDropzoneProps = {
   maxFiles: number; // Max number of files allowed
   setFiles: React.Dispatch<React.SetStateAction<UFileInterface[]>>;
 };
+
+export type ProductType = {
+  _id: string;
+  name: string;
+  type: "PRODUCT" | "SERVICE";
+  category: string;
+  quantity: number;
+  restock_level: number;
+  cost_price: number;
+  selling_price: number;
+  other_fees: OtherServiceFeeFormDataType[];
+  description: string;
+  supplier_name: string;
+  supplier_phone: string;
+  tags: string[];
+  photos: string[];
+  sku: string;
+};
+
+export type ItemSoldType = ProductType & {
+  quantity_sold: number;
+};
+
+export type SalesSummaryType = {
+  total_quantity: number;
+  total_sales: number;
+  potential_profit: number;
+};

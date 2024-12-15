@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const itemSoldSchema = new mongoose.Schema({
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  quantity: { type: Number, min: 1, required: true },
+  cost_price: { type: Number, required: true },
+  selling_price: { type: Number, required: true },
+});
+
 const saleSchema = new mongoose.Schema(
   {
     company: {
@@ -7,13 +18,7 @@ const saleSchema = new mongoose.Schema(
       ref: "Company",
       required: true,
     },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true,
-    },
-    quantity: { type: Number, min: 1, required: true },
-    price: { type: Number, required: true },
+    itemSold: [itemSoldSchema],
     customer_name: { type: String },
     customer_phone: { type: String },
     customer_note: { type: String },

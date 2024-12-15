@@ -20,6 +20,7 @@ const documents = {
     "\n  mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {\n    addProduct(productInfo: $productInfo) {\n      category\n    }\n  }\n": types.AddProductDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
+    "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      _id\n      name\n      sku\n      other_fees {\n        cost_price\n        duration\n        selling_price\n      }\n      description\n      supplier_name\n      supplier_phone\n      tags\n      photos\n      category\n      createdAt\n      cost_price\n      selling_price\n      quantity\n      restock_level\n      photos\n      type\n    }\n  }\n": types.ProductsDocument,
 };
 
 /**
@@ -60,6 +61,10 @@ export function gql(source: "\n  query ExpensesCategories {\n    expensesCategor
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query ProductCategories {\n    productsCategories\n  }\n"): (typeof documents)["\n  query ProductCategories {\n    productsCategories\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      _id\n      name\n      sku\n      other_fees {\n        cost_price\n        duration\n        selling_price\n      }\n      description\n      supplier_name\n      supplier_phone\n      tags\n      photos\n      category\n      createdAt\n      cost_price\n      selling_price\n      quantity\n      restock_level\n      photos\n      type\n    }\n  }\n"): (typeof documents)["\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      _id\n      name\n      sku\n      other_fees {\n        cost_price\n        duration\n        selling_price\n      }\n      description\n      supplier_name\n      supplier_phone\n      tags\n      photos\n      category\n      createdAt\n      cost_price\n      selling_price\n      quantity\n      restock_level\n      photos\n      type\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
