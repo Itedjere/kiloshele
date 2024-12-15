@@ -19,10 +19,15 @@ import StatisticsSkeleton from "../components/company/LoadingSkeletons/Statistic
 import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
 import { ExpensesType } from "../utitlities/typesUtils";
 import { formatPrice } from "../utitlities/utils";
+import DeleteModal from "../components/company/Modals/DeleteModal";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [expenseSelected, setExpenseSelected] = useState<ExpensesType | null>(
+    null
+  );
+  const [expenseToDelete, setExpenseToDelete] = useState<ExpensesType | null>(
     null
   );
   const { loading, data } = useQuery(GET_EXPENSES);
@@ -33,8 +38,17 @@ export default function Expenses() {
     setShowOffCanvas(true);
   };
 
-  const handleRemoveExpense = (expense: ExpensesType) => {
-    console.log(expense);
+  const handleCloseDeleteModal = () => {
+    setExpenseToDelete(null);
+    setShowDeleteModal(false);
+  };
+  const handleShowDeleteModal = (expense: ExpensesType) => {
+    setExpenseToDelete(expense);
+    setShowDeleteModal(true);
+  };
+
+  const handleRemoveExpense = () => {
+    console.log(expenseToDelete);
   };
   return (
     <>
@@ -130,7 +144,7 @@ export default function Expenses() {
                             key={expense._id}
                             handleOffCanvasShow={handleOffCanvasShow}
                             expense={expense}
-                            handleRemoveExpense={handleRemoveExpense}
+                            handleRemoveExpense={handleShowDeleteModal}
                           />
                         ))}
                       </ul>
@@ -211,6 +225,12 @@ export default function Expenses() {
           </li>
         </ul>
       </CustomOffCanvas>
+      <DeleteModal
+        itemName="Expense"
+        showDeleteModal={showDeleteModal}
+        handleDelete={handleRemoveExpense}
+        handleCloseDeleteModal={handleCloseDeleteModal}
+      />
     </>
   );
 }
