@@ -6,13 +6,14 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import "dotenv/config";
 import { typeDefs } from "./typeDefs.js";
 import { resolvers } from "./resolvers.js";
 import dbconnect from "./dbconnect/dbconnect.js";
 import { authenticationMiddleware } from "./middlewares/authenticationMiddleware.js";
 import fileUploadRouter from "./routes/fileUploadRoute.js";
+import { __dirname } from "./serverPath.js";
+import { fileDeletion } from "./utilities/fileDeletion.js";
 
 // Required logic for integrating with Express
 const app = express();
@@ -32,9 +33,6 @@ const server = new ApolloServer({
 await server.start();
 
 // Serve static files
-// Simulate __dirname in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(

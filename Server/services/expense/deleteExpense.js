@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Expense } from "../../models/expenseModel.js";
+import { fileDeletion } from "../../utilities/fileDeletion.js";
 
 export const deleteExpense = async (args, req) => {
   const { expenseId } = args;
@@ -23,6 +24,11 @@ export const deleteExpense = async (args, req) => {
 
   if (!expenseDocument) {
     throw new Error("An error occurred. Please try again");
+  }
+
+  // Delete files if any
+  if (expenseDocument.mediaUrl.length > 0) {
+    expenseDocument.mediaUrl.forEach((url) => fileDeletion(url));
   }
 
   return expenseDocument.populate("company");
