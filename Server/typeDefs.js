@@ -97,6 +97,7 @@ export const typeDefs = `#graphql
 
     type Query {
         expenses: [Expense!]!
+        expenseOne(expenseId: String!): Expense!
         expensesCategories: [String!]!
         products(searchTerm: String, limit: Int!, offset: Int!): [Product!]!
         productsCategories: [String!]!
