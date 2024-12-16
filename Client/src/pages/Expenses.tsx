@@ -13,7 +13,7 @@ import DateFilter from "../components/company/SearchFilters/DateFilter";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import ExpensesItem from "../components/company/Expenses/ExpensesItem";
 import ExpensesEmpty from "../components/company/Expenses/ExpensesEmpty";
-import { ApolloError, useMutation, useQuery } from "@apollo/client";
+import { ApolloError, Reference, useMutation, useQuery } from "@apollo/client";
 import { GET_EXPENSES } from "../utitlities/graphql_queries";
 import StatisticsSkeleton from "../components/company/LoadingSkeletons/StatisticsSkeleton";
 import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
@@ -36,7 +36,37 @@ export default function Expenses() {
   // Remember to add error UI
   const { loading, error, data } = useQuery(GET_EXPENSES);
   // Mutate the state after deletion
-  const [deleteExpense, { loading: isDeleting }] = useMutation(DELETE_EXPENSES);
+  const [deleteExpense, { loading: isDeleting }] = useMutation(
+    DELETE_EXPENSES,
+    {
+      update(cache, { data }) {
+        cache.modify({
+          fields: {
+            expenses(
+              existingExpensesRefs:
+                | Reference
+                | readonly Reference[]
+                | undefined,
+              { readField }: { readField: Function }
+            ): readonly Reference[] {
+              if (!data?.removeExpense) {
+                return Array.isArray(existingExpensesRefs)
+                  ? existingExpensesRefs
+                  : [];
+              }
+
+              return Array.isArray(existingExpensesRefs)
+                ? existingExpensesRefs.filter(
+                    (ref: Reference) =>
+                      data.removeExpense?._id !== readField("_id", ref)
+                  )
+                : [];
+            },
+          },
+        });
+      },
+    }
+  );
 
   const handleOffCanvasClose = () => setShowOffCanvas(false);
   const handleOffCanvasShow = (expense: ExpensesType) => {
