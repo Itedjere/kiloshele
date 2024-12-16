@@ -14,16 +14,17 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
+    "\n  fragment ExpenseFields on Expense {\n    _id\n    title\n    category\n    date\n    amount\n    payment_method\n    payment_status\n    additional_notes\n    mediaUrl\n  }\n": types.ExpenseFieldsFragmentDoc,
     "\n  mutation SignupCompany($signupInfo: ADDCOMPANYINPUT!) {\n    signupCompany(signupInfo: $signupInfo) {\n      token\n      company {\n        _id\n        name\n        username\n        email\n      }\n    }\n  }\n": types.SignupCompanyDocument,
     "\n  mutation LoginCompany($loginInfo: LOGINCOMPANYINPUT!) {\n    loginCompany(loginInfo: $loginInfo) {\n      token\n      company {\n        _id\n        name\n        username\n        email\n      }\n    }\n  }\n": types.LoginCompanyDocument,
-    "\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      category\n    }\n  }\n": types.AddExpensesDocument,
+    "\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      ...ExpenseFields\n    }\n  }\n": types.AddExpensesDocument,
     "\n  mutation DeleteExpense($expenseId: String!) {\n    removeExpense(expenseId: $expenseId) {\n      _id\n    }\n  }\n": types.DeleteExpenseDocument,
     "\n  mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {\n    addProduct(productInfo: $productInfo) {\n      category\n    }\n  }\n": types.AddProductDocument,
     "\n  mutation AddSales($saleInfo: ADDSALEINFO!) {\n    addSale(saleInfo: $saleInfo) {\n      _id\n      staff_assigned\n      additional_note\n      customer_name\n      customer_phone\n      customer_reference\n      date\n      payment_method\n      payment_status\n      itemSold {\n        _id\n        cost_price\n        selling_price\n        quantity\n      }\n    }\n  }\n": types.AddSalesDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
     "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      _id\n      name\n      sku\n      other_fees {\n        cost_price\n        duration\n        selling_price\n      }\n      description\n      supplier_name\n      supplier_phone\n      tags\n      photos\n      category\n      createdAt\n      cost_price\n      selling_price\n      quantity\n      restock_level\n      photos\n      type\n    }\n  }\n": types.ProductsDocument,
-    "\n  query Expenses {\n    expenses {\n      _id\n      title\n      category\n      date\n      amount\n      payment_method\n      payment_status\n      additional_notes\n      mediaUrl\n    }\n  }\n": types.ExpensesDocument,
+    "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n": types.ExpensesDocument,
 };
 
 /**
@@ -43,6 +44,10 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  fragment ExpenseFields on Expense {\n    _id\n    title\n    category\n    date\n    amount\n    payment_method\n    payment_status\n    additional_notes\n    mediaUrl\n  }\n"): (typeof documents)["\n  fragment ExpenseFields on Expense {\n    _id\n    title\n    category\n    date\n    amount\n    payment_method\n    payment_status\n    additional_notes\n    mediaUrl\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation SignupCompany($signupInfo: ADDCOMPANYINPUT!) {\n    signupCompany(signupInfo: $signupInfo) {\n      token\n      company {\n        _id\n        name\n        username\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation SignupCompany($signupInfo: ADDCOMPANYINPUT!) {\n    signupCompany(signupInfo: $signupInfo) {\n      token\n      company {\n        _id\n        name\n        username\n        email\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -51,7 +56,7 @@ export function gql(source: "\n  mutation LoginCompany($loginInfo: LOGINCOMPANYI
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      category\n    }\n  }\n"): (typeof documents)["\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      category\n    }\n  }\n"];
+export function gql(source: "\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      ...ExpenseFields\n    }\n  }\n"): (typeof documents)["\n  mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {\n    addExpense(expenseInfo: $expenseInfo) {\n      ...ExpenseFields\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -79,7 +84,7 @@ export function gql(source: "\n  query Products($searchTerm: String, $limit: Int
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Expenses {\n    expenses {\n      _id\n      title\n      category\n      date\n      amount\n      payment_method\n      payment_status\n      additional_notes\n      mediaUrl\n    }\n  }\n"): (typeof documents)["\n  query Expenses {\n    expenses {\n      _id\n      title\n      category\n      date\n      amount\n      payment_method\n      payment_status\n      additional_notes\n      mediaUrl\n    }\n  }\n"];
+export function gql(source: "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n"): (typeof documents)["\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

@@ -18,13 +18,14 @@ import {
   AddExpenseFormDataType,
   UFileInterface,
 } from "../utitlities/typesUtils";
-import { ApolloError, useMutation, useQuery } from "@apollo/client";
+import { ApolloError, Reference, useMutation, useQuery } from "@apollo/client";
 import { GET_EXPENSES_CATEGORIES } from "../utitlities/graphql_queries";
 import FileDropzone from "../components/company/FileUpload/FileDropzone";
 import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
 import { toast } from "react-toastify";
 import { ADD_EXPENSES } from "../utitlities/graphql_mutation";
 import { PaymentMethod, PaymentStatus } from "../__generated__/graphql";
+import { EXPENSE_FRAGMENT } from "../utitlities/graphql_fragments";
 
 export default function AddExpenses() {
   const [files, setFiles] = useState<UFileInterface[]>([]);
@@ -40,17 +41,34 @@ export default function AddExpenses() {
   const [addExpenses] = useMutation(ADD_EXPENSES, {
     update(cache, { data }) {
       if (!data) return;
-
-      const newCategory = data.addExpense.category;
-
       cache.modify({
         fields: {
           expensesCategories(existingCategories = []) {
+            const newCategory = data.addExpense.category;
             if (existingCategories.includes(newCategory)) {
               return existingCategories;
             }
 
             return [newCategory, ...existingCategories];
+          },
+          expenses(existingExpensesRefs = [], { readField }) {
+            const newExpenseRef = cache.writeFragment({
+              data: data.addExpense,
+              fragment: EXPENSE_FRAGMENT,
+            });
+
+            // Quick safety check - if the new comment is already
+            // present in the cache, we don't need to add it again.
+            if (
+              existingExpensesRefs.some(
+                (ref: Reference) =>
+                  readField("_id", ref) === data.addExpense._id
+              )
+            ) {
+              return existingExpensesRefs;
+            }
+
+            return [newExpenseRef, ...existingExpensesRefs];
           },
         },
       });

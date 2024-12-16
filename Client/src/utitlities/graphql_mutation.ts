@@ -31,7 +31,7 @@ export const LOGIN_COMPANY = gql(/* GraphQL */ `
 export const ADD_EXPENSES = gql(/* GraphQL */ `
   mutation AddExpenses($expenseInfo: ADDEXPENSEINPUT!) {
     addExpense(expenseInfo: $expenseInfo) {
-      category
+      ...ExpenseFields
     }
   }
 `);
