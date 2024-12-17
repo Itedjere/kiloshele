@@ -18,16 +18,21 @@ import {
   AddExpenseFormDataType,
   UFileInterface,
 } from "../utitlities/typesUtils";
-import { ApolloError, Reference, useMutation, useQuery } from "@apollo/client";
-import { GET_EXPENSES_CATEGORIES } from "../utitlities/graphql_queries";
+import { ApolloError, useMutation, useQuery } from "@apollo/client";
+import {
+  GET_EXPENSES_CATEGORIES,
+  GET_ONE_EXPENSE,
+} from "../utitlities/graphql_queries";
 import FileDropzone from "../components/company/FileUpload/FileDropzone";
 import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
 import { toast } from "react-toastify";
-import { ADD_EXPENSES } from "../utitlities/graphql_mutation";
+import { UPDATE_EXPENSES } from "../utitlities/graphql_mutation";
 import { PaymentMethod, PaymentStatus } from "../__generated__/graphql";
-import { EXPENSE_FRAGMENT } from "../utitlities/graphql_fragments";
+import UpdateExpenseSkeleton from "../components/company/LoadingSkeletons/UpdateExpenseSkeleton";
+import { useParams } from "react-router";
+import ServerError from "../components/company/Network/ServerError";
 
-export default function AddExpenses() {
+export default function UpdateExpenses() {
   const [files, setFiles] = useState<UFileInterface[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
   const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
@@ -35,47 +40,23 @@ export default function AddExpenses() {
   const [categorySearchTerm, setCategorySearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(""); // For displaying selected item
   const [anyCategoryError, setAnyCategoryError] = useState(false);
+
+  const { auth } = useAuthenticatedContext();
+
   const { loading: dataExpensesLoading, data: dataExpensesCategories } =
     useQuery(GET_EXPENSES_CATEGORIES);
-
-  const [addExpenses] = useMutation(ADD_EXPENSES, {
-    update(cache, { data }) {
-      if (!data) return;
-      cache.modify({
-        fields: {
-          expensesCategories(existingCategories = []) {
-            const newCategory = data.addExpense.category;
-            if (existingCategories.includes(newCategory)) {
-              return existingCategories;
-            }
-
-            return [newCategory, ...existingCategories];
-          },
-          expenses(existingExpensesRefs = [], { readField }) {
-            const newExpenseRef = cache.writeFragment({
-              data: data.addExpense,
-              fragment: EXPENSE_FRAGMENT,
-            });
-
-            // Quick safety check - if the new comment is already
-            // present in the cache, we don't need to add it again.
-            if (
-              existingExpensesRefs.some(
-                (ref: Reference) =>
-                  readField("_id", ref) === data.addExpense._id
-              )
-            ) {
-              return existingExpensesRefs;
-            }
-
-            return [newExpenseRef, ...existingExpensesRefs];
-          },
-        },
-      });
+  const { expenseId } = useParams();
+  const {
+    loading: expenseLoading,
+    data: expenseData,
+    error: expenseError,
+  } = useQuery(GET_ONE_EXPENSE, {
+    variables: {
+      expenseId: expenseId || "",
     },
   });
 
-  const { auth } = useAuthenticatedContext();
+  const [updateExpenses] = useMutation(UPDATE_EXPENSES);
 
   useEffect(() => {
     if (dataExpensesCategories) {
@@ -121,15 +102,21 @@ export default function AddExpenses() {
     formState: { errors },
   } = useForm<AddExpenseFormDataType>({
     resolver: yupResolver(addExpenseSchema),
-    defaultValues: {
-      title: "",
-      amount: 0,
-      date: new Date().toISOString().split("T")[0], // Set the default value for the date
-      payment_method: "CASH",
-      payment_status: "PAID",
-      additional_notes: "",
-    },
   });
+
+  useEffect(() => {
+    if (expenseData?.expenseOne) {
+      reset({
+        title: expenseData.expenseOne.title,
+        amount: expenseData.expenseOne.amount,
+        date: new Date(expenseData.expenseOne.date).toISOString().split("T")[0], // Set the default value for the date
+        payment_method: expenseData.expenseOne.payment_method,
+        payment_status: expenseData.expenseOne.payment_status,
+        additional_notes: expenseData.expenseOne.additional_notes,
+      });
+      setSelectedCategory(expenseData.expenseOne.category);
+    }
+  }, [expenseData, reset]);
 
   const onSubmit: SubmitHandler<AddExpenseFormDataType> = async (formData) => {
     // Check if category is empty
@@ -175,8 +162,9 @@ export default function AddExpenses() {
     }
 
     try {
-      const { data } = await addExpenses({
+      const { data } = await updateExpenses({
         variables: {
+          expenseId: expenseId || "",
           expenseInfo: {
             title: formData.title,
             amount: formData.amount,
@@ -190,10 +178,10 @@ export default function AddExpenses() {
         },
       });
 
-      if (data?.addExpense) {
+      if (data?.updateExpense) {
         handleResetForm();
         // show a toast message
-        toast.success("Expense added successfully");
+        toast.success("Expense updated successfully");
       }
     } catch (error) {
       if (error instanceof ApolloError) {
@@ -233,6 +221,14 @@ export default function AddExpenses() {
     category.toLowerCase().includes(categorySearchTerm.toLowerCase())
   );
 
+  if (expenseError)
+    return (
+      <ServerError
+        errorMessage={expenseError.message}
+        url={`${import.meta.env.VITE_CLIENT_URL}/all-expenses`}
+      />
+    );
+
   return (
     <>
       <div className="container-fluid pt-4">
@@ -243,308 +239,312 @@ export default function AddExpenses() {
                 <GiPayMoney className="me-3 fs-3" />
                 Add Expense
               </h6>
-              <form onSubmit={handleSubmit(onSubmit, onError)}>
-                <Accordion
-                  defaultActiveKey="0"
-                  activeKey={activeAccordion}
-                  onSelect={handleAccordionSelect}
-                >
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>
-                      <p className="mb-0 text-black">
-                        <TbMoneybag className="me-2 fs-5" />
-                        <span>Expense Details</span>
-                      </p>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <div className="row">
-                        <div className="col-sm-12 col-lg-4 mb-3">
-                          <div className="form-floating">
-                            <input
-                              type="text"
-                              className={`form-control ${
-                                errors.title && "is-invalid"
-                              }`}
-                              id="floatingInput"
-                              placeholder="Title/Description"
-                              {...register("title")}
-                            />
-                            <label htmlFor="floatingInput">
-                              Title/Description
-                            </label>
-                          </div>
-                          {errors.title && (
-                            <div className="invalid-feedback d-block">
-                              {errors.title.message}
+              {expenseLoading ? (
+                <UpdateExpenseSkeleton />
+              ) : (
+                <form onSubmit={handleSubmit(onSubmit, onError)}>
+                  <Accordion
+                    defaultActiveKey="0"
+                    activeKey={activeAccordion}
+                    onSelect={handleAccordionSelect}
+                  >
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>
+                        <p className="mb-0 text-black">
+                          <TbMoneybag className="me-2 fs-5" />
+                          <span>Expense Details</span>
+                        </p>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <div className="row">
+                          <div className="col-sm-12 col-lg-4 mb-3">
+                            <div className="form-floating">
+                              <input
+                                type="text"
+                                className={`form-control ${
+                                  errors.title && "is-invalid"
+                                }`}
+                                id="floatingInput"
+                                placeholder="Title/Description"
+                                {...register("title")}
+                              />
+                              <label htmlFor="floatingInput">
+                                Title/Description
+                              </label>
                             </div>
-                          )}
-                        </div>
-                        <div className="col-sm-12 col-lg-4">
-                          <div className="form-floating mb-3">
-                            <input
-                              type="number"
-                              className={`form-control ${
-                                errors.amount && "is-invalid"
-                              }`}
-                              id="floatingInput"
-                              placeholder="Amount"
-                              step="0.01"
-                              min="0"
-                              {...register("amount")}
-                            />
-                            <label htmlFor="floatingInput">Amount</label>
+                            {errors.title && (
+                              <div className="invalid-feedback d-block">
+                                {errors.title.message}
+                              </div>
+                            )}
                           </div>
-                          {errors.amount && (
-                            <div className="invalid-feedback d-block">
-                              {errors.amount.message}
+                          <div className="col-sm-12 col-lg-4">
+                            <div className="form-floating mb-3">
+                              <input
+                                type="number"
+                                className={`form-control ${
+                                  errors.amount && "is-invalid"
+                                }`}
+                                id="floatingInput"
+                                placeholder="Amount"
+                                step="0.01"
+                                min="0"
+                                {...register("amount")}
+                              />
+                              <label htmlFor="floatingInput">Amount</label>
                             </div>
-                          )}
-                        </div>
-                        <div className="col-sm-12 col-lg-4">
-                          {dataExpensesLoading ? (
-                            <p>Loading Categories...</p>
-                          ) : (
-                            <>
-                              <SelectDropdown
-                                anyCategoryError={anyCategoryError}
-                                searchTerm={categorySearchTerm}
-                                setSearchTerm={setCategorySearchTerm}
-                                setSelectedItem={handleSetSelectedCategory}
-                                filteredItems={filteredCategories}
-                              >
-                                <small>Category</small>
-                                <p className="mb-0">
-                                  {selectedCategory === ""
-                                    ? "Click To Choose Category"
-                                    : selectedCategory}
-                                </p>
-                              </SelectDropdown>
-                              <small>
-                                <button
-                                  type="button"
-                                  className="btn btn-sm"
-                                  onClick={() =>
-                                    handleShowCategoryModalVisibility(true)
-                                  }
+                            {errors.amount && (
+                              <div className="invalid-feedback d-block">
+                                {errors.amount.message}
+                              </div>
+                            )}
+                          </div>
+                          <div className="col-sm-12 col-lg-4">
+                            {dataExpensesLoading ? (
+                              <p>Loading Categories...</p>
+                            ) : (
+                              <>
+                                <SelectDropdown
+                                  anyCategoryError={anyCategoryError}
+                                  searchTerm={categorySearchTerm}
+                                  setSearchTerm={setCategorySearchTerm}
+                                  setSelectedItem={handleSetSelectedCategory}
+                                  filteredItems={filteredCategories}
                                 >
-                                  Add New Category
-                                </button>
+                                  <small>Category</small>
+                                  <p className="mb-0">
+                                    {selectedCategory === ""
+                                      ? "Click To Choose Category"
+                                      : selectedCategory}
+                                  </p>
+                                </SelectDropdown>
+                                <small>
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm"
+                                    onClick={() =>
+                                      handleShowCategoryModalVisibility(true)
+                                    }
+                                  >
+                                    Add New Category
+                                  </button>
+                                </small>
+                                {anyCategoryError && (
+                                  <div className="invalid-feedback d-block">
+                                    Please Select or Add A New Category
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-end">
+                          <CustomToggleButton eventKey="1" direction="next">
+                            Next
+                          </CustomToggleButton>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="1">
+                      <Accordion.Header>
+                        <p className="mb-0 text-black">
+                          <FaRegCalendarAlt className="me-2 fs-5" />
+                          <span>Date, Payment Method and Status</span>
+                        </p>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <p>
+                          <small>
+                            Change date if expenses was not done today. Also
+                            payment method and status
+                          </small>
+                        </p>
+                        <div className="row">
+                          <div className="col-sm-12 col-lg-4 mb-3">
+                            <div className="form-floating">
+                              <input
+                                type="date"
+                                className={`form-control ${
+                                  errors.date && "is-invalid"
+                                }`}
+                                id="floatingInput"
+                                placeholder="Sales Date"
+                                {...register("date")}
+                              />
+                              <label htmlFor="floatingInput">Sales Date</label>
+                            </div>
+                            {errors.date && (
+                              <div className="invalid-feedback d-block">
+                                {errors.date.message}
+                              </div>
+                            )}
+                          </div>
+                          <div className="col-sm-12 col-lg-4 mb-3">
+                            <div className="form-floating">
+                              <select
+                                className={`form-select ${
+                                  errors.payment_method && "is-invalid"
+                                }`}
+                                id="floatingSelect"
+                                aria-label="label for payment method"
+                                {...register("payment_method")}
+                              >
+                                <option value="">Click Here</option>
+                                <option value="CARD">Card</option>
+                                <option value="CASH">Cash</option>
+                                <option value="BANK_TRANSFER">
+                                  Bank Transfer
+                                </option>
+                              </select>
+                              <label htmlFor="floatingSelect">
+                                Select Payment method
+                              </label>
+                            </div>
+                            {errors.payment_method && (
+                              <div className="invalid-feedback d-block">
+                                {errors.payment_method.message}
+                              </div>
+                            )}
+                          </div>
+                          <div className="col-sm-12 col-lg-4 mb-3">
+                            <div className="form-floating">
+                              <select
+                                className={`form-select ${
+                                  errors.payment_status && "is-invalid"
+                                }`}
+                                id="floatingSelect"
+                                aria-label="label for payment status"
+                                {...register("payment_status")}
+                              >
+                                <option value="">Click Here</option>
+                                <option value="PAID">Paid</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="PARTIALLY_PAID">
+                                  Partially Paid
+                                </option>
+                              </select>
+                              <label htmlFor="floatingSelect">
+                                Select Payment Status
+                              </label>
+                            </div>
+                            {errors.payment_status && (
+                              <div className="invalid-feedback d-block">
+                                {errors.payment_status.message}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-between">
+                          <CustomToggleButton eventKey="0" direction="previous">
+                            Previous
+                          </CustomToggleButton>
+                          <CustomToggleButton eventKey="2" direction="next">
+                            Next
+                          </CustomToggleButton>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="2">
+                      <Accordion.Header>
+                        <p className="mb-0 text-black">
+                          <FaReceipt className="me-2 fs-5" />
+                          <span>File Attachment (Optional)</span>
+                        </p>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <div className="row">
+                          <div className="col-12">
+                            <p>
+                              <small>
+                                You can upload up to 3 files, each less than
+                                3MB. Accepted file types include images, PDFs,
+                                and Excel files.
                               </small>
-                              {anyCategoryError && (
-                                <div className="invalid-feedback d-block">
-                                  Please Select or Add A New Category
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-end">
-                        <CustomToggleButton eventKey="1" direction="next">
-                          Next
-                        </CustomToggleButton>
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                  <Accordion.Item eventKey="1">
-                    <Accordion.Header>
-                      <p className="mb-0 text-black">
-                        <FaRegCalendarAlt className="me-2 fs-5" />
-                        <span>Date, Payment Method and Status</span>
-                      </p>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <p>
-                        <small>
-                          Change date if expenses was not done today. Also
-                          payment method and status
-                        </small>
-                      </p>
-                      <div className="row">
-                        <div className="col-sm-12 col-lg-4 mb-3">
-                          <div className="form-floating">
-                            <input
-                              type="date"
-                              className={`form-control ${
-                                errors.date && "is-invalid"
-                              }`}
-                              id="floatingInput"
-                              placeholder="Sales Date"
-                              {...register("date")}
+                            </p>
+                            <FileDropzone
+                              files={files}
+                              setFiles={setFiles}
+                              accept={{
+                                "image/*": [],
+                                "application/pdf": [],
+                                "application/vnd.ms-excel": [],
+                              }}
+                              maxFiles={3}
                             />
-                            <label htmlFor="floatingInput">Sales Date</label>
                           </div>
-                          {errors.date && (
-                            <div className="invalid-feedback d-block">
-                              {errors.date.message}
-                            </div>
-                          )}
                         </div>
-                        <div className="col-sm-12 col-lg-4 mb-3">
-                          <div className="form-floating">
-                            <select
-                              className={`form-select ${
-                                errors.payment_method && "is-invalid"
-                              }`}
-                              id="floatingSelect"
-                              aria-label="label for payment method"
-                              {...register("payment_method")}
-                            >
-                              <option value="">Click Here</option>
-                              <option value="CARD">Card</option>
-                              <option value="CASH">Cash</option>
-                              <option value="BANK_TRANSFER">
-                                Bank Transfer
-                              </option>
-                            </select>
-                            <label htmlFor="floatingSelect">
-                              Select Payment method
-                            </label>
+                        <div className="d-flex justify-content-between">
+                          <CustomToggleButton eventKey="1" direction="previous">
+                            Previous
+                          </CustomToggleButton>
+                          <CustomToggleButton eventKey="3" direction="next">
+                            Next
+                          </CustomToggleButton>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="3">
+                      <Accordion.Header>
+                        <p className="mb-0 text-black">
+                          <TfiWrite className="me-2 fs-5" />
+                          <span>Additional Notes (Optional)</span>
+                        </p>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <p>
+                          <small>
+                            Add any additional notes for reference (Optional)
+                          </small>
+                        </p>
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="form-floating mb-3">
+                              <textarea
+                                className={`form-control ${
+                                  errors.additional_notes && "is-invalid"
+                                }`}
+                                placeholder="Leave Additional Notes"
+                                id="floatingTextarea"
+                                style={{ height: "150px" }}
+                                {...register("additional_notes")}
+                              ></textarea>
+                              <label htmlFor="floatingTextarea">
+                                Additional Notes
+                              </label>
+                            </div>
+                            {errors.additional_notes && (
+                              <div className="invalid-feedback d-block">
+                                {errors.additional_notes.message}
+                              </div>
+                            )}
                           </div>
-                          {errors.payment_method && (
-                            <div className="invalid-feedback d-block">
-                              {errors.payment_method.message}
-                            </div>
-                          )}
                         </div>
-                        <div className="col-sm-12 col-lg-4 mb-3">
-                          <div className="form-floating">
-                            <select
-                              className={`form-select ${
-                                errors.payment_status && "is-invalid"
-                              }`}
-                              id="floatingSelect"
-                              aria-label="label for payment status"
-                              {...register("payment_status")}
-                            >
-                              <option value="">Click Here</option>
-                              <option value="PAID">Paid</option>
-                              <option value="PENDING">Pending</option>
-                              <option value="PARTIALLY_PAID">
-                                Partially Paid
-                              </option>
-                            </select>
-                            <label htmlFor="floatingSelect">
-                              Select Payment Status
-                            </label>
-                          </div>
-                          {errors.payment_status && (
-                            <div className="invalid-feedback d-block">
-                              {errors.payment_status.message}
-                            </div>
-                          )}
+                        <div className="d-flex justify-content-between">
+                          <CustomToggleButton eventKey="2" direction="previous">
+                            Previous
+                          </CustomToggleButton>
                         </div>
-                      </div>
-                      <div className="d-flex justify-content-between">
-                        <CustomToggleButton eventKey="0" direction="previous">
-                          Previous
-                        </CustomToggleButton>
-                        <CustomToggleButton eventKey="2" direction="next">
-                          Next
-                        </CustomToggleButton>
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                  <Accordion.Item eventKey="2">
-                    <Accordion.Header>
-                      <p className="mb-0 text-black">
-                        <FaReceipt className="me-2 fs-5" />
-                        <span>File Attachment (Optional)</span>
-                      </p>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <div className="row">
-                        <div className="col-12">
-                          <p>
-                            <small>
-                              You can upload up to 3 files, each less than 3MB.
-                              Accepted file types include images, PDFs, and
-                              Excel files.
-                            </small>
-                          </p>
-                          <FileDropzone
-                            files={files}
-                            setFiles={setFiles}
-                            accept={{
-                              "image/*": [],
-                              "application/pdf": [],
-                              "application/vnd.ms-excel": [],
-                            }}
-                            maxFiles={3}
-                          />
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-between">
-                        <CustomToggleButton eventKey="1" direction="previous">
-                          Previous
-                        </CustomToggleButton>
-                        <CustomToggleButton eventKey="3" direction="next">
-                          Next
-                        </CustomToggleButton>
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                  <Accordion.Item eventKey="3">
-                    <Accordion.Header>
-                      <p className="mb-0 text-black">
-                        <TfiWrite className="me-2 fs-5" />
-                        <span>Additional Notes (Optional)</span>
-                      </p>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <p>
-                        <small>
-                          Add any additional notes for reference (Optional)
-                        </small>
-                      </p>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="form-floating mb-3">
-                            <textarea
-                              className={`form-control ${
-                                errors.additional_notes && "is-invalid"
-                              }`}
-                              placeholder="Leave Additional Notes"
-                              id="floatingTextarea"
-                              style={{ height: "150px" }}
-                              {...register("additional_notes")}
-                            ></textarea>
-                            <label htmlFor="floatingTextarea">
-                              Additional Notes
-                            </label>
-                          </div>
-                          {errors.additional_notes && (
-                            <div className="invalid-feedback d-block">
-                              {errors.additional_notes.message}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-between">
-                        <CustomToggleButton eventKey="2" direction="previous">
-                          Previous
-                        </CustomToggleButton>
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                </Accordion>
-                <div className="row">
-                  <div className="col-12 mt-3">
-                    <button type="submit" className="btn btn-primary m-2">
-                      <FaPlus className="me-2" />
-                      Save Expenses
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary m-2"
-                      onClick={handleResetForm}
-                    >
-                      <GrPowerReset className="me-2" />
-                      Reset Form
-                    </button>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="row">
+                    <div className="col-12 mt-3">
+                      <button type="submit" className="btn btn-primary m-2">
+                        <FaPlus className="me-2" />
+                        Save Expenses
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary m-2"
+                        onClick={handleResetForm}
+                      >
+                        <GrPowerReset className="me-2" />
+                        Reset Form
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              )}
             </div>
           </div>
         </div>

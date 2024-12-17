@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import { Expense } from "../../models/expenseModel.js";
+import { fileDeletion } from "../../utilities/fileDeletion.js";
 import { addExpenseValidationSchema } from "../../validations/validationSchema.js";
 
 export const editExpense = async (args, req) => {
@@ -16,17 +18,34 @@ export const editExpense = async (args, req) => {
     throw new Error(`Validation error: ${error.details[0].message}`);
   }
 
+  // first find the expense
+  const oldExpense = await Expense.findOne({
+    _id: expenseId,
+    company: companyId,
+  });
+
+  if (!oldExpense) {
+    throw new Error("This Expense does not exist.");
+  }
+
   //   update the expense document
-  const expense = await Expense.findOneAndUpdate(
+  const updatedExpense = await Expense.findOneAndReplace(
     { _id: expenseId, company: companyId },
-    { ...expenseInfo },
-    { new: true }
+    { ...expenseInfo, company: companyId },
+    { returnDocument: "after" }
   );
 
-  if (!expense) {
+  if (!updatedExpense) {
     throw new Error("Error updating expense. Please try again");
   }
 
+  // Delete old pictures
+  // retrieve the old mediaUrl
+  const mediaUrl = oldExpense.mediaUrl;
+  if (mediaUrl.length > 0) {
+    mediaUrl.forEach((url) => fileDeletion(url));
+  }
+
   // return expense
-  return expense.populate("company");
+  return updatedExpense.populate("company");
 };

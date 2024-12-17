@@ -36,6 +36,14 @@ export const ADD_EXPENSES = gql(/* GraphQL */ `
   }
 `);
 
+export const UPDATE_EXPENSES = gql(`
+  mutation UpdateExpense($expenseId: String!, $expenseInfo: ADDEXPENSEINPUT!) {
+    updateExpense(expenseId: $expenseId, expenseInfo: $expenseInfo) {
+      ...ExpenseFields
+    }
+  }
+`);
+
 export const DELETE_EXPENSES = gql(/* GraphQL */ `
   mutation DeleteExpense($expenseId: String!) {
     removeExpense(expenseId: $expenseId) {

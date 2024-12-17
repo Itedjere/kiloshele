@@ -9,20 +9,22 @@ export default function ServerError({
   url: string;
 }) {
   return (
-    <div className="row">
-      <div className="col-12 text-center">
-        <img
-          src={ImageServerDown}
-          className="img-fluid mb-3"
-          width="300"
-          alt=""
-        />
-        <h3>An error occurred</h3>
-        <p>An error occurred on our server. {errorMessage}</p>
-        <a href={url} className="btn btn-primary">
-          <FiRefreshCcw className="me-1" />
-          Please Try Again
-        </a>
+    <div className="container-fluid pt-4">
+      <div className="row">
+        <div className="col-12 text-center">
+          <img
+            src={ImageServerDown}
+            className="img-fluid mb-3"
+            width="300"
+            alt=""
+          />
+          <h3>An error occurred</h3>
+          <p>{errorMessage}</p>
+          <a href={url} className="btn btn-primary">
+            <FiRefreshCcw className="me-1" />
+            Please Try Again
+          </a>
+        </div>
       </div>
     </div>
   );

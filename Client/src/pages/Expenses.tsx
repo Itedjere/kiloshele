@@ -22,6 +22,7 @@ import { formatPrice, handleApolloErrors } from "../utitlities/utils";
 import DeleteModal from "../components/company/Modals/DeleteModal";
 import { DELETE_EXPENSES } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
+import ServerError from "../components/company/Network/ServerError";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -108,6 +109,15 @@ export default function Expenses() {
       }
     }
   };
+
+  if (error)
+    return (
+      <ServerError
+        errorMessage={error.message}
+        url={`${import.meta.env.VITE_CLIENT_URL}`}
+      />
+    );
+
   return (
     <>
       {loading ? (

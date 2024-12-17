@@ -40,7 +40,7 @@ export default function AddExpenses() {
 
   const [addExpenses] = useMutation(ADD_EXPENSES, {
     update(cache, { data }) {
-      if (!data) return;
+      if (!data || !data.addExpense) return;
       cache.modify({
         fields: {
           expensesCategories(existingCategories = []) {

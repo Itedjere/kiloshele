@@ -47,3 +47,11 @@ export const GET_EXPENSES = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const GET_ONE_EXPENSE = gql(`
+  query FetchExpense($expenseId: String!) {
+    expenseOne(expenseId: $expenseId) {
+        ...ExpenseFields
+    }
+}
+`);
