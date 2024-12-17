@@ -20,6 +20,14 @@ export const GET_PRODUCTS = gql(/* GraphQL */ `
   }
 `);
 
+export const GET_ONE_PRODUCT = gql(`
+  query FetchProduct($productId: String!) {
+    productOne(productId: $productId) {
+        ...ProductFields
+    }
+  }
+`);
+
 export const GET_EXPENSES = gql(/* GraphQL */ `
   query Expenses {
     expenses {

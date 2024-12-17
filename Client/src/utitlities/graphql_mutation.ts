@@ -60,6 +60,14 @@ export const ADD_PRODUCTS = gql(/* GraphQL */ `
   }
 `);
 
+export const UPDATE_PRODUCT = gql(`
+  mutation UpdateProduct($productId: String!, $productInfo: ADDPRODUCTINPUT!) {
+    updateProduct(productId: $productId, productInfo: $productInfo) {
+      ...ProductFields
+    }
+  }
+`);
+
 export const DELETE_PRODUCT = gql(/* GraphQL */ `
   mutation DeleteProduct($productId: String!) {
     removeProduct(productId: $productId) {

@@ -27,6 +27,7 @@ import ChangePassword from "./pages/ChangePassword";
 import PageLoading from "./components/company/LoadingSkeletons/PageLoading";
 import { useAuthenticatedContext } from "./components/company/Contexts/AuthenticationContext";
 import UpdateExpenses from "./pages/UpdateExpenses";
+import UpdateProduct from "./pages/UpdateProduct";
 
 function App() {
   const { auth, authLoading } = useAuthenticatedContext();
@@ -53,6 +54,10 @@ function App() {
               <Route
                 path="/add-products"
                 element={auth ? <AddProduct /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/products/:productId/edit"
+                element={auth ? <UpdateProduct /> : <Navigate to="/login" />}
               />
               <Route
                 path="/add-sales"

@@ -2,17 +2,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { FaTrash } from "react-icons/fa6";
 import { IoIosSave } from "react-icons/io";
 import { MdCloseFullscreen } from "react-icons/md";
 import { TbCategoryPlus } from "react-icons/tb";
 import { OtherServiceFeeFormDataType } from "../../../utitlities/typesUtils";
-import { otherServiceFeeSchema } from "../../../utitlities/utils";
+import {
+  generateRandomString,
+  otherServiceFeeSchema,
+} from "../../../utitlities/utils";
 import OtherServiceFees from "../Products/OtherServiceFees";
 
 interface ServiceDurationFeesModalProps {
   otherFees: OtherServiceFeeFormDataType[];
-  handleRemoveOtherServiceFee: (serviceFeeId: number | undefined) => void;
+  handleRemoveOtherServiceFee: (serviceFeeId: string | undefined) => void;
   setOtherFees: React.Dispatch<
     React.SetStateAction<OtherServiceFeeFormDataType[]>
   >;
@@ -38,7 +40,7 @@ export default function ServiceDurationFeesModal({
 
   const onSubmit: SubmitHandler<OtherServiceFeeFormDataType> = async (data) => {
     const formData: OtherServiceFeeFormDataType = {
-      id: Date.now(),
+      id: generateRandomString(12),
       ...data,
     };
     // Submit form Data to the parent

@@ -308,7 +308,9 @@ export default function Products() {
         Tags
         <ul className="list-group mb-3">
           <li className="list-group-item">
-            {productSelected?.tags && productSelected.tags.join(", ")}
+            {productSelected?.tags && productSelected.tags.length > 0
+              ? productSelected.tags.join(", ")
+              : "NIL"}
           </li>
         </ul>
         Photos
@@ -317,7 +319,7 @@ export default function Products() {
         </ul>
       </CustomOffCanvas>
       <DeleteModal
-        itemName="Product"
+        itemName={productToDelete?.type === "PRODUCT" ? "Product" : "Service"}
         isDeleting={isDeleting}
         showDeleteModal={showDeleteModal}
         handleDelete={handleRemoveProduct}

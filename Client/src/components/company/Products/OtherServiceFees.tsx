@@ -3,7 +3,7 @@ import { OtherServiceFeeFormDataType } from "../../../utitlities/typesUtils";
 
 interface OtherServiceFeesProps {
   otherFees: OtherServiceFeeFormDataType[];
-  handleRemoveOtherServiceFee: (serviceFeeId: number | undefined) => void;
+  handleRemoveOtherServiceFee: (serviceFeeId: string | undefined) => void;
 }
 
 export default function OtherServiceFees({

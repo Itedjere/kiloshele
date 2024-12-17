@@ -22,11 +22,13 @@ const documents = {
     "\n  mutation UpdateExpense($expenseId: String!, $expenseInfo: ADDEXPENSEINPUT!) {\n    updateExpense(expenseId: $expenseId, expenseInfo: $expenseInfo) {\n      ...ExpenseFields\n    }\n  }\n": types.UpdateExpenseDocument,
     "\n  mutation DeleteExpense($expenseId: String!) {\n    removeExpense(expenseId: $expenseId) {\n      _id\n    }\n  }\n": types.DeleteExpenseDocument,
     "\n  mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {\n    addProduct(productInfo: $productInfo) {\n      category\n    }\n  }\n": types.AddProductDocument,
+    "\n  mutation UpdateProduct($productId: String!, $productInfo: ADDPRODUCTINPUT!) {\n    updateProduct(productId: $productId, productInfo: $productInfo) {\n      ...ProductFields\n    }\n  }\n": types.UpdateProductDocument,
     "\n  mutation DeleteProduct($productId: String!) {\n    removeProduct(productId: $productId) {\n      _id\n    }\n  }\n": types.DeleteProductDocument,
     "\n  mutation AddSales($saleInfo: ADDSALEINFO!) {\n    addSale(saleInfo: $saleInfo) {\n      _id\n      staff_assigned\n      additional_note\n      customer_name\n      customer_phone\n      customer_reference\n      date\n      payment_method\n      payment_status\n      itemSold {\n        _id\n        cost_price\n        selling_price\n        quantity\n      }\n    }\n  }\n": types.AddSalesDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
     "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n": types.ProductsDocument,
+    "\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n": types.FetchProductDocument,
     "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n": types.ExpensesDocument,
     "\n  query FetchExpense($expenseId: String!) {\n    expenseOne(expenseId: $expenseId) {\n        ...ExpenseFields\n    }\n}\n": types.FetchExpenseDocument,
 };
@@ -80,6 +82,10 @@ export function gql(source: "\n  mutation AddProduct($productInfo: ADDPRODUCTINP
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  mutation UpdateProduct($productId: String!, $productInfo: ADDPRODUCTINPUT!) {\n    updateProduct(productId: $productId, productInfo: $productInfo) {\n      ...ProductFields\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProduct($productId: String!, $productInfo: ADDPRODUCTINPUT!) {\n    updateProduct(productId: $productId, productInfo: $productInfo) {\n      ...ProductFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation DeleteProduct($productId: String!) {\n    removeProduct(productId: $productId) {\n      _id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteProduct($productId: String!) {\n    removeProduct(productId: $productId) {\n      _id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -97,6 +103,10 @@ export function gql(source: "\n  query ProductCategories {\n    productsCategori
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n"): (typeof documents)["\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n"): (typeof documents)["\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -42,7 +42,7 @@ export default function ProductItem({
       <div className="row my-3">
         <div className="col-12 d-flex justify-content-between">
           <Link
-            to={`products/${product._id}/edit`}
+            to={`/products/${product._id}/edit`}
             className="btn btn-sm btn-primary"
           >
             <FaRegKeyboard className="me-1" />

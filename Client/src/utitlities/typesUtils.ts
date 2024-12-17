@@ -36,7 +36,7 @@ export type AddProductsFormDataType = {
 };
 
 export type OtherServiceFeeFormDataType = {
-  id?: number;
+  id?: string;
   duration: string;
   cost_price: number;
   selling_price: number;

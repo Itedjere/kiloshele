@@ -264,7 +264,7 @@ export default function AddProduct() {
     setActiveAccordion("0");
   };
 
-  const handleRemoveOtherServiceFee = (feeId: number | undefined) => {
+  const handleRemoveOtherServiceFee = (feeId: string | undefined) => {
     if (feeId !== undefined) {
       setOtherFees(otherFees.filter((fees) => fees.id !== feeId));
     }

@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import { Product } from "../../models/productModel.js";
+import { fileDeletion } from "../../utilities/fileDeletion.js";
 import { addProductValidationSchema } from "../../validations/validationSchema.js";
 
 export const editProduct = async (args, req) => {
@@ -16,17 +18,34 @@ export const editProduct = async (args, req) => {
     throw new Error(`Validation error: ${error.details[0].message}`);
   }
 
+  // first find the product
+  const oldProduct = await Product.findOne({
+    _id: productId,
+    company: companyId,
+  });
+
+  if (!oldProduct) {
+    throw new Error("This Product does not exist.");
+  }
+
   //   update the product document
-  const product = await Product.findOneAndUpdate(
+  const productUpdated = await Product.findOneAndReplace(
     { _id: productId, company: companyId },
-    { ...productInfo },
-    { new: true }
+    { ...productInfo, company: companyId },
+    { returnDocument: "after" }
   );
 
-  if (!product) {
+  if (!productUpdated) {
     throw new Error("Error updating product. Please try again");
   }
 
+  // Delete old pictures
+  // retrieve the old mediaUrl
+  const mediaUrl = oldProduct.photos;
+  if (mediaUrl.length > 0) {
+    mediaUrl.forEach((url) => fileDeletion(url));
+  }
+
   // return product
-  return product.populate("company");
+  return productUpdated.populate("company");
 };

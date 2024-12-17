@@ -100,6 +100,7 @@ export const typeDefs = `#graphql
         expenseOne(expenseId: String!): Expense!
         expensesCategories: [String!]!
         products(searchTerm: String, limit: Int!, offset: Int!): [Product!]!
+        productOne(productId: String!): Product!
         productsCategories: [String!]!
         sales: [Sale!]!
     }
