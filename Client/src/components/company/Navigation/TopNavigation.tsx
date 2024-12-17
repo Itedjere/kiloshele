@@ -74,7 +74,7 @@ export default function TopNavigation() {
             onClick={() => handleNotificationDropdown("notification")}
           >
             <FaBell className="me-lg-2" />
-            <span className="d-none d-lg-inline-flex ms-3">Notificatin</span>
+            <span className="d-none d-lg-inline-flex ms-3">Notification</span>
             <IoIosArrowDown className="dropdown-arrow" />
           </a>
           <div className="dropdown-menu dropdown-notifications dropdown-menu-end bg-white border-0 shadow rounded m-0">
