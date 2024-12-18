@@ -103,6 +103,7 @@ export const typeDefs = `#graphql
         productOne(productId: String!): Product!
         productsCategories: [String!]!
         sales: [Sale!]!
+        saleOne(saleId: String!): Sale!
     }
 
     type Mutation {

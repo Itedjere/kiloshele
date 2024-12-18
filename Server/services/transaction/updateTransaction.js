@@ -29,5 +29,7 @@ export const updateTransaction = async (args, req) => {
   }
 
   // return sale
-  return Sale.findById(sale._id).populate("company").populate("product");
+  return Sale.findById(sale._id)
+    .populate("company")
+    .populate("itemSold.product", "name category type");
 };

@@ -79,21 +79,15 @@ export const DELETE_PRODUCT = gql(/* GraphQL */ `
 export const ADD_SALES = gql(/* GraphQL */ `
   mutation AddSales($saleInfo: ADDSALEINFO!) {
     addSale(saleInfo: $saleInfo) {
-      _id
-      staff_assigned
-      additional_note
-      customer_name
-      customer_phone
-      customer_reference
-      date
-      payment_method
-      payment_status
-      itemSold {
-        _id
-        cost_price
-        selling_price
-        quantity
-      }
+      ...SaleFields
+    }
+  }
+`);
+
+export const UPDATE_SALE = gql(`
+  mutation UpdateSale($saleId: String!, $saleInfo: ADDSALEINFO!) {
+    updateProduct(saleId: $saleId, saleInfo: $saleInfo) {
+      ...SaleFields
     }
   }
 `);
