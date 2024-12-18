@@ -10,7 +10,7 @@ export const deleteTransaction = async (args, req) => {
     throw new Error("Invalid Sale ID.");
   }
 
-  // check if friend exists
+  // check if sale exists
   const sale = await Sale.findOne({
     company: companyId,
     _id: saleId,

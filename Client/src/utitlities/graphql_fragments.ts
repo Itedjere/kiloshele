@@ -39,3 +39,28 @@ export const PRODUCT_FRAGMENT = gql(`
       type
     }
 `);
+
+export const SALE_FRAGMENT = gql(`
+  fragment SaleFields on Sale {
+    _id
+    itemSold {
+      product {
+        name
+        category
+        type
+      }
+      cost_price
+      selling_price
+      quantity
+      _id
+    }
+    customer_name
+    customer_phone
+    customer_reference
+    date
+    payment_method
+    payment_status
+    staff_assigned
+    additional_note
+  }
+`);

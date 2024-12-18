@@ -43,3 +43,30 @@ export const GET_ONE_EXPENSE = gql(`
     }
 }
 `);
+
+export const GET_SALES = gql(`
+  query Sales {
+    sales {
+      _id
+      itemSold {
+        product {
+          name
+          category
+          type
+        }
+        cost_price
+        selling_price
+        quantity
+        _id
+      }
+      customer_name
+      customer_phone
+      customer_reference
+      date
+      payment_method
+      payment_status
+      staff_assigned
+      additional_note
+    }
+  }  
+`);

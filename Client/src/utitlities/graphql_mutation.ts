@@ -97,3 +97,11 @@ export const ADD_SALES = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const DELETE_SALE = gql(/* GraphQL */ `
+  mutation DeleteSale($saleId: String!) {
+    removeSale(saleId: $saleId) {
+      _id
+    }
+  }
+`);

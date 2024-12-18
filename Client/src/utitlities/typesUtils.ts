@@ -104,3 +104,30 @@ export type AddSalesFormDataType = {
   customer_reference?: string;
   additional_note?: string;
 };
+
+export type SalesProductType = {
+  name: string;
+  category: string;
+  type: "PRODUCT" | "SERVICE";
+};
+
+export type Item_SoldType = {
+  _id: string;
+  product: SalesProductType;
+  quantity: number;
+  cost_price: number;
+  selling_price: number;
+};
+
+export type SalesType = AddSalesFormDataType & {
+  _id: string;
+  date: string;
+  payment_method: "CARD" | "CASH" | "BANK_TRANSFER";
+  payment_status: "PAID" | "PENDING" | "PARTIALLY_PAID";
+  staff_assigned: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_reference: string;
+  additional_note: string;
+  itemSold: Item_SoldType[];
+};

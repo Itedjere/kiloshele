@@ -78,21 +78,21 @@ export const typeDefs = `#graphql
         product: Product!
         quantity: Int!
         cost_price: Float!
-        selling_price: Float
+        selling_price: Float!
     }
 
     type Sale {
         _id: String!
         company: Company!
         itemSold: [ItemSoldType!]!
-        customer_name: String
-        customer_phone: String
-        customer_reference: String
-        staff_assigned: String
+        customer_name: String!
+        customer_phone: String!
+        customer_reference: String!
+        staff_assigned: String!
         date: Date!
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
-        additional_note: String
+        additional_note: String!
     }
 
     type Query {
