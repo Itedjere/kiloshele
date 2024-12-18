@@ -53,14 +53,6 @@ export const typeDefs = `#graphql
         selling_price: Float!
     }
 
-    type ItemSoldType {
-        _id: String!
-        product: String!
-        quantity: Int!
-        cost_price: Float!
-        selling_price: Float
-    }
-
     type Product {
         _id: String!
         company: Company!
@@ -79,6 +71,14 @@ export const typeDefs = `#graphql
         tags: [String!]!
         photos: [String!]!
         createdAt: Date!
+    }
+
+    type ItemSoldType {
+        _id: String!
+        product: Product!
+        quantity: Int!
+        cost_price: Float!
+        selling_price: Float
     }
 
     type Sale {
