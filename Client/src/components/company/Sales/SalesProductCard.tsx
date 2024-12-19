@@ -1,19 +1,19 @@
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa6";
-import { ItemSoldType } from "../../../utitlities/typesUtils";
+import { Item_SoldType } from "../../../utitlities/typesUtils";
 import { formatPrice } from "../../../utitlities/utils";
 
 interface SalesProductCardProps {
-  product: ItemSoldType;
+  product: Item_SoldType;
   handleItemSoldPriceChangeOnTyping: (
     value: string,
-    product: ItemSoldType
+    product: Item_SoldType
   ) => void;
   handleItemSoldQuantityChange: (
     changeType: "INCREMENT" | "DECREMENT",
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => void;
-  handleRemoveItemSold: (itemSold: ItemSoldType) => void;
+  handleRemoveItemSold: (itemSold: Item_SoldType) => void;
 }
 
 export default function SalesProductCard({
@@ -25,17 +25,17 @@ export default function SalesProductCard({
   // Usage in Input
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => {
     handleItemSoldPriceChangeOnTyping(event.target.value, itemSold);
   };
 
   return (
     <div className="card">
-      <div className="card-header text-black">{product.name}</div>
+      <div className="card-header text-black">{product.product.name}</div>
       <div className="card-body">
         <small>
-          <p className="mb-2">Category: {product.category}</p>
+          <p className="mb-2">Category: {product.product.category}</p>
           <p className="mb-2">Quantity Stock: {product.quantity}</p>
           <p className="mb-2">Cost Price: {formatPrice(product.cost_price)}</p>
           <p className="mb-2">Selling Price:</p>
@@ -55,7 +55,7 @@ export default function SalesProductCard({
             >
               <AiOutlineMinus />
             </span>
-            <span className="text-quantity">{product.quantity_sold}</span>
+            <span className="text-quantity">{product.quantity}</span>
             <span
               className="btn btn-primary"
               onClick={() => handleItemSoldQuantityChange("INCREMENT", product)}

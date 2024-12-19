@@ -1,15 +1,15 @@
 import { FaTrash } from "react-icons/fa6";
-import { ItemSoldType } from "../../../utitlities/typesUtils";
+import { Item_SoldType } from "../../../utitlities/typesUtils";
 import { useEffect, useState } from "react";
 import { formatPrice } from "../../../utitlities/utils";
 
 interface SalesProductCardProps {
-  product: ItemSoldType;
+  product: Item_SoldType;
   handleItemSoldPriceChangeOnTyping: (
     value: string,
-    product: ItemSoldType
+    product: Item_SoldType
   ) => void;
-  handleRemoveItemSold: (itemSold: ItemSoldType) => void;
+  handleRemoveItemSold: (itemSold: Item_SoldType) => void;
 }
 
 export default function SalesServiceCard({
@@ -25,7 +25,7 @@ export default function SalesServiceCard({
 
   const handlePriceChangeByTyping = (
     event: React.ChangeEvent<HTMLInputElement>,
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => {
     handleItemSoldPriceChangeOnTyping(event.target.value, itemSold);
     setSelectedOption(parseInt(event.target.value) || 0);
@@ -37,10 +37,10 @@ export default function SalesServiceCard({
 
   return (
     <div className="card">
-      <div className="card-header text-black">{product.name}</div>
+      <div className="card-header text-black">{product.product.name}</div>
       <div className="card-body">
         <small>
-          <p className="mb-2">Category: {product.category}</p>
+          <p className="mb-2">Category: {product.product.category}</p>
           <p className="mb-2">Cost Price: {formatPrice(product.cost_price)}</p>
           <p className="mb-2">Selling Price:</p>
           <div className="row">
@@ -57,7 +57,7 @@ export default function SalesServiceCard({
                 ></input>
               </div>
             </div>
-            {product.other_fees.length > 0 && (
+            {product.other_fees && product.other_fees.length > 0 && (
               <div className="col-sm-12">
                 <select
                   className="form-select form-select-sm mb-3"
