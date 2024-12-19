@@ -86,7 +86,7 @@ export const ADD_SALES = gql(/* GraphQL */ `
 
 export const UPDATE_SALE = gql(`
   mutation UpdateSale($saleId: String!, $saleInfo: ADDSALEINFO!) {
-    updateProduct(saleId: $saleId, saleInfo: $saleInfo) {
+    updateSale(saleId: $saleId, saleInfo: $saleInfo) {
       ...SaleFields
     }
   }

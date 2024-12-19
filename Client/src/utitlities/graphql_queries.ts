@@ -57,5 +57,5 @@ export const GET_ONE_SALE = gql(`
     saleOne(saleId: $saleId) {
         ...SaleFields
     }
-}
+  }
 `);

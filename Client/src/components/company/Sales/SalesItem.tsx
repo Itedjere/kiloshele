@@ -60,7 +60,7 @@ export default function SalesItem({
       <div className="row my-3">
         <div className="col-12 d-flex justify-content-between">
           <Link
-            to={`sales/${sale._id}/edit`}
+            to={`/sales/${sale._id}/edit`}
             className="btn btn-sm btn-primary"
           >
             <FaRegKeyboard className="me-1" />

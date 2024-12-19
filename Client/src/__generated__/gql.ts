@@ -26,6 +26,7 @@ const documents = {
     "\n  mutation UpdateProduct($productId: String!, $productInfo: ADDPRODUCTINPUT!) {\n    updateProduct(productId: $productId, productInfo: $productInfo) {\n      ...ProductFields\n    }\n  }\n": types.UpdateProductDocument,
     "\n  mutation DeleteProduct($productId: String!) {\n    removeProduct(productId: $productId) {\n      _id\n    }\n  }\n": types.DeleteProductDocument,
     "\n  mutation AddSales($saleInfo: ADDSALEINFO!) {\n    addSale(saleInfo: $saleInfo) {\n      ...SaleFields\n    }\n  }\n": types.AddSalesDocument,
+    "\n  mutation UpdateSale($saleId: String!, $saleInfo: ADDSALEINFO!) {\n    updateSale(saleId: $saleId, saleInfo: $saleInfo) {\n      ...SaleFields\n    }\n  }\n": types.UpdateSaleDocument,
     "\n  mutation DeleteSale($saleId: String!) {\n    removeSale(saleId: $saleId) {\n      _id\n    }\n  }\n": types.DeleteSaleDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
@@ -34,7 +35,7 @@ const documents = {
     "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n": types.ExpensesDocument,
     "\n  query FetchExpense($expenseId: String!) {\n    expenseOne(expenseId: $expenseId) {\n        ...ExpenseFields\n    }\n}\n": types.FetchExpenseDocument,
     "\n  query Sales {\n    sales {\n      ...SaleFields\n    }\n  }  \n": types.SalesDocument,
-    "\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n}\n": types.FetchSaleDocument,
+    "\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n  }\n": types.FetchSaleDocument,
 };
 
 /**
@@ -102,6 +103,10 @@ export function gql(source: "\n  mutation AddSales($saleInfo: ADDSALEINFO!) {\n 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  mutation UpdateSale($saleId: String!, $saleInfo: ADDSALEINFO!) {\n    updateSale(saleId: $saleId, saleInfo: $saleInfo) {\n      ...SaleFields\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateSale($saleId: String!, $saleInfo: ADDSALEINFO!) {\n    updateSale(saleId: $saleId, saleInfo: $saleInfo) {\n      ...SaleFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation DeleteSale($saleId: String!) {\n    removeSale(saleId: $saleId) {\n      _id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteSale($saleId: String!) {\n    removeSale(saleId: $saleId) {\n      _id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -134,7 +139,7 @@ export function gql(source: "\n  query Sales {\n    sales {\n      ...SaleFields
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n}\n"): (typeof documents)["\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n}\n"];
+export function gql(source: "\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n  }\n"): (typeof documents)["\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

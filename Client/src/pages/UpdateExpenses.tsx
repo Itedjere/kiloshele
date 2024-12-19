@@ -531,7 +531,7 @@ export default function UpdateExpenses() {
                     <div className="col-12 mt-3">
                       <button type="submit" className="btn btn-primary m-2">
                         <FaPlus className="me-2" />
-                        Save Expenses
+                        Update Expenses
                       </button>
                       <button
                         type="button"

@@ -11,7 +11,7 @@ import SalesSummary from "../components/company/Sales/SalesSummary";
 import ProductDropdownSelectMenu from "../components/company/DropdownSelectMenus/ProductDropdownSelectMenu";
 import {
   AddSalesFormDataType,
-  ItemSoldType,
+  Item_SoldType,
   ItemsToSellType,
   ProductType,
   SalesSummaryType,
@@ -28,7 +28,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { addSaleSchema, handleApolloErrors } from "../utitlities/utils";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
-import { ADD_SALES } from "../utitlities/graphql_mutation";
+import { UPDATE_SALE } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import { PaymentMethod, PaymentStatus } from "../__generated__/graphql";
 import { useParams } from "react-router";
@@ -41,7 +41,7 @@ export default function UpdateSales() {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [offset, setOffset] = useState<number>(0);
-  const [selectedProducts, setSelectedProducts] = useState<SalesType[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<Item_SoldType[]>([]);
   const [noProductSelectedError, setNoProductSelectedError] = useState(false);
   const [salesSummary, setSalesSummary] = useState<SalesSummaryType>({
     potential_profit: 0,
@@ -67,9 +67,9 @@ export default function UpdateSales() {
 
     if (selectedProducts.length > 0) {
       selectedProducts.forEach((product) => {
-        total_quantity += product.quantity_sold;
-        total_sales += product.quantity_sold * product.selling_price;
-        total_cost += product.quantity_sold * product.cost_price;
+        total_quantity += product.quantity;
+        total_sales += product.quantity * product.selling_price;
+        total_cost += product.quantity * product.cost_price;
       });
     }
 
@@ -82,7 +82,7 @@ export default function UpdateSales() {
   }, [selectedProducts]);
 
   // Add Products
-  const [addSales] = useMutation(ADD_SALES);
+  const [updateSales] = useMutation(UPDATE_SALE);
 
   // Initial Query
   const {
@@ -165,27 +165,39 @@ export default function UpdateSales() {
 
       if (existingProduct) {
         // If the item exists, increase the quantity_sold
-        return prevSelectedProducts.map((product) =>
-          product._id === itemSold._id
+        return prevSelectedProducts.map((item) =>
+          item._id === itemSold._id
             ? {
-                ...product,
-                quantity_sold:
-                  product.quantity_sold + 1 > product.quantity
-                    ? product.quantity
-                    : product.quantity_sold + 1,
+                ...item,
+                quantity:
+                  item.product.type === "PRODUCT" ? item.quantity + 1 : 1,
               }
-            : product
+            : item
         );
       } else {
         // If the item doesn't exist, add it with quantity_sold set to 1
-        return [{ ...itemSold, quantity_sold: 1 }, ...prevSelectedProducts];
+        return [
+          {
+            _id: itemSold._id,
+            cost_price: itemSold.cost_price,
+            selling_price: itemSold.selling_price,
+            quantity: 1,
+            other_fees: itemSold.other_fees,
+            product: {
+              name: itemSold.name,
+              category: itemSold.category,
+              type: itemSold.type,
+            },
+          },
+          ...prevSelectedProducts,
+        ];
       }
     });
   };
 
   const handleItemSoldPriceChangeOnTyping = (
     value: string,
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => {
     const newPrice = parseInt(value) || 0;
 
@@ -200,33 +212,28 @@ export default function UpdateSales() {
 
   const handleItemSoldQuantityChange = (
     changeType: "INCREMENT" | "DECREMENT",
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => {
     setSelectedProducts((prevSelecedProducts) => {
-      return prevSelecedProducts.map((product) => {
-        if (product._id === itemSold._id) {
+      return prevSelecedProducts.map((item) => {
+        if (item._id === itemSold._id) {
           if (changeType === "INCREMENT") {
             return {
-              ...product,
-              quantity_sold:
-                product.quantity_sold + 1 > product.quantity
-                  ? product.quantity
-                  : product.quantity_sold + 1,
-            };
-          } else {
-            return {
-              ...product,
-              quantity_sold:
-                product.quantity_sold - 1 === 0 ? 1 : product.quantity_sold - 1,
+              ...item,
+              quantity: item.quantity + 1,
             };
           }
+          return {
+            ...item,
+            quantity: item.quantity - 1 === 0 ? 1 : item.quantity - 1,
+          };
         }
-        return product;
+        return item;
       });
     });
   };
 
-  const handleRemoveItemSold = (itemSold: ItemSoldType) => {
+  const handleRemoveItemSold = (itemSold: Item_SoldType) => {
     setSelectedProducts((prevSelectedproducts) => {
       return prevSelectedproducts.filter(
         (product) => product._id !== itemSold._id
@@ -254,7 +261,7 @@ export default function UpdateSales() {
       const sale = saleData?.saleOne;
       //   Update the form
       reset({
-        date: new Date(sale?.date).toISOString(), // Set the default value for the date
+        date: new Date(sale?.date).toISOString().split("T")[0], // Set the default value for the date
         payment_method: sale?.payment_method,
         payment_status: sale.payment_status,
         customer_name: sale.customer_name,
@@ -282,14 +289,15 @@ export default function UpdateSales() {
       return {
         cost_price: product.cost_price,
         selling_price: product.selling_price,
-        quantity: product.quantity_sold,
+        quantity: product.quantity,
         product: product._id,
       };
     });
 
     try {
-      const { data } = await addSales({
+      const { data } = await updateSales({
         variables: {
+          saleId: saleId || "",
           saleInfo: {
             ...formData,
             date: new Date(formData.date).toISOString(),
@@ -300,11 +308,11 @@ export default function UpdateSales() {
         },
       });
 
-      if (data?.addSale) {
+      if (data?.updateSale) {
         // reset the form
         handleResetForm();
         // show toast message
-        toast.success("Sales added successfully");
+        toast.success("Sales updated successfully");
       }
     } catch (error) {
       if (error instanceof ApolloError) {
@@ -338,8 +346,6 @@ export default function UpdateSales() {
 
   const handleResetForm = () => {
     // reset some defaults
-    reset();
-    setSelectedProducts([]);
     setActiveAccordion("0");
   };
 
@@ -408,7 +414,7 @@ export default function UpdateSales() {
                         <>
                           <div className="row">
                             {selectedProducts.map((selectedProduct) => {
-                              if (selectedProduct.type === "PRODUCT") {
+                              if (selectedProduct.product.type === "PRODUCT") {
                                 return (
                                   <div
                                     className="col-sm-12 col-md-4 mb-3"
@@ -744,7 +750,7 @@ export default function UpdateSales() {
                       }
                     >
                       <FaPlus className="me-2" />
-                      Save Sale
+                      Update Sale
                     </button>
                     <button
                       type="button"
