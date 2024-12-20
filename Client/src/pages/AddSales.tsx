@@ -11,7 +11,7 @@ import SalesSummary from "../components/company/Sales/SalesSummary";
 import ProductDropdownSelectMenu from "../components/company/DropdownSelectMenus/ProductDropdownSelectMenu";
 import {
   AddSalesFormDataType,
-  ItemSoldType,
+  Item_SoldType,
   ItemsToSellType,
   ProductType,
   SalesSummaryType,
@@ -39,7 +39,7 @@ export default function AddSales() {
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [hasZeroProducts, setHasZeroProducts] = useState(false);
   const [offset, setOffset] = useState<number>(0);
-  const [selectedProducts, setSelectedProducts] = useState<ItemSoldType[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<Item_SoldType[]>([]);
   const [noProductSelectedError, setNoProductSelectedError] = useState(false);
   const [salesSummary, setSalesSummary] = useState<SalesSummaryType>({
     potential_profit: 0,
@@ -55,9 +55,9 @@ export default function AddSales() {
 
     if (selectedProducts.length > 0) {
       selectedProducts.forEach((product) => {
-        total_quantity += product.quantity_sold;
-        total_sales += product.quantity_sold * product.selling_price;
-        total_cost += product.quantity_sold * product.cost_price;
+        total_quantity += product.quantity;
+        total_sales += product.quantity * product.selling_price;
+        total_cost += product.quantity * product.cost_price;
       });
     }
 
@@ -151,35 +151,54 @@ export default function AddSales() {
   );
 
   const handleSelectedProduct = (itemSold: ProductType) => {
-    setSelectedProducts((prevSelectedProducts) => {
-      // Check if the item already exists in the array
-      const existingProduct = prevSelectedProducts.find(
-        (product) => product._id === itemSold._id
-      );
-
-      if (existingProduct) {
-        // If the item exists, increase the quantity_sold
-        return prevSelectedProducts.map((product) =>
-          product._id === itemSold._id
-            ? {
-                ...product,
-                quantity_sold:
-                  product.quantity_sold + 1 > product.quantity
-                    ? product.quantity
-                    : product.quantity_sold + 1,
-              }
-            : product
+    setSelectedProducts(
+      (prevSelectedProducts: Item_SoldType[]): Item_SoldType[] => {
+        // Check if the item already exists in the array
+        const existingProduct = prevSelectedProducts.find(
+          (product) => product._id === itemSold._id
         );
-      } else {
-        // If the item doesn't exist, add it with quantity_sold set to 1
-        return [{ ...itemSold, quantity_sold: 1 }, ...prevSelectedProducts];
+
+        if (existingProduct) {
+          // If the item exists, increase the quantity_sold
+          return prevSelectedProducts.map((product) =>
+            product._id === itemSold._id
+              ? {
+                  ...product,
+                  quantity:
+                    itemSold.type === "PRODUCT"
+                      ? product.quantity + 1 > itemSold.quantity
+                        ? product.quantity
+                        : product.quantity + 1
+                      : 1,
+                }
+              : product
+          );
+        } else {
+          // If the item doesn't exist, add it with quantity_sold set to 1
+          return [
+            {
+              _id: itemSold._id,
+              cost_price: itemSold.cost_price,
+              selling_price: itemSold.selling_price,
+              quantity: 1,
+              stock_quantity: itemSold.quantity,
+              other_fees: itemSold.other_fees,
+              product: {
+                name: itemSold.name,
+                category: itemSold.category,
+                type: itemSold.type,
+              },
+            },
+            ...prevSelectedProducts,
+          ];
+        }
       }
-    });
+    );
   };
 
   const handleItemSoldPriceChangeOnTyping = (
     value: string,
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => {
     const newPrice = parseInt(value) || 0;
 
@@ -194,33 +213,34 @@ export default function AddSales() {
 
   const handleItemSoldQuantityChange = (
     changeType: "INCREMENT" | "DECREMENT",
-    itemSold: ItemSoldType
+    itemSold: Item_SoldType
   ) => {
-    setSelectedProducts((prevSelecedProducts) => {
-      return prevSelecedProducts.map((product) => {
-        if (product._id === itemSold._id) {
-          if (changeType === "INCREMENT") {
-            return {
-              ...product,
-              quantity_sold:
-                product.quantity_sold + 1 > product.quantity
-                  ? product.quantity
-                  : product.quantity_sold + 1,
-            };
-          } else {
-            return {
-              ...product,
-              quantity_sold:
-                product.quantity_sold - 1 === 0 ? 1 : product.quantity_sold - 1,
-            };
+    setSelectedProducts(
+      (prevSelecedProducts: Item_SoldType[]): Item_SoldType[] => {
+        return prevSelecedProducts.map((product) => {
+          if (product._id === itemSold._id) {
+            if (changeType === "INCREMENT") {
+              return {
+                ...product,
+                quantity: Math.min(
+                  product.quantity + 1,
+                  product.stock_quantity ?? Number.MAX_VALUE
+                ),
+              };
+            } else if (changeType === "DECREMENT") {
+              return {
+                ...product,
+                quantity: Math.max(product.quantity - 1, 1),
+              };
+            }
           }
-        }
-        return product;
-      });
-    });
+          return product;
+        });
+      }
+    );
   };
 
-  const handleRemoveItemSold = (itemSold: ItemSoldType) => {
+  const handleRemoveItemSold = (itemSold: Item_SoldType) => {
     setSelectedProducts((prevSelectedproducts) => {
       return prevSelectedproducts.filter(
         (product) => product._id !== itemSold._id
@@ -265,7 +285,7 @@ export default function AddSales() {
       return {
         cost_price: product.cost_price,
         selling_price: product.selling_price,
-        quantity: product.quantity_sold,
+        quantity: product.quantity,
         product: product._id,
       };
     });
@@ -387,7 +407,9 @@ export default function AddSales() {
                             <>
                               <div className="row">
                                 {selectedProducts.map((selectedProduct) => {
-                                  if (selectedProduct.type === "PRODUCT") {
+                                  if (
+                                    selectedProduct.product.type === "PRODUCT"
+                                  ) {
                                     return (
                                       <div
                                         className="col-sm-12 col-md-4 mb-3"

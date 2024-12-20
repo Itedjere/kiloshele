@@ -117,6 +117,7 @@ export type Item_SoldType = {
   quantity: number;
   cost_price: number;
   selling_price: number;
+  stock_quantity?: number;
   other_fees?: OtherServiceFeeFormDataType[];
 };
 

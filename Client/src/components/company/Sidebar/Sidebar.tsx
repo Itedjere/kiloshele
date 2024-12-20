@@ -64,7 +64,7 @@ export default function Sidebar() {
           </NavLink>
           <NavLink to="/charts" className="nav-item nav-link">
             <FaChartBar className="me-2" />
-            Charts
+            Analytics
           </NavLink>
           <div className="nav-category">SALES</div>
           <div
