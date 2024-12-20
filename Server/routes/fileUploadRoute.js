@@ -9,13 +9,13 @@ import {
 
 fileUploadRouter.post(
   "/expensesfiles",
-  expensesUpload.array("files", 3),
+  expensesUpload.array("expenses", 3),
   fileUploadController
 );
 
 fileUploadRouter.post(
   "/productfiles",
-  productsUpload.array("files", 3),
+  productsUpload.array("products", 3),
   fileUploadController
 );
 

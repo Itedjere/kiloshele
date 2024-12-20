@@ -153,7 +153,7 @@ export default function AddProduct() {
     if (files.length > 0) {
       const fileFormData = new FormData();
       files.forEach((file) => {
-        fileFormData.append("files", file);
+        fileFormData.append("products", file);
       });
 
       try {

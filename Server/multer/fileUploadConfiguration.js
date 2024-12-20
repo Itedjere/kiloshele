@@ -1,14 +1,15 @@
 import multer from "multer";
 import path from "node:path";
+import { v4 as uuidv4 } from "uuid";
 
 // Set up storage to save files locally
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/"); // Make sure this folder exists in your project
   },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}${ext}`); // Unique filename
+  filename: function (req, file, cb) {
+    const extension = path.extname(file.originalname); // Extracts the file extension
+    cb(null, file.fieldname + "-" + uuidv4() + extension);
   },
 });
 
@@ -81,21 +82,21 @@ const productsFileFilter = (req, file, cb) => {
   }
 };
 
-// Set up Multer with file size limit (e.g., 5 MB)
+// Set up Multer with file size limit (e.g., 3 MB)
 export const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: { fileSize: 3 * 1024 * 1024 }, // 3 MB limit
 });
 
-// Set up Multer with file size limit (e.g., 5 MB)
+// Set up Multer with file size limit (e.g., 3 MB)
 export const expensesUpload = multer({
   storage: storage,
   fileFilter: expensesFileFilter,
   limits: { fileSize: 3 * 1024 * 1024 }, // 3 MB limit
 });
 
-// Set up Multer with file size limit (e.g., 5 MB)
+// Set up Multer with file size limit (e.g., 3 MB)
 export const productsUpload = multer({
   storage: storage,
   fileFilter: productsFileFilter,
