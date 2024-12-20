@@ -1,6 +1,6 @@
 import { FaTrash } from "react-icons/fa6";
 import { Item_SoldType } from "../../../utitlities/typesUtils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatPrice } from "../../../utitlities/utils";
 
 interface SalesProductCardProps {
@@ -17,10 +17,16 @@ export default function SalesServiceCard({
   handleItemSoldPriceChangeOnTyping,
   handleRemoveItemSold,
 }: SalesProductCardProps) {
-  const [selectedOption, setSelectedOption] = useState<number>(0);
+  const [selectedOption, setSelectedOption] = useState<number>(
+    product.selling_price
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(parseInt(event.target.value));
+    if (event.target.value === "") {
+      setSelectedOption(product.selling_price);
+    } else {
+      setSelectedOption(parseInt(event.target.value));
+    }
   };
 
   const handlePriceChangeByTyping = (
@@ -30,10 +36,6 @@ export default function SalesServiceCard({
     handleItemSoldPriceChangeOnTyping(event.target.value, itemSold);
     setSelectedOption(parseInt(event.target.value) || 0);
   };
-
-  useEffect(() => {
-    setSelectedOption(product.selling_price);
-  }, []);
 
   return (
     <div className="card">
@@ -65,6 +67,7 @@ export default function SalesServiceCard({
                   value={selectedOption}
                   onChange={handleChange}
                 >
+                  <option value="">Select other fees</option>
                   {product.other_fees.map((other_fees) => (
                     <option value={other_fees.selling_price}>
                       {`${other_fees.duration} - ${formatPrice(

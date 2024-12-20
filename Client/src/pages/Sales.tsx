@@ -40,7 +40,9 @@ export default function Sales() {
     loading: salesLoading,
     error: salesError,
     data: salesData,
-  } = useQuery(GET_SALES);
+  } = useQuery(GET_SALES, {
+    fetchPolicy: "cache-and-network",
+  });
 
   // Mutate the state after deletion
   const [deleteSale, { loading: isDeleting }] = useMutation(DELETE_SALE, {

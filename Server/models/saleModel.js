@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { otherFeeSchema } from "./otherFeeSchema.js";
 
 const itemSoldSchema = new mongoose.Schema({
   product: {
@@ -9,6 +10,7 @@ const itemSoldSchema = new mongoose.Schema({
   quantity: { type: Number, min: 1, required: true },
   cost_price: { type: Number, required: true },
   selling_price: { type: Number, required: true },
+  other_fees: [otherFeeSchema],
 });
 
 const saleSchema = new mongoose.Schema(

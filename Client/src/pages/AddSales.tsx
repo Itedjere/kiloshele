@@ -182,8 +182,14 @@ export default function AddSales() {
               selling_price: itemSold.selling_price,
               quantity: 1,
               stock_quantity: itemSold.quantity,
-              other_fees: itemSold.other_fees,
+              // Do the mapping below to remove __typename
+              other_fees: itemSold.other_fees.map((fees) => ({
+                duration: fees.duration,
+                cost_price: fees.cost_price,
+                selling_price: fees.selling_price,
+              })),
               product: {
+                _id: itemSold._id,
                 name: itemSold.name,
                 category: itemSold.category,
                 type: itemSold.type,
@@ -282,11 +288,14 @@ export default function AddSales() {
 
     // Prepare the items to sell
     let itemsToSell: ItemsToSellType[] = selectedProducts.map((product) => {
+      console.log(product.other_fees);
+
       return {
         cost_price: product.cost_price,
         selling_price: product.selling_price,
         quantity: product.quantity,
-        product: product._id,
+        product: product.product._id || "",
+        other_fees: product.other_fees || [],
       };
     });
 

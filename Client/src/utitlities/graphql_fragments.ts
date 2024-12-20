@@ -45,6 +45,7 @@ export const SALE_FRAGMENT = gql(`
     _id
     itemSold {
       product {
+        _id
         name
         category
         type
@@ -53,6 +54,11 @@ export const SALE_FRAGMENT = gql(`
       selling_price
       quantity
       _id
+      other_fees {
+        duration
+        cost_price
+        selling_price
+      }
     }
     customer_name
     customer_phone

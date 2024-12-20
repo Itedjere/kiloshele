@@ -79,6 +79,7 @@ export const typeDefs = `#graphql
         quantity: Int!
         cost_price: Float!
         selling_price: Float!
+        other_fees: [OtherServiceFees!]!
     }
 
     type Sale {
@@ -128,11 +129,18 @@ export const typeDefs = `#graphql
         offset: Int!
     }
 
+    input OtherServiceFeesInput {
+        duration: String!
+        cost_price: Float!
+        selling_price: Float!
+    }
+
     input ItemSoldInput {
         product: String!
         quantity: Int!
         cost_price: Float!
-        selling_price: Float
+        selling_price: Float!
+        other_fees: [OtherServiceFeesInput!]!
     }
 
     input ADDSALEINFO {
@@ -145,12 +153,6 @@ export const typeDefs = `#graphql
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
         additional_note: String
-    }
-
-    input OtherServiceFeesInput {
-        duration: String!
-        cost_price: Float!
-        selling_price: Float!
     }
 
     input ADDPRODUCTINPUT {

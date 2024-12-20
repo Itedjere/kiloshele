@@ -182,8 +182,14 @@ export default function UpdateSales() {
             cost_price: itemSold.cost_price,
             selling_price: itemSold.selling_price,
             quantity: 1,
-            other_fees: itemSold.other_fees,
+            // Do the mapping below to remove __typename
+            other_fees: itemSold.other_fees.map((fees) => ({
+              duration: fees.duration,
+              cost_price: fees.cost_price,
+              selling_price: fees.selling_price,
+            })),
             product: {
+              _id: itemSold._id,
               name: itemSold.name,
               category: itemSold.category,
               type: itemSold.type,
@@ -272,7 +278,17 @@ export default function UpdateSales() {
       });
 
       //   update selected Items
-      setSelectedProducts(sale.itemSold);
+      setSelectedProducts(
+        sale.itemSold.map((item) => ({
+          ...item,
+          _id: item.product._id,
+          other_fees: item.other_fees.map((fees) => ({
+            duration: fees.duration,
+            cost_price: fees.cost_price,
+            selling_price: fees.selling_price,
+          })),
+        }))
+      );
     }
   }, [reset, saleData]);
 
@@ -290,7 +306,8 @@ export default function UpdateSales() {
         cost_price: product.cost_price,
         selling_price: product.selling_price,
         quantity: product.quantity,
-        product: product._id,
+        product: product.product._id || "",
+        other_fees: product.other_fees || [],
       };
     });
 

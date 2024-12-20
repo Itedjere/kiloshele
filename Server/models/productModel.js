@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
-
-const feeSchema = new mongoose.Schema(
-  {
-    duration: { type: String, required: true }, // e.g., "1 month", "2 weeks", etc.
-    cost_price: { type: Number, required: true, min: 0 }, // Cost Price associated with the duration
-    selling_price: { type: Number, required: true, min: 0 }, // Fee associated with the duration
-  },
-  { _id: false } // Prevents the creation of an additional `_id` for subdocuments
-);
+import { otherFeeSchema } from "./otherFeeSchema.js";
 
 const productSchema = new mongoose.Schema(
   {
@@ -19,7 +11,7 @@ const productSchema = new mongoose.Schema(
     restock_level: { type: Number, default: 1 },
     cost_price: { type: Number, required: true },
     selling_price: { type: Number, required: true },
-    other_fees: [feeSchema], // Array of objects with `duration` and `fee`
+    other_fees: [otherFeeSchema], // Array of objects with `duration` and `fee`
     description: { type: String },
     company: {
       type: mongoose.Schema.Types.ObjectId,

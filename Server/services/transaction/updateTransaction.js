@@ -17,11 +17,10 @@ export const updateTransaction = async (args, req) => {
     throw new Error(`Validation error: ${error.details[0].message}`);
   }
 
-  //   update the sale document
-  const sale = await Sale.findOneAndUpdate(
+  const sale = await Sale.findOneAndReplace(
     { _id: saleId, company: companyId },
-    { ...saleInfo },
-    { new: true }
+    { ...saleInfo, company: companyId },
+    { returnDocument: "after" }
   );
 
   if (!sale) {
@@ -29,7 +28,7 @@ export const updateTransaction = async (args, req) => {
   }
 
   // return sale
-  return Sale.findById(sale._id)
+  return await Sale.findById(saleId)
     .populate("company")
-    .populate("itemSold.product", "name category type");
+    .populate("itemSold.product", "_id name category type");
 };

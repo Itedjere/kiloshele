@@ -1,5 +1,13 @@
 import Joi from "joi";
 
+const otherFeeSchema = Joi.array()
+  .items({
+    duration: Joi.string().min(3).required(),
+    cost_price: Joi.number().positive().required(),
+    selling_price: Joi.number().positive().required(),
+  })
+  .min(0);
+
 export const companySignupValidationSchema = Joi.object({
   name: Joi.string().min(3).required(),
   email: Joi.string().email().optional(),
@@ -46,13 +54,7 @@ export const addProductValidationSchema = Joi.object({
   restock_level: Joi.number().positive().optional(),
   cost_price: Joi.number().positive().required(),
   selling_price: Joi.number().positive().required(),
-  other_fees: Joi.array()
-    .items({
-      duration: Joi.string().min(3).required(),
-      cost_price: Joi.number().positive().required(),
-      selling_price: Joi.number().positive().required(),
-    })
-    .min(0),
+  other_fees: otherFeeSchema,
   description: Joi.string().allow("").optional(),
   supplier_name: Joi.string().allow("").optional(),
   supplier_phone: Joi.string().allow("").optional(),
@@ -67,6 +69,7 @@ export const addSaleValidationSchema = Joi.object({
       quantity: Joi.number().positive().required(),
       cost_price: Joi.number().positive().required(),
       selling_price: Joi.number().positive().required(),
+      other_fees: otherFeeSchema,
     })
     .min(1)
     .required(),
