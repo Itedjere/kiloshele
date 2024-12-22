@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { Product } from "../../models/productModel.js";
-import { fileDeletion } from "../../utilities/fileDeletion.js";
 import { addProductValidationSchema } from "../../validations/validationSchema.js";
 
 export const editProduct = async (args, req) => {
@@ -31,19 +30,16 @@ export const editProduct = async (args, req) => {
   //   update the product document
   const productUpdated = await Product.findOneAndReplace(
     { _id: productId, company: companyId },
-    { ...productInfo, company: companyId },
+    {
+      ...productInfo,
+      company: companyId,
+      mediaUrl: [...oldProduct.mediaUrl, ...productInfo.mediaUrl],
+    },
     { returnDocument: "after" }
   );
 
   if (!productUpdated) {
     throw new Error("Error updating product. Please try again");
-  }
-
-  // Delete old pictures
-  // retrieve the old mediaUrl
-  const mediaUrl = oldProduct.photos;
-  if (mediaUrl.length > 0) {
-    mediaUrl.forEach((url) => fileDeletion(url));
   }
 
   // return product
