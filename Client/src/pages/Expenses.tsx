@@ -23,6 +23,7 @@ import DeleteModal from "../components/company/Modals/DeleteModal";
 import { DELETE_EXPENSES } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import ServerError from "../components/company/Network/ServerError";
+import LightGalleryWrapper from "../components/company/LightGallery/LightGalleryWrapper";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -277,9 +278,24 @@ export default function Expenses() {
         Receipt Attached
         <ul className="list-group mb-3">
           <li className="list-group-item bg-transparent">
-            <p className="text-black mb-0">
-              <small>Mary Johnson</small>
-            </p>
+            {expenseSelected?.mediaUrl &&
+              expenseSelected.mediaUrl.length > 0 && (
+                <LightGalleryWrapper>
+                  {expenseSelected.mediaUrl.map((fileUrl, index) => (
+                    <div
+                      data-src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
+                      key={index}
+                      className="col-6"
+                    >
+                      <img
+                        src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
+                        alt=""
+                        className="img-fluid mb-3"
+                      />
+                    </div>
+                  ))}
+                </LightGalleryWrapper>
+              )}
           </li>
         </ul>
         Additional Notes
