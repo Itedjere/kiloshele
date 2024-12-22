@@ -26,7 +26,10 @@ import {
 import FileDropzone from "../components/company/FileUpload/FileDropzone";
 import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
 import { toast } from "react-toastify";
-import { UPDATE_EXPENSES } from "../utitlities/graphql_mutation";
+import {
+  DELETE_EXPENSE_FILE,
+  UPDATE_EXPENSES,
+} from "../utitlities/graphql_mutation";
 import { PaymentMethod, PaymentStatus } from "../__generated__/graphql";
 import UpdateExpenseSkeleton from "../components/company/LoadingSkeletons/UpdateExpenseSkeleton";
 import { useParams } from "react-router";
@@ -34,6 +37,7 @@ import ServerError from "../components/company/Network/ServerError";
 
 export default function UpdateExpenses() {
   const [files, setFiles] = useState<UFileInterface[]>([]);
+  const [serverFiles, setServerFiles] = useState<string[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
   const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -41,11 +45,11 @@ export default function UpdateExpenses() {
   const [selectedCategory, setSelectedCategory] = useState(""); // For displaying selected item
   const [anyCategoryError, setAnyCategoryError] = useState(false);
 
+  const { expenseId } = useParams();
   const { auth } = useAuthenticatedContext();
 
   const { loading: dataExpensesLoading, data: dataExpensesCategories } =
     useQuery(GET_EXPENSES_CATEGORIES);
-  const { expenseId } = useParams();
   const {
     loading: expenseLoading,
     data: expenseData,
@@ -57,6 +61,9 @@ export default function UpdateExpenses() {
   });
 
   const [updateExpenses] = useMutation(UPDATE_EXPENSES);
+
+  const [deleteFile, { loading: isDeletingFile }] =
+    useMutation(DELETE_EXPENSE_FILE);
 
   useEffect(() => {
     if (dataExpensesCategories) {
@@ -95,6 +102,32 @@ export default function UpdateExpenses() {
     }
   };
 
+  const handleDeleteFile = async (fileUrl: string) => {
+    try {
+      const { data } = await deleteFile({
+        variables: {
+          fileUrl,
+          resourceId: expenseId || "",
+          resourceType: "Expense",
+        },
+      });
+
+      if (data?.deleteExpenseFile) {
+        setServerFiles(data.deleteExpenseFile.mediaUrl);
+        return toast.success("File Attachment Deleted Successfully.");
+      }
+
+      toast.error("An error occurred. Try again.");
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        // handle Apollo graphql error
+        handleApolloErrors(error);
+      } else {
+        console.error("An error occurred", error);
+      }
+    }
+  };
+
   const {
     register,
     handleSubmit,
@@ -106,15 +139,18 @@ export default function UpdateExpenses() {
 
   useEffect(() => {
     if (expenseData?.expenseOne) {
+      const expense = expenseData.expenseOne;
       reset({
-        title: expenseData.expenseOne.title,
-        amount: expenseData.expenseOne.amount,
-        date: new Date(expenseData.expenseOne.date).toISOString().split("T")[0], // Set the default value for the date
-        payment_method: expenseData.expenseOne.payment_method,
-        payment_status: expenseData.expenseOne.payment_status,
-        additional_notes: expenseData.expenseOne.additional_notes,
+        title: expense.title,
+        amount: expense.amount,
+        date: new Date(expense.date).toISOString().split("T")[0], // Set the default value for the date
+        payment_method: expense.payment_method,
+        payment_status: expense.payment_status,
+        additional_notes: expense.additional_notes,
       });
-      setSelectedCategory(expenseData.expenseOne.category);
+      setSelectedCategory(expense.category);
+      // Set previous photos setlected
+      setServerFiles(expense.mediaUrl);
     }
   }, [expenseData, reset]);
 
@@ -211,9 +247,7 @@ export default function UpdateExpenses() {
 
   const handleResetForm = () => {
     // reset some defaults
-    reset();
     setFiles([]);
-    setSelectedCategory("");
     setActiveAccordion("0");
   };
 
@@ -237,7 +271,7 @@ export default function UpdateExpenses() {
             <div className="bg-white rounded h-100 p-2">
               <h6 className="mb-4">
                 <GiPayMoney className="me-3 fs-3" />
-                Add Expense
+                Update Expense
               </h6>
               {expenseLoading ? (
                 <UpdateExpenseSkeleton />
@@ -462,6 +496,9 @@ export default function UpdateExpenses() {
                               </small>
                             </p>
                             <FileDropzone
+                              serverFiles={serverFiles}
+                              handleDeleteFile={handleDeleteFile}
+                              isDeletingFile={isDeletingFile}
                               files={files}
                               setFiles={setFiles}
                               accept={{

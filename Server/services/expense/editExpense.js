@@ -31,19 +31,16 @@ export const editExpense = async (args, req) => {
   //   update the expense document
   const updatedExpense = await Expense.findOneAndReplace(
     { _id: expenseId, company: companyId },
-    { ...expenseInfo, company: companyId },
+    {
+      ...expenseInfo,
+      company: companyId,
+      mediaUrl: [...oldExpense.mediaUrl, ...expenseInfo.mediaUrl],
+    },
     { returnDocument: "after" }
   );
 
   if (!updatedExpense) {
     throw new Error("Error updating expense. Please try again");
-  }
-
-  // Delete old pictures
-  // retrieve the old mediaUrl
-  const mediaUrl = oldExpense.mediaUrl;
-  if (mediaUrl.length > 0) {
-    mediaUrl.forEach((url) => fileDeletion(url));
   }
 
   // return expense

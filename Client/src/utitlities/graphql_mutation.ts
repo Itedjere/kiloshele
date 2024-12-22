@@ -88,11 +88,18 @@ export const DELETE_SALE = gql(/* GraphQL */ `
   }
 `);
 
-export const DELETE_FILE = gql(`
-  mutation DeleteResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {
-    deleteFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {
-      message
-      status
+export const DELETE_PRODUCT_FILE = gql(`
+  mutation DeleteProductResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {
+    deleteProductFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {
+      ...ProductFields
+    }
+  }
+`);
+
+export const DELETE_EXPENSE_FILE = gql(`
+  mutation DeleteExpenseResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {
+    deleteExpenseFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {
+      ...ExpenseFields
     }
   }
 `);

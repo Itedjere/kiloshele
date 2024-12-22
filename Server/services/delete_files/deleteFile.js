@@ -38,18 +38,19 @@ export const deleteFile = async (req, args) => {
     (photoUrl) => photoUrl !== fileUrl
   );
 
-  // update the product
-  const result = await Resource.updateOne(
+  // update the resource
+  const result = await Resource.findOneAndUpdate(
     { _id: resourceId },
-    { mediaUrl: newMediaUrlArray }
+    { mediaUrl: newMediaUrlArray },
+    { returnDocument: "after" }
   );
 
-  if (result.modifiedCount) {
-    // Delete the file from the upload folder
-    fileDeletion(fileUrl);
-    return { status: true, message: "File deleted successfully." };
+  if (!result) {
+    // return success message
+    throw new Error("No photo was deleted");
   }
 
-  // return success message
-  return { status: false, message: "No file was deleted." };
+  // Delete the file from the upload folder
+  fileDeletion(fileUrl);
+  return result.populate("company");
 };

@@ -35,7 +35,9 @@ export default function Expenses() {
   );
 
   // Remember to add error UI
-  const { loading, error, data } = useQuery(GET_EXPENSES);
+  const { loading, error, data } = useQuery(GET_EXPENSES, {
+    fetchPolicy: "cache-and-network",
+  });
   // Mutate the state after deletion
   const [deleteExpense, { loading: isDeleting }] = useMutation(
     DELETE_EXPENSES,

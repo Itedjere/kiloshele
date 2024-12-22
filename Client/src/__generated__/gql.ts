@@ -29,7 +29,8 @@ const documents = {
     "\n  mutation AddSales($saleInfo: ADDSALEINFO!) {\n    addSale(saleInfo: $saleInfo) {\n      ...SaleFields\n    }\n  }\n": types.AddSalesDocument,
     "\n  mutation UpdateSale($saleId: String!, $saleInfo: ADDSALEINFO!) {\n    updateSale(saleId: $saleId, saleInfo: $saleInfo) {\n      ...SaleFields\n    }\n  }\n": types.UpdateSaleDocument,
     "\n  mutation DeleteSale($saleId: String!) {\n    removeSale(saleId: $saleId) {\n      _id\n    }\n  }\n": types.DeleteSaleDocument,
-    "\n  mutation DeleteResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      message\n      status\n    }\n  }\n": types.DeleteResourceDocument,
+    "\n  mutation DeleteProductResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteProductFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ProductFields\n    }\n  }\n": types.DeleteProductResourceDocument,
+    "\n  mutation DeleteExpenseResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteExpenseFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ExpenseFields\n    }\n  }\n": types.DeleteExpenseResourceDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
     "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n": types.ProductsDocument,
@@ -117,7 +118,11 @@ export function gql(source: "\n  mutation DeleteSale($saleId: String!) {\n    re
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation DeleteResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      message\n      status\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      message\n      status\n    }\n  }\n"];
+export function gql(source: "\n  mutation DeleteProductResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteProductFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ProductFields\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteProductResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteProductFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ProductFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteExpenseResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteExpenseFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ExpenseFields\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteExpenseResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteExpenseFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ExpenseFields\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

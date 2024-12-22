@@ -124,7 +124,8 @@ export const typeDefs = `#graphql
         addSale(saleInfo: ADDSALEINFO!): Sale!
         updateSale(saleId: String!, saleInfo: ADDSALEINFO!): Sale!
         removeSale(saleId: String!): Sale!
-        deleteFile(resourceId: String!, fileUrl: String!, resourceType: String!): ServerResponse!
+        deleteProductFile(resourceId: String!, fileUrl: String!, resourceType: String!): Product!
+        deleteExpenseFile(resourceId: String!, fileUrl: String!, resourceType: String!): Expense!
     }
 
     input PRODUCTFILTERINPUT {

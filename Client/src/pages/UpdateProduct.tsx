@@ -32,7 +32,10 @@ import OtherServiceFees from "../components/company/Products/OtherServiceFees";
 import axios from "axios";
 import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
 import { toast } from "react-toastify";
-import { DELETE_FILE, UPDATE_PRODUCT } from "../utitlities/graphql_mutation";
+import {
+  DELETE_PRODUCT_FILE,
+  UPDATE_PRODUCT,
+} from "../utitlities/graphql_mutation";
 import {
   OtherServiceFeesInput,
   ServiceOrProduct,
@@ -42,6 +45,24 @@ import ServerError from "../components/company/Network/ServerError";
 import UpdateExpenseSkeleton from "../components/company/LoadingSkeletons/UpdateExpenseSkeleton";
 
 export default function UpdateProduct() {
+  const [files, setFiles] = useState<UFileInterface[]>([]);
+  const [serverFiles, setServerFiles] = useState<string[]>([]);
+  const [otherFees, setOtherFees] = useState<OtherServiceFeeFormDataType[]>([]);
+
+  const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
+
+  const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [categorySearchTerm, setCategorySearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(""); // For displaying selected item
+  const [anyCategoryError, setAnyCategoryError] = useState(false);
+
+  const [showServiceDurationFeesModal, setShowDurationServiceFeesModal] =
+    useState<boolean>(false);
+  const [offerType, setOfferType] = useState<string>("Product");
+
+  const { auth } = useAuthenticatedContext();
+
   const { productId } = useParams();
   const {
     loading: dataProductsCategoriesLoading,
@@ -78,25 +99,8 @@ export default function UpdateProduct() {
     },
   });
 
-  const [deleteFile, { loading: isDeletingFile }] = useMutation(DELETE_FILE);
-
-  const [files, setFiles] = useState<UFileInterface[]>([]);
-  const [serverFiles, setServerFiles] = useState<string[]>([]);
-  const [otherFees, setOtherFees] = useState<OtherServiceFeeFormDataType[]>([]);
-
-  const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
-
-  const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [categorySearchTerm, setCategorySearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(""); // For displaying selected item
-  const [anyCategoryError, setAnyCategoryError] = useState(false);
-
-  const [showServiceDurationFeesModal, setShowDurationServiceFeesModal] =
-    useState<boolean>(false);
-  const [offerType, setOfferType] = useState<string>("Product");
-
-  const { auth } = useAuthenticatedContext();
+  const [deleteFile, { loading: isDeletingFile }] =
+    useMutation(DELETE_PRODUCT_FILE);
 
   useEffect(() => {
     if (dataProductsCategories) {
@@ -149,11 +153,9 @@ export default function UpdateProduct() {
         },
       });
 
-      if (data?.deleteFile && data.deleteFile.status) {
-        setServerFiles((prevServerFiles) =>
-          prevServerFiles.filter((serverFile) => serverFile !== fileUrl)
-        );
-        return toast.success(data.deleteFile.message);
+      if (data?.deleteProductFile) {
+        setServerFiles(data.deleteProductFile.mediaUrl);
+        return toast.success("Picture Deleted Successfully.");
       }
 
       toast.error("An error occurred. Try again.");
@@ -330,6 +332,7 @@ export default function UpdateProduct() {
 
   const handleResetForm = () => {
     // reset some defaults
+    setFiles([]);
     setActiveAccordion("0");
   };
 

@@ -247,7 +247,19 @@ export const resolvers = {
         throw error;
       }
     },
-    deleteFile: async (parent, args, context) => {
+    deleteProductFile: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await deleteFile(req, args);
+      } catch (error) {
+        console.log("Error deleting the file:", error);
+        throw error;
+      }
+    },
+    deleteExpenseFile: async (parent, args, context) => {
       try {
         const { req } = context;
         if (!req.isAuth) {
