@@ -28,14 +28,13 @@ export const PRODUCT_FRAGMENT = gql(`
       supplier_name
       supplier_phone
       tags
-      photos
       category
       createdAt
       cost_price
       selling_price
       quantity
       restock_level
-      photos
+      mediaUrl
       type
     }
 `);

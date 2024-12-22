@@ -59,7 +59,7 @@ export const addProductValidationSchema = Joi.object({
   supplier_name: Joi.string().allow("").optional(),
   supplier_phone: Joi.string().allow("").optional(),
   tags: Joi.array().items(Joi.string()).min(0),
-  photos: Joi.array().items(Joi.string()).min(0),
+  mediaUrl: Joi.array().items(Joi.string()).min(0),
 });
 
 export const addSaleValidationSchema = Joi.object({

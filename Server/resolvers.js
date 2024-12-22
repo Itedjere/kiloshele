@@ -18,6 +18,7 @@ import { fetchProductsCategories } from "./services/product/fetchProductsCategor
 import { fetchOneExpense } from "./services/expense/fetchOneExpense.js";
 import { fetchOneProduct } from "./services/product/fetchOneProduct.js";
 import { fetchOneSale } from "./services/transaction/fetchOneSale.js";
+import { deleteFile } from "./services/delete_files/deleteFile.js";
 
 export const resolvers = {
   Date: GraphQLDateTime,
@@ -243,6 +244,18 @@ export const resolvers = {
         return await deleteTransaction(args, req);
       } catch (error) {
         console.error("Failed to delete Sale:", error);
+        throw error;
+      }
+    },
+    deleteFile: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await deleteFile(req, args);
+      } catch (error) {
+        console.log("Error deleting the file:", error);
         throw error;
       }
     },

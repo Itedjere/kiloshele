@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema(
     supplier_name: { type: String },
     supplier_phone: { type: String },
     tags: [{ type: String }],
-    photos: [{ type: String }],
+    mediaUrl: [{ type: String }],
   },
   { timestamps: true }
 );

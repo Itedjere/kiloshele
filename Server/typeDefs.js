@@ -69,7 +69,7 @@ export const typeDefs = `#graphql
         supplier_name: String!
         supplier_phone: String!
         tags: [String!]!
-        photos: [String!]!
+        mediaUrl: [String!]!
         createdAt: Date!
     }
 
@@ -96,6 +96,11 @@ export const typeDefs = `#graphql
         additional_note: String!
     }
 
+    type ServerResponse {
+        status: Boolean!
+        message: String!
+    }
+
     type Query {
         expenses: [Expense!]!
         expenseOne(expenseId: String!): Expense!
@@ -119,6 +124,7 @@ export const typeDefs = `#graphql
         addSale(saleInfo: ADDSALEINFO!): Sale!
         updateSale(saleId: String!, saleInfo: ADDSALEINFO!): Sale!
         removeSale(saleId: String!): Sale!
+        deleteFile(resourceId: String!, fileUrl: String!, resourceType: String!): ServerResponse!
     }
 
     input PRODUCTFILTERINPUT {
@@ -169,7 +175,7 @@ export const typeDefs = `#graphql
         supplier_name: String
         supplier_phone: String
         tags: [String!]!
-        photos: [String!]!
+        mediaUrl: [String!]!
     }
 
     input ADDEXPENSEINPUT {

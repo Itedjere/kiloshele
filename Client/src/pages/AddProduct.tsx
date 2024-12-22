@@ -208,7 +208,7 @@ export default function AddProduct() {
             ...formData,
             category: selectedCategory,
             tags: tags,
-            photos: mediaUrl,
+            mediaUrl,
             type: type as ServiceOrProduct,
             other_fees: otherFees.length > 0 ? other_fees : otherFees,
           },
