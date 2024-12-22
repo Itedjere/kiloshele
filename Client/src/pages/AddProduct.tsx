@@ -33,6 +33,8 @@ import {
   OtherServiceFeesInput,
   ServiceOrProduct,
 } from "../__generated__/graphql";
+import { PRODUCT_FRAGMENT } from "../utitlities/graphql_fragments";
+import { Reference } from "yup";
 
 export default function AddProduct() {
   const {
@@ -54,6 +56,28 @@ export default function AddProduct() {
             }
 
             return [newCategory, ...existingCategories];
+          },
+          products(
+            existingProductsRefs = [],
+            { readField }: { readField: Function }
+          ) {
+            const newProductRef = cache.writeFragment({
+              data: data.addProduct,
+              fragment: PRODUCT_FRAGMENT,
+            });
+
+            // Quick safety check - if the new expense is already
+            // present in the cache, we don't need to add it again.
+            if (
+              existingProductsRefs.some(
+                (ref: Reference) =>
+                  readField("_id", ref) === data.addProduct._id
+              )
+            ) {
+              return existingProductsRefs;
+            }
+
+            return [newProductRef, ...existingProductsRefs];
           },
         },
       });

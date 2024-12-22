@@ -131,7 +131,7 @@ export default function UpdateExpenses() {
     if (files.length > 0) {
       const fileFormData = new FormData();
       files.forEach((file) => {
-        fileFormData.append("files", file);
+        fileFormData.append("expenses", file);
       });
 
       try {

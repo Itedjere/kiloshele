@@ -3,13 +3,7 @@ import { gql } from "../__generated__/gql";
 export const SIGNUP_COMPANY = gql(/* GraphQL */ `
   mutation SignupCompany($signupInfo: ADDCOMPANYINPUT!) {
     signupCompany(signupInfo: $signupInfo) {
-      token
-      company {
-        _id
-        name
-        username
-        email
-      }
+      ...AuthenticationFields
     }
   }
 `);
@@ -17,13 +11,7 @@ export const SIGNUP_COMPANY = gql(/* GraphQL */ `
 export const LOGIN_COMPANY = gql(/* GraphQL */ `
   mutation LoginCompany($loginInfo: LOGINCOMPANYINPUT!) {
     loginCompany(loginInfo: $loginInfo) {
-      token
-      company {
-        _id
-        name
-        username
-        email
-      }
+      ...AuthenticationFields
     }
   }
 `);
@@ -55,7 +43,7 @@ export const DELETE_EXPENSES = gql(/* GraphQL */ `
 export const ADD_PRODUCTS = gql(/* GraphQL */ `
   mutation AddProduct($productInfo: ADDPRODUCTINPUT!) {
     addProduct(productInfo: $productInfo) {
-      category
+      ...ProductFields
     }
   }
 `);
@@ -96,6 +84,15 @@ export const DELETE_SALE = gql(/* GraphQL */ `
   mutation DeleteSale($saleId: String!) {
     removeSale(saleId: $saleId) {
       _id
+    }
+  }
+`);
+
+export const DELETE_FILE = gql(`
+  mutation DeleteResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {
+    deleteFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {
+      message
+      status
     }
   }
 `);

@@ -23,6 +23,7 @@ import {
   thumbInner,
   thumbsContainer,
 } from "./FileDropzoneCSS";
+import ButtonLoading from "../LoadingSkeletons/ButtonLoading";
 
 // This function is called when the user taps the edit button.
 // It opens the editor and returns the modified file when done
@@ -51,6 +52,9 @@ const editImage = (
 };
 
 export default function FileDropzone({
+  serverFiles = [],
+  handleDeleteFile,
+  isDeletingFile = false,
   files,
   setFiles,
   accept,
@@ -103,11 +107,19 @@ export default function FileDropzone({
     }
   };
 
+  const onDeleteFile = (fileUrl: string) => {
+    if (handleDeleteFile) {
+      handleDeleteFile(fileUrl);
+    } else {
+      console.warn("handleDeleteFile is not defined");
+    }
+  };
+
   const handleRemovePreview = (fileToRemove: UFileInterface) => {
     setFiles(files.filter((file) => file.name !== fileToRemove.name));
   };
 
-  const thumbs = files.map((file, index) => {
+  const filesPicked = files.map((file, index) => {
     if (file.preview) {
       return (
         <div style={thumb} key={file.name}>
@@ -155,6 +167,43 @@ export default function FileDropzone({
     }
   });
 
+  const formerlyPicked = serverFiles.map((fileUrl) => (
+    <div style={thumb} key={fileUrl}>
+      <div style={thumbInner}>
+        <img
+          src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
+          style={img}
+          alt=""
+        />
+      </div>
+      <button
+        style={thumbButtonEdit}
+        type="button"
+        className="btn btn-secondary btn-sm"
+        disabled={isDeletingFile}
+      >
+        <MdEdit className="me-1" />
+        Edit
+      </button>
+      <button
+        style={thumbButtonDelete}
+        type="button"
+        className="btn btn-danger btn-sm"
+        onClick={() => onDeleteFile(fileUrl)}
+        disabled={isDeletingFile}
+      >
+        {isDeletingFile ? (
+          <ButtonLoading message="Deleting" />
+        ) : (
+          <>
+            <FaTrash className="me-1" />
+            Delete
+          </>
+        )}
+      </button>
+    </div>
+  ));
+
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       accept,
@@ -183,7 +232,10 @@ export default function FileDropzone({
           </p>
         </div>
       )}
-      <aside style={thumbsContainer}>{thumbs}</aside>
+      <aside style={thumbsContainer}>
+        {formerlyPicked}
+        {filesPicked}
+      </aside>
     </>
   );
 }

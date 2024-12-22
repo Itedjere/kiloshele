@@ -57,7 +57,7 @@ export default function AddExpenses() {
               fragment: EXPENSE_FRAGMENT,
             });
 
-            // Quick safety check - if the new comment is already
+            // Quick safety check - if the new expense is already
             // present in the cache, we don't need to add it again.
             if (
               existingExpensesRefs.some(

@@ -53,6 +53,9 @@ export interface UFileInterface extends File {
 }
 
 export type FileDropzoneProps = {
+  serverFiles?: string[];
+  handleDeleteFile?: (fileUrl: string) => void;
+  isDeletingFile?: boolean;
   files: UFileInterface[];
   accept: Record<string, string[]>; // Accepted file types
   maxFiles: number; // Max number of files allowed
@@ -73,7 +76,7 @@ export type ProductType = {
   supplier_name: string;
   supplier_phone: string;
   tags: string[];
-  photos: string[];
+  mediaUrl: string[];
   sku: string;
 };
 

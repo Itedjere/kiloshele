@@ -1,5 +1,17 @@
 import { gql } from "../__generated__/gql";
 
+export const AUTHENTICATION_FRAGMENT = gql(`
+  fragment AuthenticationFields on AuthenticatedCompany {
+    token
+    company {
+      _id
+      name
+      username
+      email
+    }
+  }
+`);
+
 export const EXPENSE_FRAGMENT = gql(`
   fragment ExpenseFields on Expense {
     _id

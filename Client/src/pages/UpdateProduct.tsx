@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ApolloError, useMutation, useQuery } from "@apollo/client";
 import Accordion from "react-bootstrap/Accordion";
+import { v4 as uuidv4 } from "uuid";
 import ProductOrService from "../components/company/Products/ProductOrService";
 import { GiConverseShoe } from "react-icons/gi";
 import { FaBus, FaPlus } from "react-icons/fa6";
@@ -26,16 +27,12 @@ import {
 import FileDropzone from "../components/company/FileUpload/FileDropzone";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  addProductSchema,
-  generateRandomString,
-  handleApolloErrors,
-} from "../utitlities/utils";
+import { addProductSchema, handleApolloErrors } from "../utitlities/utils";
 import OtherServiceFees from "../components/company/Products/OtherServiceFees";
 import axios from "axios";
 import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
 import { toast } from "react-toastify";
-import { UPDATE_PRODUCT } from "../utitlities/graphql_mutation";
+import { DELETE_FILE, UPDATE_PRODUCT } from "../utitlities/graphql_mutation";
 import {
   OtherServiceFeesInput,
   ServiceOrProduct,
@@ -81,8 +78,10 @@ export default function UpdateProduct() {
     },
   });
 
-  const [files, setFiles] = useState<UFileInterface[]>([]);
+  const [deleteFile, { loading: isDeletingFile }] = useMutation(DELETE_FILE);
 
+  const [files, setFiles] = useState<UFileInterface[]>([]);
+  const [serverFiles, setServerFiles] = useState<string[]>([]);
   const [otherFees, setOtherFees] = useState<OtherServiceFeeFormDataType[]>([]);
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
@@ -140,6 +139,34 @@ export default function UpdateProduct() {
     }
   };
 
+  const handleDeleteFile = async (fileUrl: string) => {
+    try {
+      const { data } = await deleteFile({
+        variables: {
+          fileUrl,
+          resourceId: productId || "",
+          resourceType: "Product",
+        },
+      });
+
+      if (data?.deleteFile && data.deleteFile.status) {
+        setServerFiles((prevServerFiles) =>
+          prevServerFiles.filter((serverFile) => serverFile !== fileUrl)
+        );
+        return toast.success(data.deleteFile.message);
+      }
+
+      toast.error("An error occurred. Try again.");
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        // handle Apollo graphql error
+        handleApolloErrors(error);
+      } else {
+        console.error("An error occurred", error);
+      }
+    }
+  };
+
   const {
     register,
     handleSubmit,
@@ -172,10 +199,12 @@ export default function UpdateProduct() {
       if (product.type === "SERVICE" && product.other_fees.length > 0) {
         const modified_Other_Fees = product.other_fees.map((other_fees) => ({
           ...other_fees,
-          id: generateRandomString(12),
+          id: uuidv4(),
         }));
         setOtherFees(modified_Other_Fees);
       }
+      // Set previous photos setlected
+      setServerFiles(product.mediaUrl);
     }
   }, [productData, reset]);
 
@@ -192,7 +221,7 @@ export default function UpdateProduct() {
     if (files.length > 0) {
       const fileFormData = new FormData();
       files.forEach((file) => {
-        fileFormData.append("files", file);
+        fileFormData.append("products", file);
       });
 
       try {
@@ -770,6 +799,9 @@ export default function UpdateProduct() {
                                 </small>
                               </p>
                               <FileDropzone
+                                serverFiles={serverFiles}
+                                handleDeleteFile={handleDeleteFile}
+                                isDeletingFile={isDeletingFile}
                                 files={files}
                                 setFiles={setFiles}
                                 accept={{ "image/*": [] }}

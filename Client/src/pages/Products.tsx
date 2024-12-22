@@ -54,6 +54,7 @@ export default function Products() {
     error: productsError,
     data: productsData,
   } = useQuery(GET_PRODUCTS, {
+    fetchPolicy: "cache-and-network",
     variables: {
       limit,
       offset,
