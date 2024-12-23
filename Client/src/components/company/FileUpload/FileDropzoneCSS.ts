@@ -40,7 +40,7 @@ export const thumb: React.CSSProperties = {
   position: "relative",
   display: "inline-flex",
   borderRadius: 2,
-  border: "1px solid #eaeaea",
+  border: "1px solid rgb(170, 170, 170)",
   marginBottom: 8,
   marginRight: 8,
   width: 200,
@@ -53,6 +53,10 @@ export const thumbInner: React.CSSProperties = {
   display: "flex",
   minWidth: 0,
   overflow: "hidden",
+};
+
+export const thumbIcon: React.CSSProperties = {
+  fontSize: "5em",
 };
 
 export const img: React.CSSProperties = {

@@ -6,6 +6,7 @@ import {
   FaChartPie,
 } from "react-icons/fa6";
 import moment from "moment";
+import Masonry from "react-masonry-css";
 import CardStatistics from "../components/company/Dashboard/CardStatistics";
 import { GiPayMoney } from "react-icons/gi";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
@@ -18,7 +19,11 @@ import { GET_EXPENSES } from "../utitlities/graphql_queries";
 import StatisticsSkeleton from "../components/company/LoadingSkeletons/StatisticsSkeleton";
 import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
 import { ExpensesType } from "../utitlities/typesUtils";
-import { formatPrice, handleApolloErrors } from "../utitlities/utils";
+import {
+  formatPrice,
+  getFileType,
+  handleApolloErrors,
+} from "../utitlities/utils";
 import DeleteModal from "../components/company/Modals/DeleteModal";
 import { DELETE_EXPENSES } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
@@ -281,19 +286,33 @@ export default function Expenses() {
             {expenseSelected?.mediaUrl &&
               expenseSelected.mediaUrl.length > 0 && (
                 <LightGalleryWrapper>
-                  {expenseSelected.mediaUrl.map((fileUrl, index) => (
-                    <div
-                      data-src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
-                      key={index}
-                      className="col-6"
-                    >
-                      <img
-                        src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
-                        alt=""
-                        className="img-fluid mb-3"
-                      />
-                    </div>
-                  ))}
+                  <Masonry
+                    breakpointCols={2}
+                    className="my-masonry-grid"
+                    columnClassName="my-masonry-grid_column"
+                  >
+                    {expenseSelected.mediaUrl.map((fileUrl, index) => {
+                      if ("image" === getFileType(fileUrl)) {
+                        return (
+                          <div
+                            data-src={`${
+                              import.meta.env.VITE_SERVER_URL
+                            }${fileUrl}`}
+                            key={index}
+                            className="lg-children"
+                          >
+                            <img
+                              src={`${
+                                import.meta.env.VITE_SERVER_URL
+                              }${fileUrl}`}
+                              alt=""
+                              className="img-fluid"
+                            />
+                          </div>
+                        );
+                      }
+                    })}
+                  </Masonry>
                 </LightGalleryWrapper>
               )}
           </li>

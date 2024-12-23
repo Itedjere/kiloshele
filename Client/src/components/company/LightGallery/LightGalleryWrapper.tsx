@@ -24,7 +24,7 @@ export default function LightGalleryWrapper({
       onInit={onInit}
       speed={500}
       plugins={[lgThumbnail, lgZoom]}
-      elementClassNames="row"
+      selector=".lg-children"
     >
       {children}
     </LightGallery>

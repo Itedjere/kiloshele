@@ -138,3 +138,11 @@ export function generateRandomString(length: number): string {
   }
   return result;
 }
+
+export const getFileType = (url: string) => {
+  const extension = url.split(".").pop()?.toLowerCase();
+  if (["png", "jpg", "jpeg", "gif"].includes(extension!)) return "image";
+  if (extension === "pdf") return "pdf";
+  if (["xls", "xlsx"].includes(extension!)) return "excel";
+  return "unknown";
+};

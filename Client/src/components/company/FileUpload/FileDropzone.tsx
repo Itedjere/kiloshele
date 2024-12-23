@@ -16,6 +16,7 @@ import {
   baseStyle,
   focusedStyle,
   img,
+  thumbIcon,
   rejectStyle,
   thumb,
   thumbButtonDelete,
@@ -24,6 +25,9 @@ import {
   thumbsContainer,
 } from "./FileDropzoneCSS";
 import ButtonLoading from "../LoadingSkeletons/ButtonLoading";
+import { FaFilePdf } from "react-icons/fa";
+import { RiFileExcel2Fill } from "react-icons/ri";
+import { getFileType } from "../../../utitlities/utils";
 
 // This function is called when the user taps the edit button.
 // It opens the editor and returns the modified file when done
@@ -119,7 +123,7 @@ export default function FileDropzone({
     setFiles(files.filter((file) => file.name !== fileToRemove.name));
   };
 
-  const filesPicked = files.map((file, index) => {
+  const renderPickedFiles = (file: UFileInterface, index: number) => {
     if (file.preview) {
       return (
         <div style={thumb} key={file.name}>
@@ -164,45 +168,145 @@ export default function FileDropzone({
           </button>
         </div>
       );
-    }
-  });
-
-  const formerlyPicked = serverFiles.map((fileUrl) => (
-    <div style={thumb} key={fileUrl}>
-      <div style={thumbInner}>
-        <img
-          src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
-          style={img}
-          alt=""
-        />
-      </div>
-      <button
-        style={thumbButtonEdit}
-        type="button"
-        className="btn btn-secondary btn-sm"
-        disabled={isDeletingFile}
-      >
-        <MdEdit className="me-1" />
-        Edit
-      </button>
-      <button
-        style={thumbButtonDelete}
-        type="button"
-        className="btn btn-danger btn-sm"
-        onClick={() => onDeleteFile(fileUrl)}
-        disabled={isDeletingFile}
-      >
-        {isDeletingFile ? (
-          <ButtonLoading message="Deleting" />
-        ) : (
-          <>
+    } else if (file.type === "application/pdf") {
+      return (
+        <div style={thumb} key={file.name}>
+          <div
+            style={thumbIcon}
+            className="d-flex justify-content-center align-items-center w-100 h-100 text-danger"
+          >
+            <FaFilePdf />
+          </div>
+          <button
+            style={thumbButtonDelete}
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={() => handleRemovePreview(file)}
+          >
             <FaTrash className="me-1" />
             Delete
-          </>
-        )}
-      </button>
-    </div>
-  ));
+          </button>
+        </div>
+      );
+    } else if (file.type === "application/vnd.ms-excel") {
+      return (
+        <div style={thumb} key={file.name}>
+          <div
+            style={thumbIcon}
+            className="d-flex justify-content-center align-items-center w-100 h-100 text-success"
+          >
+            <RiFileExcel2Fill />
+          </div>
+          <button
+            style={thumbButtonDelete}
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={() => handleRemovePreview(file)}
+          >
+            <FaTrash className="me-1" />
+            Delete
+          </button>
+        </div>
+      );
+    }
+  };
+
+  const renderFormerlyPickedFiles = (fileUrl: string) => {
+    // Check file type first
+    const fileType = getFileType(fileUrl);
+    if (fileType === "image") {
+      return (
+        <div style={thumb} key={fileUrl}>
+          <div style={thumbInner}>
+            <img
+              src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
+              style={img}
+              alt=""
+            />
+          </div>
+          <button
+            style={thumbButtonEdit}
+            type="button"
+            className="btn btn-secondary btn-sm"
+            disabled={isDeletingFile}
+          >
+            <MdEdit className="me-1" />
+            Edit
+          </button>
+          <button
+            style={thumbButtonDelete}
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={() => onDeleteFile(fileUrl)}
+            disabled={isDeletingFile}
+          >
+            {isDeletingFile ? (
+              <ButtonLoading message="Deleting" />
+            ) : (
+              <>
+                <FaTrash className="me-1" />
+                Delete
+              </>
+            )}
+          </button>
+        </div>
+      );
+    } else if (fileType === "pdf") {
+      return (
+        <div style={thumb} key={fileUrl}>
+          <div
+            style={thumbIcon}
+            className="d-flex justify-content-center align-items-center w-100 h-100 text-danger"
+          >
+            <FaFilePdf />
+          </div>
+          <button
+            style={thumbButtonDelete}
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={() => onDeleteFile(fileUrl)}
+            disabled={isDeletingFile}
+          >
+            {isDeletingFile ? (
+              <ButtonLoading message="Deleting" />
+            ) : (
+              <>
+                <FaTrash className="me-1" />
+                Delete
+              </>
+            )}
+          </button>
+        </div>
+      );
+    } else if (fileType === "excel") {
+      return (
+        <div style={thumb} key={fileUrl}>
+          <div
+            style={thumbIcon}
+            className="d-flex justify-content-center align-items-center w-100 h-100 text-success"
+          >
+            <RiFileExcel2Fill />
+          </div>
+          <button
+            style={thumbButtonDelete}
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={() => onDeleteFile(fileUrl)}
+            disabled={isDeletingFile}
+          >
+            {isDeletingFile ? (
+              <ButtonLoading message="Deleting" />
+            ) : (
+              <>
+                <FaTrash className="me-1" />
+                Delete
+              </>
+            )}
+          </button>
+        </div>
+      );
+    }
+  };
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
@@ -224,7 +328,7 @@ export default function FileDropzone({
 
   return (
     <>
-      {files.length < 3 && (
+      {files.length + serverFiles.length < 3 && (
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} />
           <p className="mb-0">
@@ -233,8 +337,8 @@ export default function FileDropzone({
         </div>
       )}
       <aside style={thumbsContainer}>
-        {formerlyPicked}
-        {filesPicked}
+        {serverFiles.map((fileUrl) => renderFormerlyPickedFiles(fileUrl))}
+        {files.map((file, index) => renderPickedFiles(file, index))}
       </aside>
     </>
   );
