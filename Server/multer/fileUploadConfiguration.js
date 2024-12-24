@@ -37,7 +37,7 @@ const fileFilter = (req, file, cb) => {
   if (mimetype && extname) {
     cb(null, true); // File is valid
   } else {
-    cb(new Error("Only images and videos are allowed")); // Invalid file
+    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE")); // Reject the file
   }
 };
 
@@ -47,13 +47,14 @@ const expensesFileFilter = (req, file, cb) => {
     "image/*",
     "application/pdf",
     "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
   if (
     allowedTypes.some((type) => file.mimetype.startsWith(type.split("/")[0]))
   ) {
     cb(null, true);
   } else {
-    cb(new Error("Invalid file type"));
+    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE")); // Reject the file
   }
 };
 
@@ -78,7 +79,7 @@ const productsFileFilter = (req, file, cb) => {
   if (mimetype && extname) {
     cb(null, true); // File is valid
   } else {
-    cb(new Error("Only Pictures allowed")); // Invalid file
+    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE")); // Reject the file
   }
 };
 

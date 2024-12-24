@@ -25,6 +25,7 @@ import DeleteModal from "../components/company/Modals/DeleteModal";
 import { DELETE_PRODUCT } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import LightGalleryWrapper from "../components/company/LightGallery/LightGalleryWrapper";
+import Masonry from "react-masonry-css";
 
 export default function Products() {
   const [offset, setOffset] = useState<number>(0);
@@ -319,35 +320,44 @@ export default function Products() {
               : "NIL"}
           </li>
         </ul>
-        Photos
-        <ul className="list-group mb-3">
-          <li className="list-group-item">
-            {productSelected?.mediaUrl &&
-              productSelected.mediaUrl.length > 0 && (
+        {productSelected?.mediaUrl && productSelected.mediaUrl.length > 0 && (
+          <>
+            Photos
+            <ul className="list-group mb-3">
+              <li className="list-group-item bg-transparent">
                 <LightGalleryWrapper>
-                  {productSelected.mediaUrl.map((fileUrl, index) => {
-                    if ("image" === getFileType(fileUrl)) {
-                      return (
-                        <div
-                          data-src={`${
-                            import.meta.env.VITE_SERVER_URL
-                          }${fileUrl}`}
-                          key={index}
-                          className="col-6"
-                        >
-                          <img
-                            src={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
-                            alt=""
-                            className="img-fluid mb-3"
-                          />
-                        </div>
-                      );
-                    }
-                  })}
+                  <Masonry
+                    breakpointCols={2}
+                    className="my-masonry-grid"
+                    columnClassName="my-masonry-grid_column"
+                  >
+                    {productSelected.mediaUrl.map((fileUrl, index) => {
+                      if ("image" === getFileType(fileUrl)) {
+                        return (
+                          <div
+                            data-src={`${
+                              import.meta.env.VITE_SERVER_URL
+                            }${fileUrl}`}
+                            key={index}
+                            className="lg-children"
+                          >
+                            <img
+                              src={`${
+                                import.meta.env.VITE_SERVER_URL
+                              }${fileUrl}`}
+                              alt=""
+                              className="img-fluid"
+                            />
+                          </div>
+                        );
+                      }
+                    })}
+                  </Masonry>
                 </LightGalleryWrapper>
-              )}
-          </li>
-        </ul>
+              </li>
+            </ul>
+          </>
+        )}
       </CustomOffCanvas>
       <DeleteModal
         itemName={productToDelete?.type === "PRODUCT" ? "Product" : "Service"}

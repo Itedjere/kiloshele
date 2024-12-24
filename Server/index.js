@@ -14,6 +14,7 @@ import { authenticationMiddleware } from "./middlewares/authenticationMiddleware
 import fileUploadRouter from "./routes/fileUploadRoute.js";
 import { __dirname } from "./serverPath.js";
 import { fileDeletion } from "./utilities/fileDeletion.js";
+import { multerErrorHandlerMiddleware } from "./multer/multerErrorHandlerMiddleware.js";
 
 // Required logic for integrating with Express
 const app = express();
@@ -45,6 +46,9 @@ app.use(
   authenticationMiddleware,
   fileUploadRouter
 );
+
+// Error-handling middleware
+app.use("/upload", multerErrorHandlerMiddleware);
 
 // Set up our Express middleware to handle CORS, body parsing,
 // and our expressMiddleware function.

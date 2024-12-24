@@ -13,7 +13,11 @@ import { FaPlus } from "react-icons/fa6";
 import { GrPowerReset } from "react-icons/gr";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addExpenseSchema, handleApolloErrors } from "../utitlities/utils";
+import {
+  addExpenseSchema,
+  handleApolloErrors,
+  handleAxiosFileUploadErrors,
+} from "../utitlities/utils";
 import {
   AddExpenseFormDataType,
   UFileInterface,
@@ -189,10 +193,14 @@ export default function UpdateExpenses() {
         }
         mediaUrl = response.data.fileUrls;
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
+        if (axios.isAxiosError(error)) {
+          handleAxiosFileUploadErrors(error);
+        } else {
+          console.error("Error:", error);
+          toast.error("An unexpected error occurred. Please try again.");
         }
-        console.error("Error uploading files:", error);
+
+        setActiveAccordion("2");
         return; // This return is necessary to prevent the next try catch block below from running
       }
     }
@@ -505,6 +513,8 @@ export default function UpdateExpenses() {
                                 "image/*": [],
                                 "application/pdf": [],
                                 "application/vnd.ms-excel": [],
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                                  [],
                               }}
                               maxFiles={3}
                             />

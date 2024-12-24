@@ -29,6 +29,8 @@ import { DELETE_EXPENSES } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import ServerError from "../components/company/Network/ServerError";
 import LightGalleryWrapper from "../components/company/LightGallery/LightGalleryWrapper";
+import { FaFilePdf } from "react-icons/fa";
+import { RiFileExcel2Fill } from "react-icons/ri";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -77,7 +79,10 @@ export default function Expenses() {
     }
   );
 
-  const handleOffCanvasClose = () => setShowOffCanvas(false);
+  const handleOffCanvasClose = () => {
+    setExpenseSelected(null);
+    setShowOffCanvas(false);
+  };
   const handleOffCanvasShow = (expense: ExpensesType) => {
     setExpenseSelected(expense);
     setShowOffCanvas(true);
@@ -280,11 +285,11 @@ export default function Expenses() {
             </p>
           </li>
         </ul>
-        Receipt Attached
-        <ul className="list-group mb-3">
-          <li className="list-group-item bg-transparent">
-            {expenseSelected?.mediaUrl &&
-              expenseSelected.mediaUrl.length > 0 && (
+        {expenseSelected?.mediaUrl && expenseSelected.mediaUrl.length > 0 && (
+          <>
+            Receipt Attached
+            <ul className="list-group mb-3">
+              <li className="list-group-item bg-transparent">
                 <LightGalleryWrapper>
                   <Masonry
                     breakpointCols={2}
@@ -314,9 +319,40 @@ export default function Expenses() {
                     })}
                   </Masonry>
                 </LightGalleryWrapper>
-              )}
-          </li>
-        </ul>
+              </li>
+              {expenseSelected.mediaUrl.map((fileUrl, index) => {
+                const fileType = getFileType(fileUrl);
+                if ("image" !== fileType) {
+                  return (
+                    <li className="list-group-item bg-transparent" key={index}>
+                      <a
+                        href={`${import.meta.env.VITE_SERVER_URL}${fileUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="d-flex align-items-center"
+                      >
+                        <span
+                          className={`${
+                            "pdf" === fileType ? "text-danger" : "text-success"
+                          } me-3`}
+                        >
+                          {"pdf" === fileType ? (
+                            <FaFilePdf />
+                          ) : (
+                            <RiFileExcel2Fill />
+                          )}
+                        </span>
+                        {"pdf" === fileType
+                          ? "View PDF Document"
+                          : "View Excel Document"}
+                      </a>
+                    </li>
+                  );
+                }
+              })}
+            </ul>
+          </>
+        )}
         Additional Notes
         <ul className="list-group mb-3">
           <li className="list-group-item">

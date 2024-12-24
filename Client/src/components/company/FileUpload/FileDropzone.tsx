@@ -188,7 +188,11 @@ export default function FileDropzone({
           </button>
         </div>
       );
-    } else if (file.type === "application/vnd.ms-excel") {
+    } else if (
+      file.type === "application/vnd.ms-excel" ||
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ) {
       return (
         <div style={thumb} key={file.name}>
           <div

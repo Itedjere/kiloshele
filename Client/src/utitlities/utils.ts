@@ -1,6 +1,11 @@
 import { ApolloError } from "@apollo/client";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
+import { AxiosError } from "axios";
+
+interface MulterErrorResponse {
+  error: string;
+}
 
 export const passwordSchema = Yup.string()
   .required("Password is required")
@@ -114,6 +119,17 @@ export const handleApolloErrors = (error: ApolloError) => {
     toast.error("Network error occurred. Please try again.");
   } else {
     toast.error("An unexpected error occurred.");
+  }
+};
+
+export const handleAxiosFileUploadErrors = (error: AxiosError) => {
+  const axiosError = error as AxiosError<MulterErrorResponse>;
+
+  // Handle Multer errors
+  if (axiosError.response?.data.error) {
+    toast.error(axiosError.response.data.error);
+  } else {
+    toast.error("An unexpected error occurred. Please try again.");
   }
 };
 

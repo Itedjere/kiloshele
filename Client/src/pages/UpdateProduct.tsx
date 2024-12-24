@@ -27,7 +27,11 @@ import {
 import FileDropzone from "../components/company/FileUpload/FileDropzone";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addProductSchema, handleApolloErrors } from "../utitlities/utils";
+import {
+  addProductSchema,
+  handleApolloErrors,
+  handleAxiosFileUploadErrors,
+} from "../utitlities/utils";
 import OtherServiceFees from "../components/company/Products/OtherServiceFees";
 import axios from "axios";
 import { useAuthenticatedContext } from "../components/company/Contexts/AuthenticationContext";
@@ -245,10 +249,13 @@ export default function UpdateProduct() {
         }
         mediaUrl = response.data.fileUrls;
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
+        if (axios.isAxiosError(error)) {
+          handleAxiosFileUploadErrors(error);
+        } else {
+          console.error("Error:", error);
+          toast.error("An unexpected error occurred. Please try again.");
         }
-        console.error("Error uploading files:", error);
+        setActiveAccordion("5");
         return; // This return is necessary to prevent the next try catch block below from running
       }
     }
