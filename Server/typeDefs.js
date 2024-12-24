@@ -47,6 +47,15 @@ export const typeDefs = `#graphql
         updatedAt: Date!
     }
 
+    type ExpenseStats {
+        todayExpenses: Float!
+        monthExpenses: Float!
+        yearExpenses: Float!
+        lastYearExpenses: Float!
+        highestExpenseCategory: String
+        highestExpenseAmount: Float!
+    }
+
     type OtherServiceFees {
         duration: String!
         cost_price: Float!
@@ -105,6 +114,7 @@ export const typeDefs = `#graphql
         expenses: [Expense!]!
         expenseOne(expenseId: String!): Expense!
         expensesCategories: [String!]!
+        expenseStats: ExpenseStats!
         products(searchTerm: String, limit: Int!, offset: Int!): [Product!]!
         productOne(productId: String!): Product!
         productsCategories: [String!]!
