@@ -1,13 +1,6 @@
 import { useState } from "react";
-import {
-  FaChartArea,
-  FaChartBar,
-  FaChartLine,
-  FaChartPie,
-} from "react-icons/fa6";
 import moment from "moment";
 import Masonry from "react-masonry-css";
-import CardStatistics from "../components/company/Dashboard/CardStatistics";
 import { GiPayMoney } from "react-icons/gi";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import DateFilter from "../components/company/SearchFilters/DateFilter";
@@ -16,7 +9,6 @@ import ExpensesItem from "../components/company/Expenses/ExpensesItem";
 import ExpensesEmpty from "../components/company/Expenses/ExpensesEmpty";
 import { ApolloError, Reference, useMutation, useQuery } from "@apollo/client";
 import { GET_EXPENSES } from "../utitlities/graphql_queries";
-import StatisticsSkeleton from "../components/company/LoadingSkeletons/StatisticsSkeleton";
 import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
 import { ExpensesType } from "../utitlities/typesUtils";
 import {
@@ -31,6 +23,7 @@ import ServerError from "../components/company/Network/ServerError";
 import LightGalleryWrapper from "../components/company/LightGallery/LightGalleryWrapper";
 import { FaFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import ExpenseStatistics from "../components/company/Expenses/ExpenseStatistics";
 
 export default function Expenses() {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -133,68 +126,7 @@ export default function Expenses() {
 
   return (
     <>
-      {loading ? (
-        <StatisticsSkeleton />
-      ) : (
-        <CardStatistics>
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between p-4">
-                <FaChartLine className="fa-3x text-primary" />
-                <div className="ms-3">
-                  <p className="mb-2">Today's Expenses</p>
-                  <h6 className="mb-0">234</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between p-4">
-                <FaChartBar className="fa-3x text-primary" />
-                <div className="ms-3">
-                  <p className="mb-2">December Expenses</p>
-                  <h6 className="mb-0">12</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between p-4">
-                <FaChartArea className="fa-3x text-primary" />
-                <div className="ms-3">
-                  <p className="mb-2">This Year Expenses</p>
-                  <h6 className="mb-0">34</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between p-4">
-                <FaChartArea className="fa-3x text-primary" />
-                <div className="ms-3">
-                  <p className="mb-2">Last Year Expenses</p>
-                  <h6 className="mb-0">34</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex align-items-center justify-content-between p-4">
-                <FaChartPie className="fa-3x text-primary" />
-                <div className="ms-3">
-                  <p className="mb-2">Most Paid Expenses</p>
-                  <h6 className="mb-0">$1234</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardStatistics>
-      )}
-
+      <ExpenseStatistics />
       <div className="container-fluid pt-4">
         <div className="bg-white rounded h-100 p-4 mt-4">
           <h6 className="mb-4">

@@ -4,7 +4,7 @@ import {
   FaChartLine,
   FaChartPie,
 } from "react-icons/fa6";
-import CardStatistics from "./CardStatistics";
+import CardStatistics from "../Statistics/StatisticSlider";
 
 export default function DashboardStatisticsCards() {
   return (

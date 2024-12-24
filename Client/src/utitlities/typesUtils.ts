@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type CompanyType = {
   _id: string;
   name: string;
@@ -138,3 +140,9 @@ export type SalesType = AddSalesFormDataType & {
   additional_note: string;
   itemSold: Item_SoldType[];
 };
+
+export interface StatsCardProps {
+  icon: ReactNode;
+  statsMessage: string;
+  statsValue: string;
+}

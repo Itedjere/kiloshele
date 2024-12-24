@@ -44,6 +44,19 @@ export const GET_ONE_EXPENSE = gql(`
 }
 `);
 
+export const EXPENSES_STATS = gql(`
+  query ExpenseStats {
+    expenseStats {
+      todayExpenses
+      monthExpenses
+      yearExpenses
+      lastYearExpenses
+      highestExpenseAmount
+      highestExpenseCategory
+    }
+  }  
+`);
+
 export const GET_SALES = gql(`
   query Sales {
     sales {

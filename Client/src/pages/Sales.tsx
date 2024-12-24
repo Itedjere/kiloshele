@@ -4,7 +4,7 @@ import {
   FaChartLine,
   FaChartPie,
 } from "react-icons/fa6";
-import CardStatistics from "../components/company/Dashboard/CardStatistics";
+import CardStatistics from "../components/company/Statistics/StatisticSlider";
 import { LuNotepadText } from "react-icons/lu";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import DateFilter from "../components/company/SearchFilters/DateFilter";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdOutlineEmojiFoodBeverage } from "react-icons/md";
-import CardStatistics from "../components/company/Dashboard/CardStatistics";
+import CardStatistics from "../components/company/Statistics/StatisticSlider";
 import {
   FaChartArea,
   FaChartBar,

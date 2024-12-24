@@ -4,18 +4,18 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-interface CardStatisticsProps {
+interface StatisticSliderProps {
   children: ReactNode;
 }
 
-export default function CardStatistics({ children }: CardStatisticsProps) {
+export default function StatisticSlider({ children }: StatisticSliderProps) {
   const settings = {
     dots: true,
     infinite: true,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 5000,
     pauseOnHover: true,
     centerMode: true, // Ensures items are spaced
     centerPadding: "20px", // Adds space between items
