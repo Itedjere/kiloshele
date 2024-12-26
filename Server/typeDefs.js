@@ -100,6 +100,24 @@ export const typeDefs = `#graphql
         serviceStats: ServiceStats!
     }
 
+    type ProductInfoStats {
+        totalQuantity: Int
+        totalProfit: Int
+        productName: String
+    }
+
+    type SaleStats {
+        totalSalesToday: Int
+        totalSalesThisMonth: Int
+        totalRevenueToday: Float
+        totalRevenueThisMonth: Float
+        totalProfitToday: Float
+        totalProfitThisMonth: Float
+        topSellingProducts: [ProductInfoStats!]!
+        lowSellingProducts: [ProductInfoStats!]!
+        mostProfitableProducts: [ProductInfoStats!]!
+    }
+
     type ItemSoldType {
         _id: String!
         product: Product!
@@ -139,6 +157,7 @@ export const typeDefs = `#graphql
         productStats: ProductServiceStats!
         sales: [Sale!]!
         saleOne(saleId: String!): Sale!
+        saleStats: SaleStats!
     }
 
     type Mutation {
