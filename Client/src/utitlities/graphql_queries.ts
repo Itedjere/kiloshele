@@ -28,6 +28,24 @@ export const GET_ONE_PRODUCT = gql(`
   }
 `);
 
+export const PRODUCT_STATS = gql(`
+  query ProductStats {
+    productStats {
+      productStats {
+        totalInventoryValue
+        totalLowStock
+        totalOutOfStock
+        totalProducts
+      }
+      serviceStats {
+        averageServicePrice
+        servicesWithAdditionalFees
+        totalServices
+      }
+    }
+  }
+`);
+
 export const GET_EXPENSES = gql(/* GraphQL */ `
   query Expenses {
     expenses {

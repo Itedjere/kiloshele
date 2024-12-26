@@ -271,6 +271,20 @@ export type Product = {
   type: ServiceOrProduct;
 };
 
+export type ProductServiceStats = {
+  __typename?: 'ProductServiceStats';
+  productStats: ProductStats;
+  serviceStats: ServiceStats;
+};
+
+export type ProductStats = {
+  __typename?: 'ProductStats';
+  totalInventoryValue: Scalars['Float']['output'];
+  totalLowStock: Scalars['Int']['output'];
+  totalOutOfStock: Scalars['Int']['output'];
+  totalProducts: Scalars['Int']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   expenseOne: Expense;
@@ -278,6 +292,7 @@ export type Query = {
   expenses: Array<Expense>;
   expensesCategories: Array<Scalars['String']['output']>;
   productOne: Product;
+  productStats: ProductServiceStats;
   products: Array<Product>;
   productsCategories: Array<Scalars['String']['output']>;
   saleOne: Sale;
@@ -331,6 +346,13 @@ export enum ServiceOrProduct {
   Product = 'PRODUCT',
   Service = 'SERVICE'
 }
+
+export type ServiceStats = {
+  __typename?: 'ServiceStats';
+  averageServicePrice: Scalars['Float']['output'];
+  servicesWithAdditionalFees: Scalars['Int']['output'];
+  totalServices: Scalars['Int']['output'];
+};
 
 export type AuthenticationFieldsFragment = { __typename?: 'AuthenticatedCompany', token: string, company: { __typename?: 'Company', _id: string, name: string, username: string, email: string } } & { ' $fragmentName'?: 'AuthenticationFieldsFragment' };
 
@@ -500,6 +522,11 @@ export type FetchProductQuery = { __typename?: 'Query', productOne: (
     & { ' $fragmentRefs'?: { 'ProductFieldsFragment': ProductFieldsFragment } }
   ) };
 
+export type ProductStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProductStatsQuery = { __typename?: 'Query', productStats: { __typename?: 'ProductServiceStats', productStats: { __typename?: 'ProductStats', totalInventoryValue: number, totalLowStock: number, totalOutOfStock: number, totalProducts: number }, serviceStats: { __typename?: 'ServiceStats', averageServicePrice: number, servicesWithAdditionalFees: number, totalServices: number } } };
+
 export type ExpensesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -562,6 +589,7 @@ export const ExpensesCategoriesDocument = {"kind":"Document","definitions":[{"ki
 export const ProductCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productsCategories"}}]}}]} as unknown as DocumentNode<ProductCategoriesQuery, ProductCategoriesQueryVariables>;
 export const ProductsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Products"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"products"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"searchTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}},{"kind":"Field","name":{"kind":"Name","value":"other_fees"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"supplier_name"}},{"kind":"Field","name":{"kind":"Name","value":"supplier_phone"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"restock_level"}},{"kind":"Field","name":{"kind":"Name","value":"mediaUrl"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]} as unknown as DocumentNode<ProductsQuery, ProductsQueryVariables>;
 export const FetchProductDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchProduct"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"productId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"productId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"productId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}},{"kind":"Field","name":{"kind":"Name","value":"other_fees"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"supplier_name"}},{"kind":"Field","name":{"kind":"Name","value":"supplier_phone"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"cost_price"}},{"kind":"Field","name":{"kind":"Name","value":"selling_price"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"restock_level"}},{"kind":"Field","name":{"kind":"Name","value":"mediaUrl"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]} as unknown as DocumentNode<FetchProductQuery, FetchProductQueryVariables>;
+export const ProductStatsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductStats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productStats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productStats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalInventoryValue"}},{"kind":"Field","name":{"kind":"Name","value":"totalLowStock"}},{"kind":"Field","name":{"kind":"Name","value":"totalOutOfStock"}},{"kind":"Field","name":{"kind":"Name","value":"totalProducts"}}]}},{"kind":"Field","name":{"kind":"Name","value":"serviceStats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"averageServicePrice"}},{"kind":"Field","name":{"kind":"Name","value":"servicesWithAdditionalFees"}},{"kind":"Field","name":{"kind":"Name","value":"totalServices"}}]}}]}}]}}]} as unknown as DocumentNode<ProductStatsQuery, ProductStatsQueryVariables>;
 export const ExpensesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Expenses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExpenseFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExpenseFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Expense"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"payment_method"}},{"kind":"Field","name":{"kind":"Name","value":"payment_status"}},{"kind":"Field","name":{"kind":"Name","value":"additional_notes"}},{"kind":"Field","name":{"kind":"Name","value":"mediaUrl"}}]}}]} as unknown as DocumentNode<ExpensesQuery, ExpensesQueryVariables>;
 export const FetchExpenseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchExpense"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"expenseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenseOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"expenseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"expenseId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ExpenseFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ExpenseFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Expense"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"payment_method"}},{"kind":"Field","name":{"kind":"Name","value":"payment_status"}},{"kind":"Field","name":{"kind":"Name","value":"additional_notes"}},{"kind":"Field","name":{"kind":"Name","value":"mediaUrl"}}]}}]} as unknown as DocumentNode<FetchExpenseQuery, FetchExpenseQueryVariables>;
 export const ExpenseStatsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExpenseStats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenseStats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"todayExpenses"}},{"kind":"Field","name":{"kind":"Name","value":"monthExpenses"}},{"kind":"Field","name":{"kind":"Name","value":"yearExpenses"}},{"kind":"Field","name":{"kind":"Name","value":"lastYearExpenses"}},{"kind":"Field","name":{"kind":"Name","value":"highestExpenseAmount"}},{"kind":"Field","name":{"kind":"Name","value":"highestExpenseCategory"}}]}}]}}]} as unknown as DocumentNode<ExpenseStatsQuery, ExpenseStatsQueryVariables>;

@@ -35,6 +35,7 @@ const documents = {
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
     "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n": types.ProductsDocument,
     "\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n": types.FetchProductDocument,
+    "\n  query ProductStats {\n    productStats {\n      productStats {\n        totalInventoryValue\n        totalLowStock\n        totalOutOfStock\n        totalProducts\n      }\n      serviceStats {\n        averageServicePrice\n        servicesWithAdditionalFees\n        totalServices\n      }\n    }\n  }\n": types.ProductStatsDocument,
     "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n": types.ExpensesDocument,
     "\n  query FetchExpense($expenseId: String!) {\n    expenseOne(expenseId: $expenseId) {\n        ...ExpenseFields\n    }\n}\n": types.FetchExpenseDocument,
     "\n  query ExpenseStats {\n    expenseStats {\n      todayExpenses\n      monthExpenses\n      yearExpenses\n      lastYearExpenses\n      highestExpenseAmount\n      highestExpenseCategory\n    }\n  }  \n": types.ExpenseStatsDocument,
@@ -140,6 +141,10 @@ export function gql(source: "\n  query Products($searchTerm: String, $limit: Int
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n"): (typeof documents)["\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query ProductStats {\n    productStats {\n      productStats {\n        totalInventoryValue\n        totalLowStock\n        totalOutOfStock\n        totalProducts\n      }\n      serviceStats {\n        averageServicePrice\n        servicesWithAdditionalFees\n        totalServices\n      }\n    }\n  }\n"): (typeof documents)["\n  query ProductStats {\n    productStats {\n      productStats {\n        totalInventoryValue\n        totalLowStock\n        totalOutOfStock\n        totalProducts\n      }\n      serviceStats {\n        averageServicePrice\n        servicesWithAdditionalFees\n        totalServices\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

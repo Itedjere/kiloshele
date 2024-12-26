@@ -1,12 +1,5 @@
 import { useState } from "react";
 import { MdOutlineEmojiFoodBeverage } from "react-icons/md";
-import CardStatistics from "../components/company/Statistics/StatisticSlider";
-import {
-  FaChartArea,
-  FaChartBar,
-  FaChartLine,
-  FaChartPie,
-} from "react-icons/fa6";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import ProductItem from "../components/company/Products/ProductItem";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
@@ -26,6 +19,7 @@ import { DELETE_PRODUCT } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import LightGalleryWrapper from "../components/company/LightGallery/LightGalleryWrapper";
 import Masonry from "react-masonry-css";
+import ProductStatistics from "../components/company/Products/ProductStatistics";
 
 export default function Products() {
   const [offset, setOffset] = useState<number>(0);
@@ -130,52 +124,7 @@ export default function Products() {
 
   return (
     <>
-      <CardStatistics>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartLine className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Total Products</p>
-                <h6 className="mb-0">234</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartBar className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Low Stock Items</p>
-                <h6 className="mb-0">12</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartArea className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Out of Stock</p>
-                <h6 className="mb-0">34</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartPie className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Total Revenue</p>
-                <h6 className="mb-0">$1234</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardStatistics>
+      <ProductStatistics />
       <div className="container-fluid pt-4">
         <div className="bg-white rounded h-100 p-4 mt-4">
           <h6 className="mb-4">
