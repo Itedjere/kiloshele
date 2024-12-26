@@ -162,3 +162,17 @@ export const getFileType = (url: string) => {
   if (["xls", "xlsx"].includes(extension!)) return "excel";
   return "unknown";
 };
+
+/**
+ * Truncate a string to a specified length and append "..." if it exceeds the limit.
+ * @param {string} str - The string to truncate.
+ * @param {number} maxLength - The maximum length of the truncated string including the ellipsis.
+ * @returns {string} - The truncated string.
+ */
+export const truncateString = (str: string, maxLength: number = 20): string => {
+  if (str.length <= maxLength) {
+    return str; // Return the original string if it's within the limit.
+  }
+  const truncatedLength = maxLength - 3; // Reserve space for "..."
+  return str.slice(0, truncatedLength) + "...";
+};

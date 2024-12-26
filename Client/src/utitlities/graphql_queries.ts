@@ -46,6 +46,31 @@ export const PRODUCT_STATS = gql(`
   }
 `);
 
+export const SALES_STATS = gql(`
+  query SaleStats {
+    saleStats {
+      lowSellingProducts {
+        productName
+        totalQuantity
+      }
+      topSellingProducts {
+        productName
+        totalQuantity
+      }
+      mostProfitableProducts {
+        productName
+        totalProfit
+      }
+      totalProfitThisMonth
+      totalProfitToday
+      totalRevenueThisMonth
+      totalRevenueToday
+      totalSalesToday
+      totalSalesThisMonth
+    }
+  }
+`);
+
 export const GET_EXPENSES = gql(/* GraphQL */ `
   query Expenses {
     expenses {

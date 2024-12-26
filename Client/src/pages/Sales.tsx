@@ -1,10 +1,3 @@
-import {
-  FaChartArea,
-  FaChartBar,
-  FaChartLine,
-  FaChartPie,
-} from "react-icons/fa6";
-import CardStatistics from "../components/company/Statistics/StatisticSlider";
 import { LuNotepadText } from "react-icons/lu";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import DateFilter from "../components/company/SearchFilters/DateFilter";
@@ -23,6 +16,7 @@ import DeleteModal from "../components/company/Modals/DeleteModal";
 import { Reference } from "yup";
 import { DELETE_SALE } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
+import SaleStaticstics from "../components/company/Sales/SaleStaticstics";
 
 export default function Sales() {
   const [saleSelected, setSaleSelected] = useState<SalesType | null>(null);
@@ -134,53 +128,7 @@ export default function Sales() {
 
   return (
     <>
-      <CardStatistics>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartLine className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Today's Sales</p>
-                <h6 className="mb-0">234</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartBar className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">December Sales</p>
-                <h6 className="mb-0">12</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartArea className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Today Units Sold</p>
-                <h6 className="mb-0">34</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between p-4">
-              <FaChartPie className="fa-3x text-primary" />
-              <div className="ms-3">
-                <p className="mb-2">Most Sold Product</p>
-                <h6 className="mb-0">$1234</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardStatistics>
-
+      <SaleStaticstics />
       <div className="container-fluid pt-4">
         <div className="bg-white rounded h-100 p-4 mt-4">
           <h6 className="mb-4">
