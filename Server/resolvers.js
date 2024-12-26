@@ -20,6 +20,7 @@ import { fetchOneProduct } from "./services/product/fetchOneProduct.js";
 import { fetchOneSale } from "./services/transaction/fetchOneSale.js";
 import { deleteFile } from "./services/delete_files/deleteFile.js";
 import { fetchExpenseStats } from "./services/expense/fetchExpenseStats.js";
+import { fetchProductStats } from "./services/product/fetchProductStats.js";
 
 export const resolvers = {
   Date: GraphQLDateTime,
@@ -105,6 +106,18 @@ export const resolvers = {
         return await fetchProductsCategories(req);
       } catch (error) {
         console.error("Error fetching expenses categories:", error);
+        throw error;
+      }
+    },
+    productStats: async (parent, args, context) => {
+      try {
+        const { req } = context;
+        if (!req.isAuth) {
+          throw new Error("User is not authenticated");
+        }
+        return await fetchProductStats(req);
+      } catch (error) {
+        console.error("Error fetching product stats:", error);
         throw error;
       }
     },

@@ -82,6 +82,24 @@ export const typeDefs = `#graphql
         createdAt: Date!
     }
 
+    type ProductStats {
+        totalProducts: Int!
+        totalInventoryValue: Float!,
+        totalLowStock: Int!
+        totalOutOfStock: Int!
+    }
+
+    type ServiceStats {
+        totalServices: Int!
+        averageServicePrice: Float!
+        servicesWithAdditionalFees: Int!
+    }
+
+    type ProductServiceStats {
+        productStats: ProductStats!
+        serviceStats: ServiceStats!
+    }
+
     type ItemSoldType {
         _id: String!
         product: Product!
@@ -118,6 +136,7 @@ export const typeDefs = `#graphql
         products(searchTerm: String, limit: Int!, offset: Int!): [Product!]!
         productOne(productId: String!): Product!
         productsCategories: [String!]!
+        productStats: ProductServiceStats!
         sales: [Sale!]!
         saleOne(saleId: String!): Sale!
     }

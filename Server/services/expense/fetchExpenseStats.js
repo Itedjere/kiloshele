@@ -22,13 +22,15 @@ export const fetchExpenseStats = async (req) => {
   const startOfLastYear = new Date(lastYear, 0, 1);
   const endOfLastYear = new Date(lastYear, 11, 31, 23, 59, 59, 999);
 
+  const company = new mongoose.Types.ObjectId(companyId);
+
   // Aggregate statistics
   const stats = await Promise.all([
     // Total expenses for today
     Expense.aggregate([
       {
         $match: {
-          company: new mongoose.Types.ObjectId(companyId),
+          company,
           date: { $gte: startOfDay, $lte: endOfDay },
         },
       },
@@ -40,7 +42,7 @@ export const fetchExpenseStats = async (req) => {
     Expense.aggregate([
       {
         $match: {
-          company: new mongoose.Types.ObjectId(companyId),
+          company,
           date: { $gte: startOfMonth, $lte: endOfMonth },
         },
       },
@@ -52,7 +54,7 @@ export const fetchExpenseStats = async (req) => {
     Expense.aggregate([
       {
         $match: {
-          company: new mongoose.Types.ObjectId(companyId),
+          company,
           date: { $gte: startOfYear, $lte: endOfYear },
         },
       },
@@ -64,7 +66,7 @@ export const fetchExpenseStats = async (req) => {
     Expense.aggregate([
       {
         $match: {
-          company: new mongoose.Types.ObjectId(companyId),
+          company,
           date: { $gte: startOfLastYear, $lte: endOfLastYear },
         },
       },
@@ -76,7 +78,7 @@ export const fetchExpenseStats = async (req) => {
     Expense.aggregate([
       {
         $match: {
-          company: new mongoose.Types.ObjectId(companyId),
+          company,
           date: { $gte: startOfMonth, $lte: endOfMonth },
         },
       },

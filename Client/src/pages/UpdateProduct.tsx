@@ -502,7 +502,7 @@ export default function UpdateProduct() {
                                   <div className="form-floating">
                                     <input
                                       type="number"
-                                      min={1}
+                                      min={0}
                                       step="0.01"
                                       className={`form-control ${
                                         errors.quantity && "is-invalid"
