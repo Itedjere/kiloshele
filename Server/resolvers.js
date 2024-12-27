@@ -128,7 +128,7 @@ export const resolvers = {
         if (!req.isAuth) {
           throw new Error("User is not authenticated");
         }
-        return await fetchSales(req);
+        return await fetchSales(req, args);
       } catch (error) {
         console.error("Error fetching all sales:", error);
         throw error;

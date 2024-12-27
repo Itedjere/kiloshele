@@ -139,6 +139,8 @@ export const typeDefs = `#graphql
         payment_method: PaymentMethod!
         payment_status: PaymentStatus!
         additional_note: String!
+        createdAt: Date!
+        updatedAt: Date!
     }
 
     type ServerResponse {
@@ -156,6 +158,11 @@ export const typeDefs = `#graphql
         nextCursor: String
     }
 
+    type SalesPlusCursor {
+        list: [Sale!]!
+        nextCursor: String
+    }
+
     type Query {
         expenses(cursor: String): ExpensesPlusCursor!
         expenseOne(expenseId: String!): Expense!
@@ -165,7 +172,7 @@ export const typeDefs = `#graphql
         productOne(productId: String!): Product!
         productsCategories: [String!]!
         productStats: ProductServiceStats!
-        sales: [Sale!]!
+        sales(cursor: String): SalesPlusCursor!
         saleOne(saleId: String!): Sale!
         saleStats: SaleStats!
     }
