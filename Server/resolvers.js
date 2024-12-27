@@ -32,7 +32,7 @@ export const resolvers = {
         if (!req.isAuth) {
           throw new Error("User is not authenticated");
         }
-        return await fetchExpenses(req);
+        return await fetchExpenses(req, args);
       } catch (error) {
         console.error("Error fetching expense:", error);
         throw error;

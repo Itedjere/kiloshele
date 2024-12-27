@@ -151,8 +151,13 @@ export const typeDefs = `#graphql
         nextCursor: String
     }
 
+    type ExpensesPlusCursor {
+        list: [Expense!]!
+        nextCursor: String
+    }
+
     type Query {
-        expenses: [Expense!]!
+        expenses(cursor: String): ExpensesPlusCursor!
         expenseOne(expenseId: String!): Expense!
         expensesCategories: [String!]!
         expenseStats: ExpenseStats!
