@@ -37,7 +37,7 @@ const documents = {
     "\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n": types.FetchProductDocument,
     "\n  query ProductStats {\n    productStats {\n      productStats {\n        totalInventoryValue\n        totalLowStock\n        totalOutOfStock\n        totalProducts\n      }\n      serviceStats {\n        averageServicePrice\n        servicesWithAdditionalFees\n        totalServices\n      }\n    }\n  }\n": types.ProductStatsDocument,
     "\n  query SaleStats {\n    saleStats {\n      lowSellingProducts {\n        productName\n        totalQuantity\n      }\n      topSellingProducts {\n        productName\n        totalQuantity\n      }\n      mostProfitableProducts {\n        productName\n        totalProfit\n      }\n      totalProfitThisMonth\n      totalProfitToday\n      totalRevenueThisMonth\n      totalRevenueToday\n      totalSalesToday\n      totalSalesThisMonth\n    }\n  }\n": types.SaleStatsDocument,
-    "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n": types.ExpensesDocument,
+    "\n  query Expenses($cursor: String) {\n    expenses(cursor: $cursor) {\n      list {\n        ...ExpenseFields\n      }\n      nextCursor\n    }\n  }\n": types.ExpensesDocument,
     "\n  query FetchExpense($expenseId: String!) {\n    expenseOne(expenseId: $expenseId) {\n        ...ExpenseFields\n    }\n}\n": types.FetchExpenseDocument,
     "\n  query ExpenseStats {\n    expenseStats {\n      todayExpenses\n      monthExpenses\n      yearExpenses\n      lastYearExpenses\n      highestExpenseAmount\n      highestExpenseCategory\n    }\n  }  \n": types.ExpenseStatsDocument,
     "\n  query Sales {\n    sales {\n      ...SaleFields\n    }\n  }  \n": types.SalesDocument,
@@ -153,7 +153,7 @@ export function gql(source: "\n  query SaleStats {\n    saleStats {\n      lowSe
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n"): (typeof documents)["\n  query Expenses {\n    expenses {\n      ...ExpenseFields\n    }\n  }\n"];
+export function gql(source: "\n  query Expenses($cursor: String) {\n    expenses(cursor: $cursor) {\n      list {\n        ...ExpenseFields\n      }\n      nextCursor\n    }\n  }\n"): (typeof documents)["\n  query Expenses($cursor: String) {\n    expenses(cursor: $cursor) {\n      list {\n        ...ExpenseFields\n      }\n      nextCursor\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

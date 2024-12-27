@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 import Masonry from "react-masonry-css";
 import { GiPayMoney } from "react-icons/gi";
@@ -24,8 +24,11 @@ import LightGalleryWrapper from "../components/company/LightGallery/LightGallery
 import { FaFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import ExpenseStatistics from "../components/company/Expenses/ExpenseStatistics";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Expenses() {
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
   const [showOffCanvas, setShowOffCanvas] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [expenseSelected, setExpenseSelected] = useState<ExpensesType | null>(
@@ -36,9 +39,19 @@ export default function Expenses() {
   );
 
   // Remember to add error UI
-  const { loading, error, data } = useQuery(GET_EXPENSES, {
-    fetchPolicy: "cache-and-network",
-  });
+  const { loading, error, data, fetchMore } = useQuery(GET_EXPENSES);
+
+  useEffect(() => {
+    if (data?.expenses) {
+      const { nextCursor } = data.expenses;
+
+      setCursor(nextCursor || null);
+      if (!nextCursor) {
+        setHasMore(false);
+      }
+    }
+  }, [data]);
+
   // Mutate the state after deletion
   const [deleteExpense, { loading: isDeleting }] = useMutation(
     DELETE_EXPENSES,
@@ -116,6 +129,29 @@ export default function Expenses() {
     }
   };
 
+  const fetchExpenses = () => {
+    fetchMore({
+      variables: {
+        cursor,
+      },
+      updateQuery(previousData, { fetchMoreResult }) {
+        console.log(fetchMoreResult);
+
+        if (!fetchMoreResult) return previousData;
+        return {
+          expenses: {
+            __typename: fetchMoreResult.expenses.__typename,
+            nextCursor: fetchMoreResult.expenses.nextCursor,
+            list: [
+              ...previousData.expenses.list,
+              ...fetchMoreResult.expenses.list,
+            ],
+          },
+        };
+      },
+    });
+  };
+
   if (error)
     return (
       <ServerError
@@ -137,7 +173,7 @@ export default function Expenses() {
             <ExpensesSkeleton />
           ) : (
             <>
-              {data?.expenses.length === 0 ? (
+              {data?.expenses.list.length === 0 ? (
                 <ExpensesEmpty />
               ) : (
                 <>
@@ -151,16 +187,28 @@ export default function Expenses() {
                   </div>
                   <div className="row">
                     <div className="col-12">
-                      <ul className="list-group list-group-flush">
-                        {data?.expenses.map((expense) => (
-                          <ExpensesItem
-                            key={expense._id}
-                            handleOffCanvasShow={handleOffCanvasShow}
-                            expense={expense}
-                            handleRemoveExpense={handleShowDeleteModal}
-                          />
-                        ))}
-                      </ul>
+                      <InfiniteScroll
+                        dataLength={data?.expenses.list.length || 0}
+                        next={fetchExpenses}
+                        hasMore={hasMore}
+                        loader={<ExpensesSkeleton />}
+                        endMessage={
+                          <p style={{ textAlign: "center" }}>
+                            <b>Yay! You have seen it all</b>
+                          </p>
+                        }
+                      >
+                        <ul className="list-group list-group-flush">
+                          {data?.expenses.list.map((expense) => (
+                            <ExpensesItem
+                              key={expense._id}
+                              handleOffCanvasShow={handleOffCanvasShow}
+                              expense={expense}
+                              handleRemoveExpense={handleShowDeleteModal}
+                            />
+                          ))}
+                        </ul>
+                      </InfiniteScroll>
                     </div>
                   </div>
                 </>

@@ -75,9 +75,12 @@ export const SALES_STATS = gql(`
 `);
 
 export const GET_EXPENSES = gql(/* GraphQL */ `
-  query Expenses {
-    expenses {
-      ...ExpenseFields
+  query Expenses($cursor: String) {
+    expenses(cursor: $cursor) {
+      list {
+        ...ExpenseFields
+      }
+      nextCursor
     }
   }
 `);
