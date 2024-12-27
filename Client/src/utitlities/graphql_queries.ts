@@ -13,9 +13,12 @@ export const GET_PRODUCTS_CATEGORIES = gql(/* GraphQL */ `
 `);
 
 export const GET_PRODUCTS = gql(/* GraphQL */ `
-  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {
-    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {
-      ...ProductFields
+  query Products($searchTerm: String, $cursor: String) {
+    products(searchTerm: $searchTerm, cursor: $cursor) {
+      list {
+        ...ProductFields
+      }
+      nextCursor
     }
   }
 `);

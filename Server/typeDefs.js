@@ -146,12 +146,17 @@ export const typeDefs = `#graphql
         message: String!
     }
 
+    type ProductsPlusCursor {
+        list: [Product!]!
+        nextCursor: String
+    }
+
     type Query {
         expenses: [Expense!]!
         expenseOne(expenseId: String!): Expense!
         expensesCategories: [String!]!
         expenseStats: ExpenseStats!
-        products(searchTerm: String, limit: Int!, offset: Int!): [Product!]!
+        products(searchTerm: String, cursor: String): ProductsPlusCursor!
         productOne(productId: String!): Product!
         productsCategories: [String!]!
         productStats: ProductServiceStats!

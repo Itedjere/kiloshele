@@ -33,7 +33,7 @@ const documents = {
     "\n  mutation DeleteExpenseResource($resourceId: String!, $fileUrl: String!, $resourceType: String!) {\n    deleteExpenseFile(resourceId: $resourceId, fileUrl: $fileUrl, resourceType: $resourceType) {\n      ...ExpenseFields\n    }\n  }\n": types.DeleteExpenseResourceDocument,
     "\n  query ExpensesCategories {\n    expensesCategories\n  }\n": types.ExpensesCategoriesDocument,
     "\n  query ProductCategories {\n    productsCategories\n  }\n": types.ProductCategoriesDocument,
-    "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n": types.ProductsDocument,
+    "\n  query Products($searchTerm: String, $cursor: String) {\n    products(searchTerm: $searchTerm, cursor: $cursor) {\n      list {\n        ...ProductFields\n      }\n      nextCursor\n    }\n  }\n": types.ProductsDocument,
     "\n  query FetchProduct($productId: String!) {\n    productOne(productId: $productId) {\n        ...ProductFields\n    }\n  }\n": types.FetchProductDocument,
     "\n  query ProductStats {\n    productStats {\n      productStats {\n        totalInventoryValue\n        totalLowStock\n        totalOutOfStock\n        totalProducts\n      }\n      serviceStats {\n        averageServicePrice\n        servicesWithAdditionalFees\n        totalServices\n      }\n    }\n  }\n": types.ProductStatsDocument,
     "\n  query SaleStats {\n    saleStats {\n      lowSellingProducts {\n        productName\n        totalQuantity\n      }\n      topSellingProducts {\n        productName\n        totalQuantity\n      }\n      mostProfitableProducts {\n        productName\n        totalProfit\n      }\n      totalProfitThisMonth\n      totalProfitToday\n      totalRevenueThisMonth\n      totalRevenueToday\n      totalSalesToday\n      totalSalesThisMonth\n    }\n  }\n": types.SaleStatsDocument,
@@ -137,7 +137,7 @@ export function gql(source: "\n  query ProductCategories {\n    productsCategori
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n"): (typeof documents)["\n  query Products($searchTerm: String, $limit: Int!, $offset: Int!) {\n    products(searchTerm: $searchTerm, limit: $limit, offset: $offset) {\n      ...ProductFields\n    }\n  }\n"];
+export function gql(source: "\n  query Products($searchTerm: String, $cursor: String) {\n    products(searchTerm: $searchTerm, cursor: $cursor) {\n      list {\n        ...ProductFields\n      }\n      nextCursor\n    }\n  }\n"): (typeof documents)["\n  query Products($searchTerm: String, $cursor: String) {\n    products(searchTerm: $searchTerm, cursor: $cursor) {\n      list {\n        ...ProductFields\n      }\n      nextCursor\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

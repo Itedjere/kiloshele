@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { MdOutlineEmojiFoodBeverage } from "react-icons/md";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import ProductItem from "../components/company/Products/ProductItem";
@@ -22,7 +23,8 @@ import Masonry from "react-masonry-css";
 import ProductStatistics from "../components/company/Products/ProductStatistics";
 
 export default function Products() {
-  const [offset, setOffset] = useState<number>(0);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
   const [productSelected, setProductSelected] = useState<ProductType | null>(
     null
   );
@@ -47,19 +49,24 @@ export default function Products() {
     setProductSelected(product);
     setShowOffCanvas(true);
   };
-  const limit: number = 20;
 
   const {
     loading: productsLoading,
     error: productsError,
     data: productsData,
-  } = useQuery(GET_PRODUCTS, {
-    fetchPolicy: "cache-and-network",
-    variables: {
-      limit,
-      offset,
-    },
-  });
+    fetchMore,
+  } = useQuery(GET_PRODUCTS);
+
+  useEffect(() => {
+    if (productsData?.products) {
+      const { nextCursor } = productsData.products;
+
+      setCursor(nextCursor || null);
+      if (!nextCursor) {
+        setHasMore(false);
+      }
+    }
+  }, [productsData]);
 
   // Mutate the state after deletion
   const [deleteProduct, { loading: isDeleting }] = useMutation(DELETE_PRODUCT, {
@@ -114,6 +121,27 @@ export default function Products() {
     }
   };
 
+  const fetchProducts = () => {
+    fetchMore({
+      variables: {
+        cursor,
+      },
+      updateQuery(previousData, { fetchMoreResult }) {
+        if (!fetchMoreResult) return previousData;
+        return {
+          products: {
+            __typename: fetchMoreResult.products.__typename,
+            nextCursor: fetchMoreResult.products.nextCursor,
+            list: [
+              ...previousData.products.list,
+              ...fetchMoreResult.products.list,
+            ],
+          },
+        };
+      },
+    });
+  };
+
   if (productsError)
     return (
       <ServerError
@@ -135,7 +163,8 @@ export default function Products() {
             <ExpensesSkeleton />
           ) : (
             <>
-              {productsData?.products.length === 0 ? (
+              {productsData?.products &&
+              productsData.products.list.length === 0 ? (
                 <ProductsEmpty />
               ) : (
                 <>
@@ -144,16 +173,28 @@ export default function Products() {
                   </div>
                   <div className="row">
                     <div className="col-12">
-                      <ul className="list-group list-group-flush">
-                        {productsData?.products.map((product) => (
-                          <ProductItem
-                            key={product._id}
-                            product={product}
-                            handleOffCanvasShow={handleOffCanvasShow}
-                            handleShowDeleteModal={handleShowDeleteModal}
-                          />
-                        ))}
-                      </ul>
+                      <InfiniteScroll
+                        dataLength={productsData?.products.list.length || 0}
+                        next={fetchProducts}
+                        hasMore={hasMore}
+                        loader={<ExpensesSkeleton />}
+                        endMessage={
+                          <p style={{ textAlign: "center" }}>
+                            <b>Yay! You have seen it all</b>
+                          </p>
+                        }
+                      >
+                        <ul className="list-group list-group-flush">
+                          {productsData?.products.list.map((product) => (
+                            <ProductItem
+                              key={product._id}
+                              product={product}
+                              handleOffCanvasShow={handleOffCanvasShow}
+                              handleShowDeleteModal={handleShowDeleteModal}
+                            />
+                          ))}
+                        </ul>
+                      </InfiniteScroll>
                     </div>
                   </div>
                 </>

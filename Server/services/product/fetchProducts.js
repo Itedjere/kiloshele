@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Product } from "../../models/productModel.js";
 
 export const fetchProducts = async (args, req) => {
@@ -21,14 +22,21 @@ export const fetchProducts = async (args, req) => {
     filter.type = args.type;
   }
 
+  // Search products less than returned cursor
+  if (args?.cursor) {
+    filter.createdAt = { $lt: args.cursor }; // Use the cursor to fetch posts before the given post ID
+  }
+
   // Attach company Id
   filter.company = companyId;
 
   const products = await Product.find(filter)
-    .populate("company")
-    .skip(args?.offset)
-    .limit(args?.limit)
-    .sort({ createdAt: -1 });
+    .limit(10)
+    .sort({ createdAt: -1 })
+    .populate("company");
 
-  return products;
+  const nextCursor =
+    products.length > 0 ? products[products.length - 1].createdAt : null;
+
+  return { list: products, nextCursor };
 };

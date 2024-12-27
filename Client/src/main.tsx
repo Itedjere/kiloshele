@@ -12,7 +12,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import App from "./App.tsx";
 import AuthenticationContextProvider from "./components/company/Contexts/AuthenticationContext.tsx";
-import { offsetLimitPagination } from "@apollo/client/utilities";
 
 const httpLink = createHttpLink({
   uri: `${import.meta.env.VITE_SERVER_URL}/graphql`,
@@ -37,15 +36,7 @@ const authLink = setContext((_, { headers }) => {
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          products: offsetLimitPagination(["searchTerm"]),
-        },
-      },
-    },
-  }),
+  cache: new InMemoryCache(),
 });
 
 createRoot(document.getElementById("root")!).render(
