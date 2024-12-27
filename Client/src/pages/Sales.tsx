@@ -3,7 +3,7 @@ import SearchFilter from "../components/company/SearchFilters/SearchFilter";
 import DateFilter from "../components/company/SearchFilters/DateFilter";
 import SalesItem from "../components/company/Sales/SalesItem";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SalesEmpty from "../components/company/Sales/SalesEmpty";
 import { ApolloError, useMutation, useQuery } from "@apollo/client";
 import { GET_SALES } from "../utitlities/graphql_queries";
@@ -17,8 +17,11 @@ import { Reference } from "yup";
 import { DELETE_SALE } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import SaleStaticstics from "../components/company/Sales/SaleStaticstics";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Sales() {
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
   const [saleSelected, setSaleSelected] = useState<SalesType | null>(null);
   const [saleToDelete, setSaleToDelete] = useState<SalesType | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -34,9 +37,19 @@ export default function Sales() {
     loading: salesLoading,
     error: salesError,
     data: salesData,
-  } = useQuery(GET_SALES, {
-    fetchPolicy: "cache-and-network",
-  });
+    fetchMore,
+  } = useQuery(GET_SALES);
+
+  useEffect(() => {
+    if (salesData?.sales) {
+      const { nextCursor } = salesData.sales;
+
+      setCursor(nextCursor || null);
+      if (!nextCursor) {
+        setHasMore(false);
+      }
+    }
+  }, [salesData]);
 
   // Mutate the state after deletion
   const [deleteSale, { loading: isDeleting }] = useMutation(DELETE_SALE, {
@@ -116,6 +129,26 @@ export default function Sales() {
     setShowOffCanvas(true);
   };
 
+  const fetchSales = () => {
+    fetchMore({
+      variables: {
+        cursor,
+      },
+      updateQuery(previousData, { fetchMoreResult }) {
+        console.log(fetchMoreResult);
+
+        if (!fetchMoreResult) return previousData;
+        return {
+          sales: {
+            __typename: fetchMoreResult.sales.__typename,
+            nextCursor: fetchMoreResult.sales.nextCursor,
+            list: [...previousData.sales.list, ...fetchMoreResult.sales.list],
+          },
+        };
+      },
+    });
+  };
+
   if (salesError)
     return (
       <ServerError
@@ -139,7 +172,7 @@ export default function Sales() {
             <ExpensesSkeleton />
           ) : (
             <>
-              {salesData?.sales && salesData.sales.length === 0 ? (
+              {salesData?.sales && salesData.sales.list.length === 0 ? (
                 <SalesEmpty />
               ) : (
                 <>
@@ -153,16 +186,28 @@ export default function Sales() {
                   </div>
                   <div className="row">
                     <div className="col-12">
-                      <ul className="list-group list-group-flush">
-                        {salesData?.sales.map((sale) => (
-                          <SalesItem
-                            key={sale._id}
-                            sale={sale}
-                            handleOffCanvasShow={handleOffCanvasShow}
-                            handleShowDeleteModal={handleShowDeleteModal}
-                          />
-                        ))}
-                      </ul>
+                      <InfiniteScroll
+                        dataLength={salesData?.sales.list.length || 0}
+                        next={fetchSales}
+                        hasMore={hasMore}
+                        loader={<ExpensesSkeleton />}
+                        endMessage={
+                          <p style={{ textAlign: "center" }}>
+                            <b>Yay! You have seen it all</b>
+                          </p>
+                        }
+                      >
+                        <ul className="list-group list-group-flush">
+                          {salesData?.sales.list.map((sale) => (
+                            <SalesItem
+                              key={sale._id}
+                              sale={sale}
+                              handleOffCanvasShow={handleOffCanvasShow}
+                              handleShowDeleteModal={handleShowDeleteModal}
+                            />
+                          ))}
+                        </ul>
+                      </InfiniteScroll>
                     </div>
                   </div>
                 </>

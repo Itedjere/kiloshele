@@ -40,7 +40,7 @@ const documents = {
     "\n  query Expenses($cursor: String) {\n    expenses(cursor: $cursor) {\n      list {\n        ...ExpenseFields\n      }\n      nextCursor\n    }\n  }\n": types.ExpensesDocument,
     "\n  query FetchExpense($expenseId: String!) {\n    expenseOne(expenseId: $expenseId) {\n        ...ExpenseFields\n    }\n}\n": types.FetchExpenseDocument,
     "\n  query ExpenseStats {\n    expenseStats {\n      todayExpenses\n      monthExpenses\n      yearExpenses\n      lastYearExpenses\n      highestExpenseAmount\n      highestExpenseCategory\n    }\n  }  \n": types.ExpenseStatsDocument,
-    "\n  query Sales {\n    sales {\n      ...SaleFields\n    }\n  }  \n": types.SalesDocument,
+    "\n  query Sales($cursor: String) {\n    sales(cursor: $cursor) {\n      list {\n        ...SaleFields\n      }\n      nextCursor\n    }\n  }  \n": types.SalesDocument,
     "\n  query FetchSale($saleId: String!) {\n    saleOne(saleId: $saleId) {\n        ...SaleFields\n    }\n  }\n": types.FetchSaleDocument,
 };
 
@@ -165,7 +165,7 @@ export function gql(source: "\n  query ExpenseStats {\n    expenseStats {\n     
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Sales {\n    sales {\n      ...SaleFields\n    }\n  }  \n"): (typeof documents)["\n  query Sales {\n    sales {\n      ...SaleFields\n    }\n  }  \n"];
+export function gql(source: "\n  query Sales($cursor: String) {\n    sales(cursor: $cursor) {\n      list {\n        ...SaleFields\n      }\n      nextCursor\n    }\n  }  \n"): (typeof documents)["\n  query Sales($cursor: String) {\n    sales(cursor: $cursor) {\n      list {\n        ...SaleFields\n      }\n      nextCursor\n    }\n  }  \n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
