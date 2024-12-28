@@ -1,39 +1,33 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Dropdown } from "react-bootstrap";
 import { BiSolidCategory } from "react-icons/bi";
 import ButtonLoading from "../LoadingSkeletons/ButtonLoading";
 import { ProductType } from "../../../utitlities/typesUtils";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 interface ProductDropdownSelectMenuProps {
   children: ReactNode;
+  hasMoreProducts: boolean;
   filterLoading: boolean;
   noProductSelectedError: boolean;
+  searchTerm: string;
   products: ProductType[];
   handleSelectedProduct: (product: ProductType) => void;
-  handleProductsFilteration: (searchTerm: string) => void;
-  handleScroll: (
-    event: React.UIEvent<HTMLDivElement>,
-    searchTerm: string
-  ) => void;
+  fetchProducts: () => void;
+  handleSearchInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function ProductDropdownSelectMenu({
   children,
   filterLoading,
+  hasMoreProducts,
   noProductSelectedError,
   products,
+  searchTerm,
   handleSelectedProduct,
-  handleProductsFilteration,
-  handleScroll,
+  fetchProducts,
+  handleSearchInputChange,
 }: ProductDropdownSelectMenuProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
-    handleProductsFilteration(searchTerm);
-  };
-
   return (
     <div className="position-relative select-dropdown">
       <Dropdown drop="down-centered">
@@ -60,46 +54,89 @@ export default function ProductDropdownSelectMenu({
               <label htmlFor="floatingInput">Enter name to search</label>
             </div>
           </div>
-          <div
-            className="menu-content"
-            onScroll={(event) => handleScroll(event, searchTerm)}
-          >
-            <ul className="list-unstyled mb-0">
-              {filterLoading ? (
+          <div className="menu-content" id="scrollableDiv">
+            {filterLoading ? (
+              <ul className="list-unstyled mb-0">
                 <Dropdown.Item as="li">
                   <div>
                     <ButtonLoading message="Fetching Products, Please Wait" />
                   </div>
                 </Dropdown.Item>
-              ) : (
-                <>
-                  {products.length === 0 ? (
+              </ul>
+            ) : (
+              <>
+                {products.length === 0 ? (
+                  <ul className="list-unstyled mb-0">
                     <Dropdown.Item as="li">
                       No Products Or Services Found
                     </Dropdown.Item>
-                  ) : (
-                    products.map((product) => (
-                      <Dropdown.Item
-                        as="li"
-                        key={product._id}
-                        onClick={() => handleSelectedProduct(product)}
+                  </ul>
+                ) : (
+                  <>
+                    {products.length < 10 ? (
+                      <ul className="list-unstyled mb-0">
+                        {products.map((product) => (
+                          <Dropdown.Item
+                            as="li"
+                            key={product._id}
+                            onClick={() => handleSelectedProduct(product)}
+                          >
+                            <div>{product.name}</div>
+                            <div
+                              className="d-flex justify-content-between"
+                              style={{ fontSize: 12 }}
+                            >
+                              <small>
+                                <BiSolidCategory /> {product.category}
+                              </small>
+                              <small>{product.type}</small>
+                            </div>
+                          </Dropdown.Item>
+                        ))}
+                      </ul>
+                    ) : (
+                      <InfiniteScroll
+                        dataLength={products.length}
+                        next={fetchProducts}
+                        hasMore={hasMoreProducts}
+                        loader={
+                          <Dropdown.Item as="li">
+                            <ButtonLoading message="Fetching Products" />
+                          </Dropdown.Item>
+                        }
+                        endMessage={
+                          <p style={{ textAlign: "center" }}>
+                            <b>Yay! You have seen it all</b>
+                          </p>
+                        }
+                        scrollableTarget="scrollableDiv"
                       >
-                        <div>{product.name}</div>
-                        <div
-                          className="d-flex justify-content-between"
-                          style={{ fontSize: 12 }}
-                        >
-                          <small>
-                            <BiSolidCategory /> {product.category}
-                          </small>
-                          <small>{product.type}</small>
-                        </div>
-                      </Dropdown.Item>
-                    ))
-                  )}
-                </>
-              )}
-            </ul>
+                        <ul className="list-unstyled mb-0">
+                          {products.map((product) => (
+                            <Dropdown.Item
+                              as="li"
+                              key={product._id}
+                              onClick={() => handleSelectedProduct(product)}
+                            >
+                              <div>{product.name}</div>
+                              <div
+                                className="d-flex justify-content-between"
+                                style={{ fontSize: 12 }}
+                              >
+                                <small>
+                                  <BiSolidCategory /> {product.category}
+                                </small>
+                                <small>{product.type}</small>
+                              </div>
+                            </Dropdown.Item>
+                          ))}
+                        </ul>
+                      </InfiniteScroll>
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </div>
         </Dropdown.Menu>
       </Dropdown>
