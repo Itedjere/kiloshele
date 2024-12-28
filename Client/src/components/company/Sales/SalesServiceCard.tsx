@@ -38,7 +38,7 @@ export default function SalesServiceCard({
   };
 
   return (
-    <div className="card">
+    <div className="card h-100">
       <div className="card-header text-black">{product.product.name}</div>
       <div className="card-body">
         <small>

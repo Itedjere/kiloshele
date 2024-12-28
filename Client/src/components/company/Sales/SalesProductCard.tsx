@@ -1,7 +1,7 @@
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa6";
 import { Item_SoldType } from "../../../utitlities/typesUtils";
 import { formatPrice } from "../../../utitlities/utils";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 interface SalesProductCardProps {
   product: Item_SoldType;
@@ -31,7 +31,7 @@ export default function SalesProductCard({
   };
 
   return (
-    <div className="card">
+    <div className="card h-100">
       <div className="card-header text-black">{product.product.name}</div>
       <div className="card-body">
         <small>
@@ -49,19 +49,21 @@ export default function SalesProductCard({
             ></input>
           </div>
           <div className="d-flex quantity-updater">
-            <span
+            <button
+              type="button"
               className="btn btn-primary"
               onClick={() => handleItemSoldQuantityChange("DECREMENT", product)}
             >
-              <AiOutlineMinus />
-            </span>
+              <FaMinus className="fs-5" />
+            </button>
             <span className="text-quantity">{product.quantity}</span>
-            <span
+            <button
+              type="button"
               className="btn btn-primary"
               onClick={() => handleItemSoldQuantityChange("INCREMENT", product)}
             >
-              <AiOutlinePlus />
-            </span>
+              <FaPlus className="fs-5" />
+            </button>
           </div>
         </small>
       </div>

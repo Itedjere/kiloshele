@@ -441,7 +441,8 @@
   border: 0;
 }
 
-.quantity-updater span {
+.quantity-updater span,
+.quantity-updater button {
   display: flex;
   justify-content: center;
   align-items: center;
