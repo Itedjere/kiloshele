@@ -1,5 +1,5 @@
 import { BiSolidCategory } from "react-icons/bi";
-import { FaRegTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt, FaSortAmountDownAlt } from "react-icons/fa";
 import { FaPlateWheat, FaRegEye, FaRegKeyboard } from "react-icons/fa6";
 import { ProductType } from "../../../utitlities/typesUtils";
 import { formatPrice } from "../../../utitlities/utils";
@@ -24,9 +24,18 @@ export default function ProductItem({
         </div>
         <div className="col-7">
           <p className="text-black m-0">{product.name}</p>
-          <small className="text-secondary">
-            <BiSolidCategory /> {product.category}
-          </small>
+          <p className="m-0">
+            <small className="text-secondary">
+              <BiSolidCategory /> {product.category}
+            </small>
+          </p>
+          {product.type === "PRODUCT" && (
+            <p className="m-0">
+              <small className="text-secondary">
+                <FaSortAmountDownAlt /> In Stock: {product.quantity}
+              </small>
+            </p>
+          )}
         </div>
         <div className="col-5 d-flex justify-content-end align-items-center">
           <div className="text-end">

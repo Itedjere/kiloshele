@@ -152,6 +152,10 @@ export default function AddSales() {
   };
 
   const handleSelectedProduct = (itemSold: ProductType) => {
+    // If the product has zero quantity return with a message
+    if (itemSold.quantity === 0) {
+      return toast.warning(`${itemSold.name} has finished. Please restock.`);
+    }
     setSelectedProducts(
       (prevSelectedProducts: Item_SoldType[]): Item_SoldType[] => {
         // Check if the item already exists in the array
