@@ -100,9 +100,6 @@ export default function AddSales() {
         cursor,
       },
       updateQuery(previousData, { fetchMoreResult }) {
-        console.log("Previous", previousData.products);
-        console.log("Next", fetchMoreResult.products);
-
         if (!fetchMoreResult) return previousData;
         return {
           products: {
@@ -198,6 +195,7 @@ export default function AddSales() {
                 name: itemSold.name,
                 category: itemSold.category,
                 type: itemSold.type,
+                quantity: itemSold.quantity,
               },
             },
             ...prevSelectedProducts,

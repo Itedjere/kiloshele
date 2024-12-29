@@ -37,10 +37,11 @@ import UpdateExpenseSkeleton from "../components/company/LoadingSkeletons/Update
 
 export default function UpdateSales() {
   const { saleId } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cursor, setCursor] = useState<string | null>(null);
   const [activeAccordion, setActiveAccordion] = useState<string | null>("0");
   const [products, setProducts] = useState<ProductType[]>([]);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
-  const [offset, setOffset] = useState<number>(0);
   const [selectedProducts, setSelectedProducts] = useState<Item_SoldType[]>([]);
   const [noProductSelectedError, setNoProductSelectedError] = useState(false);
   const [salesSummary, setSalesSummary] = useState<SalesSummaryType>({
@@ -48,7 +49,6 @@ export default function UpdateSales() {
     total_quantity: 0,
     total_sales: 0,
   });
-  const limit: number = 6;
 
   const {
     loading: saleLoading,
@@ -91,44 +91,42 @@ export default function UpdateSales() {
     fetchMore,
   } = useQuery(GET_PRODUCTS, {
     variables: {
-      searchTerm: "",
-      limit,
-      offset: 0,
-    },
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      console.log("I alwasy run");
-      if (data.products.length < limit) {
-        setHasMoreProducts(false);
-      }
+      searchTerm,
     },
   });
 
   useEffect(() => {
-    if (productData) {
-      setProducts(productData.products);
+    if (productData?.products) {
+      const { nextCursor, list } = productData.products;
+      setCursor(nextCursor || null);
+      if (!nextCursor) {
+        setHasMoreProducts(false);
+      }
+
+      setProducts(list);
     }
   }, [productData]);
 
-  // Infinite Scroll Handler
-  const handleScroll = (
-    event: React.UIEvent<HTMLDivElement>,
-    searchTerm: string
-  ) => {
-    const target = event.currentTarget;
-
-    if (
-      target.scrollTop + target.clientHeight >= target.scrollHeight &&
-      hasMoreProducts
-    ) {
-      fetchMore({
-        variables: {
-          searchTerm,
-          limit,
-          offset: offset + limit,
-        },
-      });
-    }
+  const fetchProducts = () => {
+    fetchMore({
+      variables: {
+        searchTerm,
+        cursor,
+      },
+      updateQuery(previousData, { fetchMoreResult }) {
+        if (!fetchMoreResult) return previousData;
+        return {
+          products: {
+            __typename: fetchMoreResult.products.__typename,
+            nextCursor: fetchMoreResult.products.nextCursor,
+            list: [
+              ...previousData.products.list,
+              ...fetchMoreResult.products.list,
+            ],
+          },
+        };
+      },
+    });
   };
 
   // Lazy Query
@@ -137,26 +135,38 @@ export default function UpdateSales() {
     GET_PRODUCTS,
     {
       fetchPolicy: "network-only", // Always fetch fresh data
-      onCompleted: (data) => setProducts(data.products),
+      onCompleted: (data) => {
+        console.log(data.products);
+        setProducts(data.products.list);
+      },
     }
   );
 
   // Debounced Search
   const handleProductsFilteration = useCallback(
     debounce((searchTerm: string) => {
-      setOffset(0);
       fetchFilteredProducts({
         variables: {
           searchTerm,
-          limit,
-          offset: 0,
         },
       });
     }, 500),
     [] // Dependencies
   );
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    handleProductsFilteration(searchTerm);
+    setSearchTerm(searchTerm);
+    // Reset this to true so that infinite scroll will work
+    setHasMoreProducts(true);
+  };
+
   const handleSelectedProduct = (itemSold: ProductType) => {
+    // If the product has zero quantity return with a message
+    if (itemSold.quantity === 0) {
+      return toast.warning(`${itemSold.name} has finished. Please restock.`);
+    }
     setSelectedProducts((prevSelectedProducts) => {
       // Check if the item already exists in the array
       const existingProduct = prevSelectedProducts.find(
@@ -193,6 +203,7 @@ export default function UpdateSales() {
               name: itemSold.name,
               category: itemSold.category,
               type: itemSold.type,
+              quantity: itemSold.quantity,
             },
           },
           ...prevSelectedProducts,
@@ -231,7 +242,7 @@ export default function UpdateSales() {
           }
           return {
             ...item,
-            quantity: item.quantity - 1 === 0 ? 1 : item.quantity - 1,
+            quantity: Math.max(item.quantity - 1, 1),
           };
         }
         return item;
@@ -403,14 +414,14 @@ export default function UpdateSales() {
                       <div className="row">
                         <div className="col-sm-12 col-lg-6 mb-3">
                           <ProductDropdownSelectMenu
-                            filterLoading={filterLoading}
-                            noProductSelectedError={noProductSelectedError}
                             products={products}
+                            searchTerm={searchTerm}
+                            filterLoading={filterLoading || initialLoading}
+                            noProductSelectedError={noProductSelectedError}
                             handleSelectedProduct={handleSelectedProduct}
-                            handleProductsFilteration={
-                              handleProductsFilteration
-                            }
-                            handleScroll={handleScroll}
+                            handleSearchInputChange={handleSearchInputChange}
+                            fetchProducts={fetchProducts}
+                            hasMoreProducts={hasMoreProducts}
                           >
                             <>
                               <small>Select Product / Service</small>

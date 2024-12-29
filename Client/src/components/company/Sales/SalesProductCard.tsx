@@ -36,7 +36,7 @@ export default function SalesProductCard({
       <div className="card-body">
         <small>
           <p className="mb-2">Category: {product.product.category}</p>
-          <p className="mb-2">Quantity Stock: {product.stock_quantity}</p>
+          <p className="mb-2">Quantity Stock: {product.product.quantity}</p>
           <p className="mb-2">Cost Price: {formatPrice(product.cost_price)}</p>
           <p className="mb-2">Selling Price:</p>
           <div className="mb-2">

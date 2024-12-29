@@ -16,7 +16,7 @@ export const fetchOneSale = async (req, args) => {
     company: companyId,
   })
     .populate("company")
-    .populate("itemSold.product", "_id name category type");
+    .populate("itemSold.product", "_id name category type quantity");
 
   if (!sale) {
     throw new Error("Error, Sale does not exist");

@@ -60,6 +60,7 @@ export const SALE_FRAGMENT = gql(`
         name
         category
         type
+        quantity
       }
       cost_price
       selling_price
