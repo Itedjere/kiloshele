@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import App from "./App.tsx";
 import AuthenticationContextProvider from "./components/company/Contexts/AuthenticationContext.tsx";
+import FilterContextProvider from "./components/company/Contexts/FilterContext.tsx";
 
 const httpLink = createHttpLink({
   uri: `${import.meta.env.VITE_SERVER_URL}/graphql`,
@@ -43,8 +44,10 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
       <AuthenticationContextProvider>
-        <App />
-        <ToastContainer />
+        <FilterContextProvider>
+          <App />
+          <ToastContainer />
+        </FilterContextProvider>
       </AuthenticationContextProvider>
     </ApolloProvider>
   </StrictMode>

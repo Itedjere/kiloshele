@@ -7,12 +7,18 @@ export type CompanyType = {
   email: string;
 };
 
+export type PaymentMethodType = "CARD" | "CASH" | "BANK_TRANSFER";
+
+export type PaymentStatusType = "PAID" | "PENDING" | "PARTIALLY_PAID";
+
+export type ProductOrServiceType = "PRODUCT" | "SERVICE";
+
 export type AddExpenseFormDataType = {
   title: string;
   amount: number;
   date: string;
-  payment_method: "CARD" | "CASH" | "BANK_TRANSFER";
-  payment_status: "PAID" | "PENDING" | "PARTIALLY_PAID";
+  payment_method: PaymentMethodType;
+  payment_status: PaymentStatusType;
   additional_notes?: string;
 };
 
@@ -67,7 +73,7 @@ export type FileDropzoneProps = {
 export type ProductType = {
   _id: string;
   name: string;
-  type: "PRODUCT" | "SERVICE";
+  type: ProductOrServiceType;
   category: string;
   quantity: number;
   restock_level: number;
@@ -102,8 +108,8 @@ export type ItemsToSellType = {
 
 export type AddSalesFormDataType = {
   date: string;
-  payment_method: "CARD" | "CASH" | "BANK_TRANSFER";
-  payment_status: "PAID" | "PENDING" | "PARTIALLY_PAID";
+  payment_method: PaymentMethodType;
+  payment_status: PaymentStatusType;
   staff_assigned?: string;
   customer_name?: string;
   customer_phone?: string;
@@ -116,7 +122,7 @@ export type SalesProductType = {
   name: string;
   category: string;
   quantity: number;
-  type: "PRODUCT" | "SERVICE";
+  type: ProductOrServiceType;
 };
 
 export type Item_SoldType = {
@@ -132,8 +138,8 @@ export type Item_SoldType = {
 export type SalesType = AddSalesFormDataType & {
   _id: string;
   date: string;
-  payment_method: "CARD" | "CASH" | "BANK_TRANSFER";
-  payment_status: "PAID" | "PENDING" | "PARTIALLY_PAID";
+  payment_method: PaymentMethodType;
+  payment_status: PaymentStatusType;
   staff_assigned: string;
   customer_name: string;
   customer_phone: string;
@@ -147,3 +153,27 @@ export interface StatsCardProps {
   statsMessage: string;
   statsValue: string;
 }
+
+export type DateRangeFilter = {
+  startDate: string;
+  endDate: string;
+};
+
+export type SaleAmountRangeFillter = {
+  minimumAmount: string;
+  maximumAmount: string;
+};
+
+export type PrimaryFilter = {
+  dateRange?: DateRangeFilter;
+  paymentStatus?: PaymentStatusType | "";
+  paymentMethod?: PaymentMethodType | "";
+  staffAssigned?: string;
+  SaleRange?: SaleAmountRangeFillter;
+};
+
+export type FilterContextValuesTypes = {
+  saleFilter?: PrimaryFilter;
+  productFilter?: PrimaryFilter;
+  expenseFilter?: PrimaryFilter;
+};
