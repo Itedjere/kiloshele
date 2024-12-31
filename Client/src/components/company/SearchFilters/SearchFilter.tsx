@@ -1,7 +1,13 @@
 import { FaFilter } from "react-icons/fa6";
 import { IoSearchSharp } from "react-icons/io5";
 
-export default function SearchFilter() {
+interface SearchFilterProps {
+  handleToggleFilterContainer: () => void;
+}
+
+export default function SearchFilter({
+  handleToggleFilterContainer,
+}: SearchFilterProps) {
   return (
     <>
       <div className="col-10 col-md-8 col-lg-4">
@@ -19,7 +25,11 @@ export default function SearchFilter() {
         </div>
       </div>
       <div className="col-2 col-md-4 col-lg-8 text-md-end">
-        <button type="button" className="btn border">
+        <button
+          type="button"
+          className="btn border"
+          onClick={handleToggleFilterContainer}
+        >
           <FaFilter />
         </button>
       </div>

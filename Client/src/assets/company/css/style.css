@@ -509,3 +509,11 @@
   cursor: pointer;
   margin-bottom: 15px;
 }
+
+.offcanvas-top {
+  height: 90vh !important;
+}
+
+.nav-pills .nav-link {
+  color: #000;
+}

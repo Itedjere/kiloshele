@@ -16,57 +16,63 @@ export default function SaleStaticstics() {
   });
   useEffect(() => {
     if (data?.saleStats) {
-      const stats = data.saleStats;
+      const statsData = data.saleStats;
       setStats([
         {
           icon: <ImListNumbered className="fa-3x text-primary" />,
           statsMessage: "Total Sales Today",
-          statsValue: String(stats.totalSalesToday),
+          statsValue: String(statsData.totalSalesToday || 0),
         },
         {
           icon: <ImListNumbered className="fa-3x text-primary" />,
           statsMessage: "Total Sale This Month",
-          statsValue: String(stats.totalSalesThisMonth),
+          statsValue: String(statsData.totalSalesThisMonth || 0),
         },
         {
           icon: <BsCashStack className="fa-3x text-primary" />,
           statsMessage: "Total Revenue Today",
-          statsValue: formatPrice(stats.totalRevenueToday || 0),
+          statsValue: formatPrice(statsData.totalRevenueToday || 0),
         },
         {
           icon: <BsCashStack className="fa-3x text-primary" />,
           statsMessage: "Total Revenue This Month",
-          statsValue: formatPrice(stats.totalRevenueThisMonth || 0),
+          statsValue: formatPrice(statsData.totalRevenueThisMonth || 0),
         },
         {
           icon: <BsCashStack className="fa-3x text-primary" />,
           statsMessage: "Total Profit Today",
-          statsValue: formatPrice(stats.totalProfitToday || 0),
+          statsValue: formatPrice(statsData.totalProfitToday || 0),
         },
         {
           icon: <BsCashStack className="fa-3x text-primary" />,
           statsMessage: "Total Profit This Month",
-          statsValue: formatPrice(stats.totalProfitThisMonth || 0),
+          statsValue: formatPrice(statsData.totalProfitThisMonth || 0),
         },
         {
           icon: <ImCart className="fa-3x text-primary" />,
           statsMessage: "Top Selling Product",
           statsValue: truncateString(
-            stats.topSellingProducts[0].productName || ""
+            statsData.topSellingProducts.length > 0
+              ? statsData.topSellingProducts[0].productName || "No sale yet"
+              : "No sale yet"
           ),
         },
         {
           icon: <ImCart className="fa-3x text-primary" />,
           statsMessage: "Low Selling Product",
           statsValue: truncateString(
-            stats.lowSellingProducts[0].productName || ""
+            statsData.lowSellingProducts.length > 0
+              ? statsData.lowSellingProducts[0].productName || "No sale yet"
+              : "No sale yet"
           ),
         },
         {
           icon: <ImCart className="fa-3x text-primary" />,
           statsMessage: "Most Profitable Product",
           statsValue: truncateString(
-            stats.mostProfitableProducts[0].productName || ""
+            statsData.mostProfitableProducts.length > 0
+              ? statsData.mostProfitableProducts[0].productName || "No sale yet"
+              : "No sale yet"
           ),
         },
       ]);
@@ -77,16 +83,20 @@ export default function SaleStaticstics() {
       {loading ? (
         <StatisticsSkeleton />
       ) : (
-        <StatisticSlider>
-          {stats.map((stat, index) => (
-            <StatsCard
-              key={index}
-              icon={stat.icon}
-              statsMessage={stat.statsMessage}
-              statsValue={stat.statsValue}
-            />
-          ))}
-        </StatisticSlider>
+        <>
+          {stats.length > 0 && (
+            <StatisticSlider>
+              {stats.map((stat, index) => (
+                <StatsCard
+                  key={index}
+                  icon={stat.icon}
+                  statsMessage={stat.statsMessage}
+                  statsValue={stat.statsValue}
+                />
+              ))}
+            </StatisticSlider>
+          )}
+        </>
       )}
     </>
   );

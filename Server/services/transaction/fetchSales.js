@@ -18,7 +18,7 @@ export const fetchSales = async (req, args) => {
     .limit(10)
     .sort({ createdAt: -1 })
     .populate("company")
-    .populate("itemSold.product", "_id name category type");
+    .populate("itemSold.product", "_id name category type quantity");
 
   const nextCursor =
     sales.length > 0 ? sales[sales.length - 1].createdAt : null;

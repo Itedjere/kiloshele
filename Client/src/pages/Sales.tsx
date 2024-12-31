@@ -1,6 +1,5 @@
 import { LuNotepadText } from "react-icons/lu";
 import SearchFilter from "../components/company/SearchFilters/SearchFilter";
-import DateFilter from "../components/company/SearchFilters/DateFilter";
 import SalesItem from "../components/company/Sales/SalesItem";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import { useEffect, useState } from "react";
@@ -18,10 +17,12 @@ import { DELETE_SALE } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
 import SaleStaticstics from "../components/company/Sales/SaleStaticstics";
 import InfiniteScroll from "react-infinite-scroll-component";
+import SalesFilter from "../components/company/Sales/SalesFilter";
 
 export default function Sales() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
+  const [showFilter, setShowFilter] = useState(false);
   const [saleSelected, setSaleSelected] = useState<SalesType | null>(null);
   const [saleToDelete, setSaleToDelete] = useState<SalesType | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -149,6 +150,12 @@ export default function Sales() {
     });
   };
 
+  const handleToggleFilter = () => {
+    console.log("Clicked");
+
+    setShowFilter((prevShow) => !prevShow);
+  };
+
   if (salesError)
     return (
       <ServerError
@@ -177,12 +184,9 @@ export default function Sales() {
               ) : (
                 <>
                   <div className="row">
-                    <SearchFilter />
-                  </div>
-                  <div className="row">
-                    <div className="col-12">
-                      <DateFilter />
-                    </div>
+                    <SearchFilter
+                      handleToggleFilterContainer={handleToggleFilter}
+                    />
                   </div>
                   <div className="row">
                     <div className="col-12">
@@ -338,6 +342,11 @@ export default function Sales() {
         showDeleteModal={showDeleteModal}
         handleDelete={handleRemoveSale}
         handleCloseDeleteModal={handleCloseDeleteModal}
+      />
+
+      <SalesFilter
+        showFilter={showFilter}
+        handleToggleFilter={handleToggleFilter}
       />
     </>
   );
