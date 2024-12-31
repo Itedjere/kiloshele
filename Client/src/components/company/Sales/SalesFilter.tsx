@@ -3,11 +3,17 @@ import Nav from "react-bootstrap/Nav";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
 import Col from "react-bootstrap/Col";
-import DateFilter from "../SearchFilters/DateFilter";
 import { GrPowerReset } from "react-icons/gr";
 import { FaEye, FaMoneyBillTransfer, FaMoneyCheck } from "react-icons/fa6";
 import { FaCalendarAlt, FaUserCog } from "react-icons/fa";
 import { MdPayments } from "react-icons/md";
+import DateFilter from "../SearchFilters/DateFilter";
+import PaymentMethodFilter from "../SearchFilters/PaymentMethodFilter";
+import PaymentStatusFilter from "../SearchFilters/PaymentStatusFilter";
+import AmountRangeFilter from "../SearchFilters/AmountRangeFilter";
+import StaffAssignedFilter from "../SearchFilters/StaffAssignedFilter";
+import { useFilterContext } from "../Contexts/FilterContext";
+import { filterValueType } from "../../../utitlities/typesUtils";
 
 interface SalesFilterProps {
   showFilter: boolean;
@@ -18,6 +24,16 @@ export default function SalesFilter({
   showFilter,
   handleToggleFilter,
 }: SalesFilterProps) {
+  const {
+    filters: { saleFilter },
+    handleSetSaleFilter,
+    resetFilters,
+  } = useFilterContext();
+
+  const handleSalesFilter = (filter: filterValueType) => {
+    handleSetSaleFilter(filter);
+  };
+
   return (
     <Offcanvas show={showFilter} onHide={handleToggleFilter} placement="top">
       <Offcanvas.Header closeButton>
@@ -70,110 +86,60 @@ export default function SalesFilter({
                           <FaCalendarAlt className="me-2" />
                           Date
                         </h5>
-                        <DateFilter />
+                        <DateFilter
+                          startDate={saleFilter?.dateRange?.startDate || ""}
+                          endDate={saleFilter?.dateRange?.endDate || ""}
+                          handleSalesFilter={handleSalesFilter}
+                        />
                       </Tab.Pane>
                       <Tab.Pane eventKey="payment_status">
                         <h5>
                           <FaMoneyBillTransfer className="me-2" />
                           Payment Status
                         </h5>
-                        <div className="form-floating mb-3">
-                          <select
-                            className={`form-select`}
-                            id="floatingSelect"
-                            aria-label="Floating label select example"
-                          >
-                            <option value="">Click Here</option>
-                            <option value="1">Paid</option>
-                            <option value="2">Pending</option>
-                            <option value="3">Partially Paid</option>
-                          </select>
-                          <label htmlFor="floatingSelect">
-                            Select Payment Status
-                          </label>
-                        </div>
+                        <PaymentStatusFilter
+                          payment_status={saleFilter?.paymentStatus || ""}
+                          handleSalesFilter={handleSalesFilter}
+                        />
                       </Tab.Pane>
                       <Tab.Pane eventKey="payment_method">
                         <h5>
                           <FaMoneyBillTransfer className="me-2" />
                           Payment Method
                         </h5>
-                        <div className="form-floating">
-                          <select
-                            className={`form-select`}
-                            id="floatingSelect"
-                            aria-label="label for payment method"
-                          >
-                            <option value="">Click Here</option>
-                            <option value="CARD">Card</option>
-                            <option value="CASH">Cash</option>
-                            <option value="BANK_TRANSFER">Bank Transfer</option>
-                          </select>
-                          <label htmlFor="floatingSelect">
-                            Select Payment method
-                          </label>
-                        </div>
+                        <PaymentMethodFilter
+                          payment_method={saleFilter?.paymentMethod || ""}
+                          handleSalesFilter={handleSalesFilter}
+                        />
                       </Tab.Pane>
                       <Tab.Pane eventKey="staff_assigned">
                         <h5>
                           <FaMoneyBillTransfer className="me-2" />
                           Staff Assigned
                         </h5>
-                        <div className="form-floating">
-                          <select
-                            className={`form-select`}
-                            id="floatingSelect"
-                            aria-label="label for payment method"
-                          >
-                            <option value="">Click Here</option>
-                            <option value="CARD">Card</option>
-                            <option value="CASH">Cash</option>
-                            <option value="BANK_TRANSFER">Bank Transfer</option>
-                          </select>
-                          <label htmlFor="floatingSelect">
-                            Select Staff Assigned
-                          </label>
-                        </div>
+                        <StaffAssignedFilter />
                       </Tab.Pane>
                       <Tab.Pane eventKey="amount_range">
                         <h5>
                           <FaMoneyBillTransfer className="me-2" />
                           Sale Amount Range
                         </h5>
-                        <div className="row">
-                          <div className="col-sm-6 col-12">
-                            <div className="form-floating mb-3">
-                              <input
-                                type="number"
-                                className="form-control"
-                                id="floatingInput"
-                                placeholder="Minimum Sale Amount"
-                              />
-                              <label htmlFor="floatingInput">
-                                Minimum Amount
-                              </label>
-                            </div>
-                          </div>
-                          <div className="col-sm-6 col-12">
-                            <div className="form-floating mb-3">
-                              <input
-                                type="number"
-                                className="form-control"
-                                id="floatingInput"
-                                placeholder="Maximum Sale Amount"
-                              />
-                              <label htmlFor="floatingInput">
-                                Maximum Amount
-                              </label>
-                            </div>
-                          </div>
-                        </div>
+                        <AmountRangeFilter
+                          minimumAmt={
+                            saleFilter?.saleRange?.minimumAmount || ""
+                          }
+                          maximumAmt={
+                            saleFilter?.saleRange?.maximumAmount || ""
+                          }
+                          handleSetSaleFilter={handleSetSaleFilter}
+                        />
                       </Tab.Pane>
                     </Tab.Content>
                     <div className="mt-3">
                       <button
                         className="btn btn-outline-secondary m-2"
                         type="button"
+                        onClick={resetFilters}
                       >
                         <GrPowerReset className="me-2" />
                         Reset

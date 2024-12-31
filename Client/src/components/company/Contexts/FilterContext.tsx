@@ -1,11 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import {
-  DateRangeFilter,
   FilterContextValuesTypes,
-  PaymentMethodType,
-  PaymentStatusType,
+  filterValueType,
   PrimaryFilter,
-  SaleAmountRangeFillter,
 } from "../../../utitlities/typesUtils";
 
 const primaryFilterValues: PrimaryFilter = {
@@ -13,7 +10,7 @@ const primaryFilterValues: PrimaryFilter = {
     endDate: "",
     startDate: "",
   },
-  SaleRange: {
+  saleRange: {
     maximumAmount: "",
     minimumAmount: "",
   },
@@ -22,18 +19,12 @@ const primaryFilterValues: PrimaryFilter = {
   staffAssigned: "",
 };
 
-type filterValueType =
-  | DateRangeFilter
-  | SaleAmountRangeFillter
-  | { paymentMethod: PaymentMethodType }
-  | { paymentStatus: PaymentStatusType }
-  | { staffAssigned: string };
-
 interface FilterContextValues {
   filters: FilterContextValuesTypes;
   handleSetSaleFilter: (filterValue: filterValueType) => void;
   handleSetExpenseFilter: (filterValue: filterValueType) => void;
   handleSetProductFilter: (filterValue: filterValueType) => void;
+  resetFilters: () => void;
 }
 
 export const FilterContext = createContext<FilterContextValues | null>(null);
@@ -89,6 +80,14 @@ export default function FilterContextProvider({
     }));
   };
 
+  const resetFilters = () => {
+    setFilters({
+      saleFilter: primaryFilterValues,
+      expenseFilter: primaryFilterValues,
+      productFilter: primaryFilterValues,
+    });
+  };
+
   return (
     <FilterContext.Provider
       value={{
@@ -96,6 +95,7 @@ export default function FilterContextProvider({
         handleSetExpenseFilter,
         handleSetProductFilter,
         handleSetSaleFilter,
+        resetFilters,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 export default function ButtonLoading({
   message = "Loading",
 }: {
-  message: string;
+  message?: string;
 }) {
   return (
     <>

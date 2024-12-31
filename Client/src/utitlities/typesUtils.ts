@@ -169,7 +169,7 @@ export type PrimaryFilter = {
   paymentStatus?: PaymentStatusType | "";
   paymentMethod?: PaymentMethodType | "";
   staffAssigned?: string;
-  SaleRange?: SaleAmountRangeFillter;
+  saleRange?: SaleAmountRangeFillter;
 };
 
 export type FilterContextValuesTypes = {
@@ -177,3 +177,10 @@ export type FilterContextValuesTypes = {
   productFilter?: PrimaryFilter;
   expenseFilter?: PrimaryFilter;
 };
+
+export type filterValueType =
+  | { dateRange: DateRangeFilter }
+  | { saleRange: SaleAmountRangeFillter }
+  | { paymentMethod: PaymentMethodType | "" }
+  | { paymentStatus: PaymentStatusType | "" }
+  | { staffAssigned: string };

@@ -151,8 +151,6 @@ export default function Sales() {
   };
 
   const handleToggleFilter = () => {
-    console.log("Clicked");
-
     setShowFilter((prevShow) => !prevShow);
   };
 

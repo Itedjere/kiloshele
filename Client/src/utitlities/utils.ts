@@ -176,3 +176,17 @@ export const truncateString = (str: string, maxLength: number = 20): string => {
   const truncatedLength = maxLength - 3; // Reserve space for "..."
   return str.slice(0, truncatedLength) + "...";
 };
+
+// You can type it the shorthand way
+export const paymentMethodsUtils: { [key: string]: string }[] = [
+  { CARD: "Card" },
+  { CASH: "Cash" },
+  { BANK_TRANSFER: "Bank Transfer" },
+];
+
+// Or the normal way Array<Type>
+export const paymentStatusUtils: Array<{ [key: string]: string }> = [
+  { PAID: "Paid" },
+  { PENDING: "Pending" },
+  { PARTIALLY_PAID: "Partially Paid" },
+];

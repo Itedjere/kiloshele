@@ -26,7 +26,12 @@ import { GET_PRODUCTS } from "../utitlities/graphql_queries";
 import debounce from "lodash.debounce";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addSaleSchema, handleApolloErrors } from "../utitlities/utils";
+import {
+  addSaleSchema,
+  handleApolloErrors,
+  paymentMethodsUtils,
+  paymentStatusUtils,
+} from "../utitlities/utils";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { ADD_SALES } from "../utitlities/graphql_mutation";
 import { toast } from "react-toastify";
@@ -505,9 +510,15 @@ export default function AddSales() {
                             {...register("payment_method")}
                           >
                             <option value="">Click Here</option>
-                            <option value="CARD">Card</option>
-                            <option value="CASH">Cash</option>
-                            <option value="BANK_TRANSFER">Bank Transfer</option>
+                            {paymentMethodsUtils.map((paymentMethod, index) => {
+                              const key = Object.keys(paymentMethod)[0];
+                              const value = paymentMethod[key];
+                              return (
+                                <option value={key} key={index}>
+                                  {value}
+                                </option>
+                              );
+                            })}
                           </select>
                           <label htmlFor="floatingSelect">
                             Select Payment method
@@ -530,11 +541,15 @@ export default function AddSales() {
                             {...register("payment_status")}
                           >
                             <option value="">Click Here</option>
-                            <option value="PAID">Paid</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="PARTIALLY_PAID">
-                              Partially Paid
-                            </option>
+                            {paymentStatusUtils.map((paymentStatus, index) => {
+                              const key = Object.keys(paymentStatus)[0];
+                              const value = paymentStatus[key];
+                              return (
+                                <option value={key} key={index}>
+                                  {value}
+                                </option>
+                              );
+                            })}
                           </select>
                           <label htmlFor="floatingSelect">
                             Select Payment Status

@@ -17,6 +17,8 @@ import {
   addExpenseSchema,
   handleApolloErrors,
   handleAxiosFileUploadErrors,
+  paymentMethodsUtils,
+  paymentStatusUtils,
 } from "../utitlities/utils";
 import {
   AddExpenseFormDataType,
@@ -398,11 +400,17 @@ export default function AddExpenses() {
                               {...register("payment_method")}
                             >
                               <option value="">Click Here</option>
-                              <option value="CARD">Card</option>
-                              <option value="CASH">Cash</option>
-                              <option value="BANK_TRANSFER">
-                                Bank Transfer
-                              </option>
+                              {paymentMethodsUtils.map(
+                                (paymentMethod, index) => {
+                                  const key = Object.keys(paymentMethod)[0];
+                                  const value = paymentMethod[key];
+                                  return (
+                                    <option value={key} key={index}>
+                                      {value}
+                                    </option>
+                                  );
+                                }
+                              )}
                             </select>
                             <label htmlFor="floatingSelect">
                               Select Payment method
@@ -425,11 +433,17 @@ export default function AddExpenses() {
                               {...register("payment_status")}
                             >
                               <option value="">Click Here</option>
-                              <option value="PAID">Paid</option>
-                              <option value="PENDING">Pending</option>
-                              <option value="PARTIALLY_PAID">
-                                Partially Paid
-                              </option>
+                              {paymentStatusUtils.map(
+                                (paymentStatus, index) => {
+                                  const key = Object.keys(paymentStatus)[0];
+                                  const value = paymentStatus[key];
+                                  return (
+                                    <option value={key} key={index}>
+                                      {value}
+                                    </option>
+                                  );
+                                }
+                              )}
                             </select>
                             <label htmlFor="floatingSelect">
                               Select Payment Status
