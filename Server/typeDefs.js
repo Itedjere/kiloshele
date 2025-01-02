@@ -172,7 +172,7 @@ export const typeDefs = `#graphql
         productOne(productId: String!): Product!
         productsCategories: [String!]!
         productStats: ProductServiceStats!
-        sales(cursor: String): SalesPlusCursor!
+        sales(filters: SALESFILTERINPUT): SalesPlusCursor!
         saleOne(saleId: String!): Sale!
         saleStats: SaleStats!
     }
@@ -191,6 +191,17 @@ export const typeDefs = `#graphql
         removeSale(saleId: String!): Sale!
         deleteProductFile(resourceId: String!, fileUrl: String!, resourceType: String!): Product!
         deleteExpenseFile(resourceId: String!, fileUrl: String!, resourceType: String!): Expense!
+    }
+
+    input SALESFILTERINPUT {
+        cursor: String
+        startDate: String
+        endDate: String
+        paymentStatus: String
+        paymentMethod: String
+        staffAssigned: String
+        minAmount: String
+        maxAmount: String
     }
 
     input PRODUCTFILTERINPUT {
