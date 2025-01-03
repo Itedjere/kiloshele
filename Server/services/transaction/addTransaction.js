@@ -33,5 +33,5 @@ export const addTransaction = async (args, req) => {
   // return validation
   return Sale.findById(sale._id)
     .populate("company")
-    .populate("itemSold.product", "_id name category type");
+    .populate("itemSold.product", "_id name category type quantity");
 };

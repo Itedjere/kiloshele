@@ -6,19 +6,19 @@ import moment from "moment";
 interface DateFilterProps {
   startDate: string;
   endDate: string;
-  handleSalesFilter: (filter: filterValueType) => void;
+  handleUpdateDateFilter: (filter: filterValueType) => void;
 }
 
 export default function DateFilter({
   startDate,
   endDate,
-  handleSalesFilter,
+  handleUpdateDateFilter,
 }: DateFilterProps) {
   const [active, setActive] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentDate = { [event.target.name]: event.target.value };
-    handleSalesFilter({
+    handleUpdateDateFilter({
       dateRange: {
         startDate,
         endDate,
@@ -28,7 +28,7 @@ export default function DateFilter({
   };
 
   const updateDateFields = (startDate: string, endDate: string) => {
-    handleSalesFilter({
+    handleUpdateDateFilter({
       dateRange: {
         startDate: startDate,
         endDate: endDate,

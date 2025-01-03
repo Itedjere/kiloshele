@@ -3,20 +3,20 @@ import { filterValueType } from "../../../utitlities/typesUtils";
 interface AmountRangeFilterProps {
   minimumAmt: string;
   maximumAmt: string;
-  handleSetSaleFilter: (filter: filterValueType) => void;
+  handleUpdateAmountRangeFilter: (filter: filterValueType) => void;
 }
 
 export default function AmountRangeFilter({
   minimumAmt,
   maximumAmt,
-  handleSetSaleFilter,
+  handleUpdateAmountRangeFilter,
 }: AmountRangeFilterProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentRange = {
       [event.target.name]: event.target.value,
     };
 
-    handleSetSaleFilter({
+    handleUpdateAmountRangeFilter({
       saleRange: {
         maximumAmount: maximumAmt,
         minimumAmount: minimumAmt,

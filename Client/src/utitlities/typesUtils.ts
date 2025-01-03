@@ -135,7 +135,7 @@ export type Item_SoldType = {
   other_fees?: OtherServiceFeeFormDataType[];
 };
 
-export type SalesType = AddSalesFormDataType & {
+export type SalesType = {
   _id: string;
   date: string;
   payment_method: PaymentMethodType;
@@ -165,17 +165,17 @@ export type SaleAmountRangeFillter = {
 };
 
 export type PrimaryFilter = {
-  dateRange?: DateRangeFilter;
-  paymentStatus?: PaymentStatusType | "";
-  paymentMethod?: PaymentMethodType | "";
-  staffAssigned?: string;
-  saleRange?: SaleAmountRangeFillter;
+  dateRange: DateRangeFilter;
+  paymentStatus: PaymentStatusType | "";
+  paymentMethod: PaymentMethodType | "";
+  staffAssigned: string;
+  saleRange: SaleAmountRangeFillter;
 };
 
 export type FilterContextValuesTypes = {
-  saleFilter?: PrimaryFilter;
-  productFilter?: PrimaryFilter;
-  expenseFilter?: PrimaryFilter;
+  saleFilter: PrimaryFilter;
+  productFilter: PrimaryFilter;
+  expenseFilter: PrimaryFilter;
 };
 
 export type filterValueType =

@@ -14,14 +14,19 @@ import AmountRangeFilter from "../SearchFilters/AmountRangeFilter";
 import StaffAssignedFilter from "../SearchFilters/StaffAssignedFilter";
 import { useFilterContext } from "../Contexts/FilterContext";
 import { filterValueType } from "../../../utitlities/typesUtils";
+import ButtonLoading from "../LoadingSkeletons/ButtonLoading";
 
 interface SalesFilterProps {
+  totalResults: number;
   showFilter: boolean;
+  filterLoading: boolean;
   handleToggleFilter: () => void;
 }
 
 export default function SalesFilter({
+  totalResults,
   showFilter,
+  filterLoading,
   handleToggleFilter,
 }: SalesFilterProps) {
   const {
@@ -89,7 +94,7 @@ export default function SalesFilter({
                         <DateFilter
                           startDate={saleFilter?.dateRange?.startDate || ""}
                           endDate={saleFilter?.dateRange?.endDate || ""}
-                          handleSalesFilter={handleSalesFilter}
+                          handleUpdateDateFilter={handleSalesFilter}
                         />
                       </Tab.Pane>
                       <Tab.Pane eventKey="payment_status">
@@ -99,7 +104,7 @@ export default function SalesFilter({
                         </h5>
                         <PaymentStatusFilter
                           payment_status={saleFilter?.paymentStatus || ""}
-                          handleSalesFilter={handleSalesFilter}
+                          handleUpdatedPaymentStatusFilter={handleSalesFilter}
                         />
                       </Tab.Pane>
                       <Tab.Pane eventKey="payment_method">
@@ -109,7 +114,7 @@ export default function SalesFilter({
                         </h5>
                         <PaymentMethodFilter
                           payment_method={saleFilter?.paymentMethod || ""}
-                          handleSalesFilter={handleSalesFilter}
+                          handleUpdatePaymentMethodFilter={handleSalesFilter}
                         />
                       </Tab.Pane>
                       <Tab.Pane eventKey="staff_assigned">
@@ -131,7 +136,7 @@ export default function SalesFilter({
                           maximumAmt={
                             saleFilter?.saleRange?.maximumAmount || ""
                           }
-                          handleSetSaleFilter={handleSetSaleFilter}
+                          handleUpdateAmountRangeFilter={handleSalesFilter}
                         />
                       </Tab.Pane>
                     </Tab.Content>
@@ -144,9 +149,19 @@ export default function SalesFilter({
                         <GrPowerReset className="me-2" />
                         Reset
                       </button>
-                      <button type="button" className="btn btn-primary m-2">
-                        <FaEye className="me-2" />
-                        Show 1000 Results
+                      <button
+                        type="button"
+                        className="btn btn-primary m-2"
+                        onClick={handleToggleFilter}
+                      >
+                        {filterLoading ? (
+                          <ButtonLoading />
+                        ) : (
+                          <>
+                            <FaEye className="me-2" />
+                            Show {totalResults} Results
+                          </>
+                        )}
                       </button>
                     </div>
                   </Col>

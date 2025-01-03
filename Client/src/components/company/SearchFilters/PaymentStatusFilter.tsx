@@ -6,15 +6,15 @@ import { paymentStatusUtils } from "../../../utitlities/utils";
 
 interface PaymentStatusFilterProps {
   payment_status: string;
-  handleSalesFilter: (filter: filterValueType) => void;
+  handleUpdatedPaymentStatusFilter: (filter: filterValueType) => void;
 }
 
 export default function PaymentStatusFilter({
   payment_status,
-  handleSalesFilter,
+  handleUpdatedPaymentStatusFilter,
 }: PaymentStatusFilterProps) {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    handleSalesFilter({
+    handleUpdatedPaymentStatusFilter({
       paymentStatus: event.target.value as PaymentStatusType | "",
     });
   };

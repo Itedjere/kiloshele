@@ -160,6 +160,7 @@ export const typeDefs = `#graphql
 
     type SalesPlusCursor {
         list: [Sale!]!
+        totalResults: Int!
         nextCursor: String
     }
 
@@ -194,14 +195,15 @@ export const typeDefs = `#graphql
     }
 
     input SALESFILTERINPUT {
+        limit: Int!
         cursor: String
         startDate: String
         endDate: String
         paymentStatus: String
         paymentMethod: String
         staffAssigned: String
-        minAmount: String
-        maxAmount: String
+        minimumAmount: String
+        maximumAmount: String
     }
 
     input PRODUCTFILTERINPUT {

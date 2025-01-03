@@ -107,11 +107,12 @@ export const EXPENSES_STATS = gql(`
 `);
 
 export const GET_SALES = gql(`
-  query Sales($cursor: String) {
-    sales(cursor: $cursor) {
+  query Sales($filters: SALESFILTERINPUT) {
+  sales(filters: $filters) {
       list {
         ...SaleFields
       }
+      totalResults
       nextCursor
     }
   }  

@@ -4,13 +4,14 @@ import { Sale } from "../../models/saleModel.js";
 export const fetchSales = async (req, args) => {
   const { companyId } = req;
   const {
+    limit,
     cursor,
     startDate,
     endDate,
     paymentStatus,
     staffAssigned,
-    minAmount,
-    maxAmount,
+    minimumAmount,
+    maximumAmount,
     paymentMethod,
   } = args?.filters || { filters: {} };
 
@@ -40,26 +41,27 @@ export const fetchSales = async (req, args) => {
   }
 
   // Filter by sales amount range
-  if (minAmount || maxAmount) {
+  if (minimumAmount || maximumAmount) {
     filter["itemSold.selling_price"] = {};
-    if (minAmount)
-      filter["itemSold.selling_price"].$gte = parseFloat(minAmount);
-    if (maxAmount)
-      filter["itemSold.selling_price"].$lte = parseFloat(maxAmount);
+    if (minimumAmount)
+      filter["itemSold.selling_price"].$gte = parseFloat(minimumAmount);
+    if (maximumAmount)
+      filter["itemSold.selling_price"].$lte = parseFloat(maximumAmount);
   }
+
+  // Attach company Id
+  filter.company = companyId;
+
+  // Fetch the total count of matching documents
+  const totalResults = await Sale.countDocuments(filter);
 
   // Search products less than returned cursor
   if (cursor) {
     filter.createdAt = { $lt: cursor }; // Use the cursor to fetch posts before the given post ID
   }
 
-  // Attach company Id
-  filter.company = companyId;
-
-  console.log(filter);
-
   const sales = await Sale.find(filter)
-    .limit(10)
+    .limit(limit)
     .sort({ createdAt: -1 })
     .populate("company")
     .populate("itemSold.product", "_id name category type quantity");
@@ -67,5 +69,5 @@ export const fetchSales = async (req, args) => {
   const nextCursor =
     sales.length > 0 ? sales[sales.length - 1].createdAt : null;
 
-  return { list: sales, nextCursor };
+  return { list: sales, nextCursor, totalResults };
 };

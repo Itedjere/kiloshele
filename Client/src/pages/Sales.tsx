@@ -4,7 +4,12 @@ import SalesItem from "../components/company/Sales/SalesItem";
 import CustomOffCanvas from "../components/company/CustomOffCanvas";
 import { useEffect, useState } from "react";
 import SalesEmpty from "../components/company/Sales/SalesEmpty";
-import { ApolloError, useMutation, useQuery } from "@apollo/client";
+import {
+  ApolloError,
+  useLazyQuery,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import { GET_SALES } from "../utitlities/graphql_queries";
 import ServerError from "../components/company/Network/ServerError";
 import ExpensesSkeleton from "../components/company/LoadingSkeletons/ExpensesSkeleton";
@@ -18,11 +23,14 @@ import { toast } from "react-toastify";
 import SaleStaticstics from "../components/company/Sales/SaleStaticstics";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SalesFilter from "../components/company/Sales/SalesFilter";
+import { useFilterContext } from "../components/company/Contexts/FilterContext";
 
 export default function Sales() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [totalSales, setTotalSales] = useState<number>(0);
+  const [sales, setSales] = useState<SalesType[]>([]);
   const [saleSelected, setSaleSelected] = useState<SalesType | null>(null);
   const [saleToDelete, setSaleToDelete] = useState<SalesType | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -32,6 +40,12 @@ export default function Sales() {
     totalSales: number;
     totalProfit: number;
   }>({ totalQuantity: 0, totalSales: 0, totalProfit: 0 });
+  const {
+    filters: { saleFilter },
+  } = useFilterContext();
+
+  // Total Sales Limit
+  const limit: number = 10;
 
   // Fetch all sales
   const {
@@ -39,18 +53,75 @@ export default function Sales() {
     error: salesError,
     data: salesData,
     fetchMore,
-  } = useQuery(GET_SALES);
+  } = useQuery(GET_SALES, {
+    variables: {
+      filters: {
+        limit,
+      },
+    },
+  });
+
+  const handleSetCursorAndSales = (
+    nextCursor: string | null,
+    list: SalesType[],
+    totalResults: number
+  ) => {
+    // Set total Sales Found
+    setTotalSales(totalResults);
+    // Set Has more
+    setHasMore(nextCursor ? true : false);
+    // Set Cursor
+    setCursor(nextCursor || null);
+    // Set Sales
+    setSales(list);
+  };
 
   useEffect(() => {
     if (salesData?.sales) {
-      const { nextCursor } = salesData.sales;
+      const { nextCursor, list, totalResults } = salesData.sales;
 
-      setCursor(nextCursor || null);
-      if (!nextCursor) {
-        setHasMore(false);
+      // Set Cursor
+      if (nextCursor !== undefined) {
+        handleSetCursorAndSales(nextCursor, list, totalResults);
       }
     }
   }, [salesData]);
+
+  // Lazy Query for Filtering
+  const [filterSales, { loading: filterLoading }] = useLazyQuery(GET_SALES, {
+    fetchPolicy: "network-only", // Always fetch fresh data
+    onCompleted: (data) => {
+      const { nextCursor, list, totalResults } = data.sales;
+      // Set Cursor
+      if (nextCursor !== undefined) {
+        handleSetCursorAndSales(nextCursor, list, totalResults);
+      }
+    },
+  });
+
+  useEffect(() => {
+    const {
+      paymentMethod,
+      paymentStatus,
+      staffAssigned,
+      saleRange: { maximumAmount, minimumAmount },
+      dateRange: { endDate, startDate },
+    } = saleFilter;
+    filterSales({
+      variables: {
+        filters: {
+          limit,
+          paymentStatus,
+          paymentMethod,
+          startDate,
+          endDate,
+          staffAssigned,
+          maximumAmount,
+          minimumAmount,
+        },
+      },
+    });
+  }, [saleFilter]);
 
   // Mutate the state after deletion
   const [deleteSale, { loading: isDeleting }] = useMutation(DELETE_SALE, {
@@ -131,17 +202,38 @@ export default function Sales() {
   };
 
   const fetchSales = () => {
+    const {
+      paymentMethod,
+      paymentStatus,
+      staffAssigned,
+      saleRange: { maximumAmount, minimumAmount },
+      dateRange: { endDate, startDate },
+    } = saleFilter;
+
     fetchMore({
       variables: {
-        cursor,
+        filters: {
+          limit,
+          cursor,
+          paymentStatus,
+          paymentMethod,
+          startDate,
+          endDate,
+          staffAssigned,
+          maximumAmount,
+          minimumAmount,
+        },
       },
       updateQuery(previousData, { fetchMoreResult }) {
-        console.log(fetchMoreResult);
-
         if (!fetchMoreResult) return previousData;
+        // Set has more to false if fetchMoreResult list is less than 10
+        if (fetchMoreResult.sales.list.length < limit) setHasMore(false);
+        // Set total Result Found
+        setTotalSales(fetchMoreResult.sales.totalResults);
         return {
           sales: {
             __typename: fetchMoreResult.sales.__typename,
+            totalResults: fetchMoreResult.sales.totalResults,
             nextCursor: fetchMoreResult.sales.nextCursor,
             list: [...previousData.sales.list, ...fetchMoreResult.sales.list],
           },
@@ -162,8 +254,6 @@ export default function Sales() {
       />
     );
 
-  //
-
   return (
     <>
       <SaleStaticstics />
@@ -173,11 +263,11 @@ export default function Sales() {
             <LuNotepadText className="me-3 fs-4" />
             Sales Record
           </h6>
-          {salesLoading ? (
+          {salesLoading || filterLoading ? (
             <ExpensesSkeleton />
           ) : (
             <>
-              {salesData?.sales && salesData.sales.list.length === 0 ? (
+              {sales.length === 0 ? (
                 <SalesEmpty />
               ) : (
                 <>
@@ -189,7 +279,7 @@ export default function Sales() {
                   <div className="row">
                     <div className="col-12">
                       <InfiniteScroll
-                        dataLength={salesData?.sales.list.length || 0}
+                        dataLength={sales.length}
                         next={fetchSales}
                         hasMore={hasMore}
                         loader={<ExpensesSkeleton />}
@@ -200,7 +290,7 @@ export default function Sales() {
                         }
                       >
                         <ul className="list-group list-group-flush">
-                          {salesData?.sales.list.map((sale) => (
+                          {sales.map((sale) => (
                             <SalesItem
                               key={sale._id}
                               sale={sale}
@@ -343,8 +433,10 @@ export default function Sales() {
       />
 
       <SalesFilter
+        totalResults={totalSales}
         showFilter={showFilter}
         handleToggleFilter={handleToggleFilter}
+        filterLoading={filterLoading}
       />
     </>
   );

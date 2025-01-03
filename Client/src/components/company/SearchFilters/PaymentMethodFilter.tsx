@@ -6,15 +6,15 @@ import { paymentMethodsUtils } from "../../../utitlities/utils";
 
 interface PaymentMethodFilterProps {
   payment_method: string;
-  handleSalesFilter: (filter: filterValueType) => void;
+  handleUpdatePaymentMethodFilter: (filter: filterValueType) => void;
 }
 
 export default function PaymentMethodFilter({
   payment_method,
-  handleSalesFilter,
+  handleUpdatePaymentMethodFilter,
 }: PaymentMethodFilterProps) {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    handleSalesFilter({
+    handleUpdatePaymentMethodFilter({
       paymentMethod: event.target.value as PaymentMethodType | "",
     });
   };
